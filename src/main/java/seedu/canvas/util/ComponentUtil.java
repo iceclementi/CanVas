@@ -20,6 +20,10 @@ public class ComponentUtil {
         component.getStyleClass().add(styleClass);
     }
 
+    public static void setStyleClass(Parent component, String styleClass) {
+        component.getStyleClass().add(styleClass);
+    }
+
     private static Background generateBackground(double width, double height, String backgroundPath) {
         Image image = new Image(backgroundPath, width, height, false, true, true);
         BackgroundImage background = new BackgroundImage(

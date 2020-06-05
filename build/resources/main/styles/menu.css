@@ -1,0 +1,18 @@
+@font-face {
+    src: url("Rustling-Trees.otf");
+}
+
+.version {
+    -fx-font-family: "Rustling Trees Regular";
+    -fx-text-fill: #131b28;
+    -fx-font-size: 14pt;
+}
+
+
+/* Menu Button */
+.custom-menu-button {
+    -fx-pref-width: 120;
+    -fx-pref-height: 120;
+
+    -fx-cursor: hand;
+}

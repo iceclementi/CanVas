@@ -19,8 +19,8 @@ public class CanVas extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        stage.setTitle("FRACTAL");
-        stage.getIcons().add(new Image(FilePath.ICON_IMAGE_PATH));
+        stage.setTitle("Can/Vas");
+        stage.getIcons().add(new Image(FilePath.CANVAS_ICON_IMAGE_PATH));
         stage.setMinWidth(800);
         stage.setMinHeight(600);
 
