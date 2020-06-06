@@ -8,6 +8,8 @@ import seedu.canvas.util.ComponentUtil;
 
 public abstract class ToolButton extends Button {
 
+    protected boolean isSelected = false;
+
     private String backgroundPath;
 
     /**
@@ -33,23 +35,23 @@ public abstract class ToolButton extends Button {
         setOnMouseEntered(this::onHover);
         setOnMouseExited(this::onUnhover);
         setOnMousePressed(this::onPress);
-        setOnMouseReleased(this::onRelease);
+        // setOnMouseReleased(this::onRelease);
     }
 
     private void onHover(MouseEvent mouseEvent) {
-        setEffect(new ColorAdjust(0, 0, -0.1, 0));
+        if (!isSelected) {
+            setEffect(new ColorAdjust(0, 0, -0.1, 0));
+        }
     }
 
     private void onUnhover(MouseEvent mouseEvent) {
-        reset();
+        if (!isSelected) {
+            reset();
+        }
     }
 
     private void onPress(MouseEvent mouseEvent) {
         setEffect(new ColorAdjust(0, 0, -0.25, 0));
-    }
-
-    private void onRelease(MouseEvent mouseEvent) {
-        reset();
     }
 
     protected void reset() {

@@ -1,6 +1,7 @@
 package seedu.canvas.component.canvas;
 
-import seedu.canvas.component.canvas.ToolButton;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.input.MouseEvent;
 
 public class ModelButton extends ToolButton {
 
@@ -17,6 +18,18 @@ public class ModelButton extends ToolButton {
     }
 
     private void initialiseEvents() {
+        setOnMouseReleased(this::onClick);
+    }
 
+    private void onClick(MouseEvent mouseEvent) {
+        isSelected = !isSelected;
+
+        if (isSelected) {
+            setEffect(new ColorAdjust(0, 0, -0.2, 0));
+            TheCanvas.getInstance().activateModelMode();
+        } else {
+            setEffect(null);
+            TheCanvas.getInstance().deactivateMode();
+        }
     }
 }

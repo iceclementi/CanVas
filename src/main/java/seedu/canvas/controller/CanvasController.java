@@ -7,6 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import seedu.canvas.component.canvas.DrawButton;
 import seedu.canvas.component.canvas.ModelButton;
+import seedu.canvas.component.canvas.TheCanvas;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
@@ -28,6 +29,7 @@ public class CanvasController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initialiseTitle();
         initialiseToolBox();
+        initialiseCanvas();
     }
 
     private void initialiseTitle() {
@@ -39,5 +41,9 @@ public class CanvasController implements Initializable {
             new ModelButton(FilePath.CANVAS_MODEL_BUTTON_IMAGE_PATH),
             new DrawButton(FilePath.CANVAS_DRAW_BUTTON_IMAGE_PATH)
         );
+    }
+
+    private void initialiseCanvas() {
+        canvasBox.getChildren().add(TheCanvas.getInstance());
     }
 }
