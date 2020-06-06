@@ -5,9 +5,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import seedu.canvas.component.HelpButton;
-import seedu.canvas.component.NewButton;
-import seedu.canvas.component.OpenButton;
+import seedu.canvas.component.menu.HelpButton;
+import seedu.canvas.component.menu.NewButton;
+import seedu.canvas.component.menu.OpenButton;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 

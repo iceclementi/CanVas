@@ -5,8 +5,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import seedu.canvas.component.DrawButton;
-import seedu.canvas.component.ModelButton;
+import seedu.canvas.component.canvas.DrawButton;
+import seedu.canvas.component.canvas.ModelButton;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 

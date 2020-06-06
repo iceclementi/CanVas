@@ -1,4 +1,4 @@
-package seedu.canvas.component;
+package seedu.canvas.component.menu;
 
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
@@ -6,7 +6,7 @@ import javafx.scene.input.MouseEvent;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
-public abstract class ToolButton extends Button {
+public abstract class MenuButton extends Button {
 
     private String backgroundPath;
 
@@ -16,7 +16,7 @@ public abstract class ToolButton extends Button {
      * @param backgroundPath
      *  The path to the background image of the button
      */
-    public ToolButton(String backgroundPath) {
+    public MenuButton(String backgroundPath) {
         super();
         this.backgroundPath = backgroundPath;
 
@@ -26,7 +26,7 @@ public abstract class ToolButton extends Button {
 
     private void initialiseStyle() {
         ComponentUtil.setBackground(this, backgroundPath);
-        ComponentUtil.setStyleClass(this, FilePath.CANVAS_STYLE_PATH, "tool-button");
+        ComponentUtil.setStyleClass(this, FilePath.MENU_STYLE_PATH, "custom-menu-button");
     }
 
     private void initialiseEvents() {
@@ -37,7 +37,7 @@ public abstract class ToolButton extends Button {
     }
 
     private void onHover(MouseEvent mouseEvent) {
-        setEffect(new ColorAdjust(0, 0, -0.1, 0));
+        setEffect(new ColorAdjust(0.05, 0.5, 0, 0));
     }
 
     private void onUnhover(MouseEvent mouseEvent) {
@@ -45,7 +45,7 @@ public abstract class ToolButton extends Button {
     }
 
     private void onPress(MouseEvent mouseEvent) {
-        setEffect(new ColorAdjust(0, 0, -0.25, 0));
+        setEffect(new ColorAdjust(0.05, 0.5, -0.25, 0));
     }
 
     private void onRelease(MouseEvent mouseEvent) {

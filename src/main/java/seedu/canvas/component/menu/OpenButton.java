@@ -1,4 +1,4 @@
-package seedu.canvas.component;
+package seedu.canvas.component.menu;
 
 public class OpenButton extends MenuButton {
 

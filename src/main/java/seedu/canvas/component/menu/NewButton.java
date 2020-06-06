@@ -1,4 +1,4 @@
-package seedu.canvas.component;
+package seedu.canvas.component.menu;
 
 import javafx.scene.input.MouseEvent;
 import seedu.canvas.storage.FilePath;

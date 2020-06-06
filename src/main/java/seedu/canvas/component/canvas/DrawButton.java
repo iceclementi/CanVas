@@ -1,6 +1,8 @@
-package seedu.canvas.component;
+package seedu.canvas.component.canvas;
 
-public class ModelButton extends ToolButton {
+import seedu.canvas.component.canvas.ToolButton;
+
+public class DrawButton extends ToolButton {
 
     /**
      * Constructor for the help button in the menu.
@@ -8,7 +10,7 @@ public class ModelButton extends ToolButton {
      * @param backgroundPath
      *  The path to the background of the help button
      */
-    public ModelButton(String backgroundPath) {
+    public DrawButton(String backgroundPath) {
         super(backgroundPath);
 
         initialiseEvents();
