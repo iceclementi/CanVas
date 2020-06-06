@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-
 <StackPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seedu.canvas.controller.MenuController">
    <children>
       <VBox fx:id="menuParentBox" alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: white;" StackPane.alignment="CENTER">
@@ -27,9 +26,9 @@
                      <children>
                         <VBox fx:id="logoBox" prefHeight="200.0" prefWidth="100.0" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.valignment="CENTER" GridPane.vgrow="SOMETIMES">
                            <children>
-                              <Label fx:id="versionLabel" text="Label">
+                              <Label fx:id="versionLabel" text="Label" translateX="170.0" translateY="110.0">
                                  <VBox.margin>
-                                    <Insets left="170.0" top="110.0" />
+                                    <Insets />
                                  </VBox.margin>
                               </Label>
                            </children>
