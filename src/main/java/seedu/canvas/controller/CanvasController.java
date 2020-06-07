@@ -3,8 +3,8 @@ package seedu.canvas.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import seedu.canvas.component.canvas.DrawButton;
 import seedu.canvas.component.canvas.ModelButton;
 import seedu.canvas.component.canvas.TheCanvas;
@@ -23,7 +23,7 @@ public class CanvasController implements Initializable {
     private HBox toolBox;
 
     @FXML
-    private VBox canvasBox;
+    private ScrollPane canvasScrollPane;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -44,6 +44,6 @@ public class CanvasController implements Initializable {
     }
 
     private void initialiseCanvas() {
-        canvasBox.getChildren().add(TheCanvas.getInstance());
+        canvasScrollPane.setContent(TheCanvas.getInstance());
     }
 }

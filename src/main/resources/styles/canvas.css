@@ -17,3 +17,13 @@
 
     -fx-cursor: default;
 }
+
+/* Canvas */
+.canvas {
+    -fx-min-width: 600;
+    -fx-min-height: 600;
+    -fx-max-width: 600;
+    -fx-max-height: 600;
+
+    -fx-background-color: white;
+}

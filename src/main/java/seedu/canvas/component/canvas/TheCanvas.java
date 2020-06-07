@@ -1,20 +1,18 @@
 package seedu.canvas.component.canvas;
 
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.Pane;
+import seedu.canvas.storage.FilePath;
+import seedu.canvas.util.ComponentUtil;
 
-public class TheCanvas extends Canvas {
+public class TheCanvas extends Pane {
 
     private static TheCanvas canvas = null;
 
-    private GraphicsContext gc;
-
     private TheCanvas() {
-        super(600, 600);
+        super();
 
-        gc = getGraphicsContext2D();
+        initialiseStyle();
     }
 
     /**
@@ -46,6 +44,11 @@ public class TheCanvas extends Canvas {
         resetEvents();
     }
 
+    private void initialiseStyle() {
+        ComponentUtil.setStyleClass(this, FilePath.CANVAS_STYLE_PATH, "canvas");
+    }
+
+
     private void initialiseModelModeEvents() {
         setOnMouseClicked(this::onClickModelMode);
     }
@@ -54,10 +57,7 @@ public class TheCanvas extends Canvas {
         double x = mouseEvent.getX();
         double y = mouseEvent.getY();
 
-        gc.setStroke(Color.MIDNIGHTBLUE);
-        gc.setLineWidth(2);
-
-        gc.strokeRect(x, y, 50, 20);
+        getChildren().add(new RectangleUnit(x, y, 50, 20));
     }
 
     private void resetEvents() {

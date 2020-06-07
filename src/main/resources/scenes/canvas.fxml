@@ -24,11 +24,7 @@
             <Separator prefWidth="200.0" />
             <HBox alignment="CENTER" VBox.vgrow="SOMETIMES">
                <children>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" HBox.hgrow="SOMETIMES">
-                     <content>
-                        <VBox fx:id="canvasBox" alignment="CENTER" minHeight="600.0" minWidth="600.0" style="-fx-background-color: white;" />
-                     </content>
-                  </ScrollPane>
+                  <ScrollPane fx:id="canvasScrollPane" fitToHeight="true" fitToWidth="true" HBox.hgrow="SOMETIMES" />
                   <Separator orientation="VERTICAL" prefHeight="200.0" />
                   <VBox alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="250.0" HBox.hgrow="NEVER" />
                </children>
