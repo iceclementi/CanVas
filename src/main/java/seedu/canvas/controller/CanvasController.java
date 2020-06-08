@@ -5,9 +5,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
-import seedu.canvas.component.canvas.DrawButton;
-import seedu.canvas.component.canvas.ModelButton;
+import seedu.canvas.component.canvas.tool.DrawButton;
+import seedu.canvas.component.canvas.tool.ModelButton;
 import seedu.canvas.component.canvas.TheCanvas;
+import seedu.canvas.component.canvas.tool.PointButton;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
@@ -40,6 +41,7 @@ public class CanvasController implements Initializable {
 
     private void initialiseToolBox() {
         toolBox.getChildren().addAll(
+            new PointButton(FilePath.CANVAS_POINT_BUTTON_IMAGE_PATH),
             new ModelButton(FilePath.CANVAS_MODEL_BUTTON_IMAGE_PATH),
             new DrawButton(FilePath.CANVAS_DRAW_BUTTON_IMAGE_PATH)
         );

@@ -3,6 +3,7 @@ package seedu.canvas.component.canvas.unit;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import seedu.canvas.component.canvas.CanvasMode;
 import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.TheCanvas;
 
@@ -38,7 +39,7 @@ public class UnitEventManager {
     }
 
     private EventHandler<MouseEvent> onMousePressed = mouseEvent -> {
-        if (!mouseEvent.isPrimaryButtonDown()) {
+        if (canvas.getCanvasMode() != CanvasMode.POINT || !mouseEvent.isPrimaryButtonDown()) {
             return;
         }
 
@@ -52,7 +53,7 @@ public class UnitEventManager {
     };
 
     private EventHandler<MouseEvent> onMouseDragged = mouseEvent -> {
-        if (!mouseEvent.isPrimaryButtonDown()) {
+        if (canvas.getCanvasMode() != CanvasMode.POINT || !mouseEvent.isPrimaryButtonDown()) {
             return;
         }
 

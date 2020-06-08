@@ -3,6 +3,7 @@ package seedu.canvas.component.canvas;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import seedu.canvas.component.canvas.unit.RectangleUnit;
 
 public class CanvasEventManager {
 
@@ -32,15 +33,25 @@ public class CanvasEventManager {
     }
 
     private EventHandler<MouseEvent> onMousePressed = mouseEvent -> {
-        if (!mouseEvent.isSecondaryButtonDown()) {
-            return;
+
+        if (mouseEvent.isPrimaryButtonDown()) {
+            if (canvas.getCanvasMode() != CanvasMode.MODEL) {
+                return;
+            }
+
+            double x = mouseEvent.getX();
+            double y = mouseEvent.getY();
+
+            canvas.getChildren().add(new RectangleUnit(x, y, 50, 20));
+
+            mouseEvent.consume();
+        } else {
+            unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
+            unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
+
+            unitDragData.setTranslateAnchorX(canvas.getTranslateX());
+            unitDragData.setTranslateAnchorY(canvas.getTranslateY());
         }
-
-        unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
-        unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
-
-        unitDragData.setTranslateAnchorX(canvas.getTranslateX());
-        unitDragData.setTranslateAnchorY(canvas.getTranslateY());
     };
 
     private EventHandler<MouseEvent> onMouseDragged = mouseEvent -> {

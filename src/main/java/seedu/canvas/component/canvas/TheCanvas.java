@@ -8,13 +8,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import seedu.canvas.component.canvas.unit.RectangleUnit;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
 public class TheCanvas extends Pane {
 
     private DoubleProperty canvasScale = new SimpleDoubleProperty(1.0d);
+    private CanvasMode canvasMode = CanvasMode.POINT;
 
     private static TheCanvas canvas = null;
 
@@ -62,19 +62,18 @@ public class TheCanvas extends Pane {
         setTranslateY(getTranslateY() - y);
     }
 
-    /**
-     * Activates the model mode.
-     */
-    public void activateModelMode() {
-        resetEvents();
-        initialiseModelModeEvents();
+    public CanvasMode getCanvasMode() {
+        return canvasMode;
     }
 
     /**
-     * Deactivates the current mode.
+     * Changes the current canvas mode to the specified mode.
+     *
+     * @param canvasMode
+     *  The canvas mode to be changed
      */
-    public void deactivateMode() {
-        resetEvents();
+    public void changeMode(CanvasMode canvasMode) {
+        this.canvasMode = canvasMode;
     }
 
     /**
@@ -100,26 +99,6 @@ public class TheCanvas extends Pane {
         addEventFilter(MouseEvent.MOUSE_PRESSED, canvasEventManager.getOnMousePressed());
         addEventFilter(MouseEvent.MOUSE_DRAGGED, canvasEventManager.getOnMouseDragged());
         addEventFilter(ScrollEvent.ANY, canvasEventManager.getOnScroll());
-    }
-
-    private void initialiseModelModeEvents() {
-        setOnMousePressed(this::onClickModelMode);
-
-    }
-
-    private void onClickModelMode(MouseEvent mouseEvent) {
-        if (!mouseEvent.isPrimaryButtonDown()) {
-            return;
-        }
-
-        double x = mouseEvent.getX();
-        double y = mouseEvent.getY();
-
-        getChildren().add(new RectangleUnit(x, y, 50, 20));
-    }
-
-    private void resetEvents() {
-        setOnMouseClicked(null);
     }
 
     private Canvas generateGridLines() {
