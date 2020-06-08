@@ -25,6 +25,8 @@ public class CanvasController implements Initializable {
     @FXML
     private ScrollPane canvasScrollPane;
 
+    private TheCanvas canvas = TheCanvas.getInstance();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initialiseTitle();
@@ -44,6 +46,8 @@ public class CanvasController implements Initializable {
     }
 
     private void initialiseCanvas() {
-        canvasScrollPane.setContent(TheCanvas.getInstance());
+        canvas.initialise();
+        canvasScrollPane.setContent(canvas);
+        canvas.showGridLines();
     }
 }
