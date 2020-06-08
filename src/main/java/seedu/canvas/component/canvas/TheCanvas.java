@@ -84,6 +84,8 @@ public class TheCanvas extends Pane {
 
         getChildren().add(gridLines);
         gridLines.toBack();
+
+        new CanvasGrid().initialise();
     }
 
     private void initialiseStyle() {

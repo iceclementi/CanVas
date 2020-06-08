@@ -39,10 +39,16 @@ public class CanvasEventManager {
                 return;
             }
 
-            double x = mouseEvent.getX();
-            double y = mouseEvent.getY();
+            GridPoint targetPoint = CanvasGrid.getTargetGridPoint();
 
-            canvas.getChildren().add(new RectangleUnit(x, y, 50, 20));
+            if (targetPoint == null) {
+                return;
+            }
+
+            double x = targetPoint.getCenterX();
+            double y = targetPoint.getCenterY();
+
+            canvas.getChildren().add(new RectangleUnit(x, y, 60, 20));
 
             mouseEvent.consume();
         } else {
