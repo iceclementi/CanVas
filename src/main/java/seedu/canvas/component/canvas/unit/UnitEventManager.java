@@ -19,26 +19,26 @@ public class UnitEventManager {
     }
 
     /**
-     * Gets the mouse pressed event handler that MOVES the unit.
+     * Gets the mouse pressed event handler that MOVES the rectangle unit.
      *
      * @return
      *  The mouse pressed event handler
      */
-    public EventHandler<MouseEvent> getOnMousePressed() {
-        return onMousePressed;
+    public EventHandler<MouseEvent> getOnMousePressedRectangle() {
+        return onMousePressedRectangle;
     }
 
     /**
-     * Gets the mouse dragged event handler that MOVES the unit.
+     * Gets the mouse dragged event handler that MOVES the rectangle unit.
      *
      * @return
      *  The mouse dragged event handler
      */
-    public EventHandler<MouseEvent> getOnMouseDragged() {
-        return onMouseDragged;
+    public EventHandler<MouseEvent> getOnMouseDraggedRectangle() {
+        return onMouseDraggedRectangle;
     }
 
-    private EventHandler<MouseEvent> onMousePressed = mouseEvent -> {
+    private EventHandler<MouseEvent> onMousePressedRectangle = mouseEvent -> {
         if (canvas.getCanvasMode() != CanvasMode.POINT || !mouseEvent.isPrimaryButtonDown()) {
             return;
         }
@@ -52,20 +52,29 @@ public class UnitEventManager {
         unitDragData.setTranslateAnchorY(unit.getTranslateY());
     };
 
-    private EventHandler<MouseEvent> onMouseDragged = mouseEvent -> {
+    private EventHandler<MouseEvent> onMouseDraggedRectangle = mouseEvent -> {
         if (canvas.getCanvasMode() != CanvasMode.POINT || !mouseEvent.isPrimaryButtonDown()) {
             return;
         }
 
         double scale = canvas.getCanvasScale();
 
-        Node unit = (Node) mouseEvent.getSource();
+        RectangleUnit unit = (RectangleUnit) mouseEvent.getSource();
 
         double translateDeltaX = (mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()) / scale;
         double translateDeltaY = (mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()) / scale;
 
-        unit.setTranslateX(unitDragData.getTranslateAnchorX() + translateDeltaX);
-        unit.setTranslateY(unitDragData.getTranslateAnchorY() + translateDeltaY);
+        // unit.setTranslateX(unitDragData.getTranslateAnchorX() + translateDeltaX);
+        // unit.setTranslateY(unitDragData.getTranslateAnchorY() + translateDeltaY);
+
+        double translateX = unitDragData.getTranslateAnchorX() + translateDeltaX;
+        double translateY = unitDragData.getTranslateAnchorY() + translateDeltaY;
+
+        unit.snapX(translateX);
+        unit.snapY(translateY);
+
+
+        // System.out.println(String.format("EventManager: %s %s", unit.getTranslateX(), unit.getTranslateY()));
 
         mouseEvent.consume();
     };
