@@ -1,5 +1,9 @@
 package seedu.canvas.component.canvas;
 
+import seedu.canvas.component.canvas.unit.RectangleUnit;
+
+import java.util.ArrayList;
+
 public class DragData {
 
     private double mouseAnchorX = 0;
@@ -7,6 +11,9 @@ public class DragData {
 
     private double translateAnchorX = 0;
     private double translateAnchorY = 0;
+
+    private ArrayList<RectangleUnit> copiedRectangles = new ArrayList<>();
+    private Direction copyDirection = null;
 
     public DragData() {
     }
@@ -41,5 +48,27 @@ public class DragData {
 
     public void setTranslateAnchorY(double translateAnchorY) {
         this.translateAnchorY = translateAnchorY;
+    }
+
+    public ArrayList<RectangleUnit> getCopiedRectangles() {
+        return copiedRectangles;
+    }
+
+    public Direction getCopyDirection() {
+        return copyDirection;
+    }
+
+    public void setCopyDirection(Direction copyDirection) {
+        this.copyDirection = copyDirection;
+    }
+
+    public void reset() {
+        mouseAnchorX = 0;
+        mouseAnchorY = 0;
+        translateAnchorX = 0;
+        translateAnchorY = 0;
+
+        copiedRectangles = new ArrayList<>();
+        copyDirection = null;
     }
 }

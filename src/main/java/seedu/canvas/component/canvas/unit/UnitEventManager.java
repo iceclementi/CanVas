@@ -18,7 +18,7 @@ public class UnitEventManager {
     }
 
     /**
-     * Gets the mouse pressed event handler that MOVES the rectangle unit.
+     * Gets the mouse pressed event handler.
      *
      * @return
      *  The mouse pressed event handler
@@ -28,7 +28,7 @@ public class UnitEventManager {
     }
 
     /**
-     * Gets the mouse dragged event handler that MOVES the rectangle unit.
+     * Gets the mouse dragged event handler.
      *
      * @return
      *  The mouse dragged event handler
@@ -37,20 +37,33 @@ public class UnitEventManager {
         return onMouseDraggedRectangle;
     }
 
+    /**
+     * Gets the mouse released event handler.
+     *
+     * @return
+     *  The mouse released event handler
+     */
+    public EventHandler<MouseEvent> getOnMouseReleasedRectangle() {
+        return onMouseReleased;
+    }
+
     private EventHandler<MouseEvent> onMousePressedRectangle = mouseEvent -> {
         if (canvas.getCanvasMode() != CanvasMode.POINT || !mouseEvent.isPrimaryButtonDown()) {
             return;
         }
 
+        RectangleUnit unit = (RectangleUnit) mouseEvent.getSource();
+        unit.selectAnchorPoints();
+
         unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
         unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
-
-        RectangleUnit unit = (RectangleUnit) mouseEvent.getSource();
 
         unitDragData.setTranslateAnchorX(unit.getTranslateX());
         unitDragData.setTranslateAnchorY(unit.getTranslateY());
 
-        unit.selectAnchorPoints();
+        if (mouseEvent.isControlDown()) {
+            unitDragData.getCopiedRectangles().add(unit);
+        }
     };
 
     private EventHandler<MouseEvent> onMouseDraggedRectangle = mouseEvent -> {
@@ -71,11 +84,20 @@ public class UnitEventManager {
         double translateX = unitDragData.getTranslateAnchorX() + translateDeltaX;
         double translateY = unitDragData.getTranslateAnchorY() + translateDeltaY;
 
-        unit.moveSnapX(translateX);
-        unit.moveSnapY(translateY);
+        if (mouseEvent.isControlDown()) {
+            System.out.println(String.format("%s %s", mouseEvent.getX(), mouseEvent.getY()));
+            unit.dragCopy(mouseEvent.getX(), mouseEvent.getY(), unitDragData);
+        } else {
+            unit.moveSnapX(translateX);
+            unit.moveSnapY(translateY);
+        }
 
         // System.out.println(String.format("EventManager: %s %s", unit.getTranslateX(), unit.getTranslateY()));
 
         mouseEvent.consume();
+    };
+
+    private EventHandler<MouseEvent> onMouseReleased = mouseEvent -> {
+        unitDragData.reset();
     };
 }

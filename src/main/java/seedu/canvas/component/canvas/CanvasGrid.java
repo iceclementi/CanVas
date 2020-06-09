@@ -51,12 +51,7 @@ public class CanvasGrid {
 
     public static void selectRectangleAnchorPoints(RectangleUnit rectangleUnit,
             int pointX, int pointY, int widthUnit, int heightUnit) {
-        for (GridPoint gridPoint : rectangleUnit.getAnchorPoints()) {
-            if (gridPoint == null) {
-                break;
-            }
-            gridPoint.unanchor();
-        }
+        unselectRectangleAnchorPoints((rectangleUnit));
 
         rectangleUnit.setAnchorPoints(
                 gridPoints.get(pointX).get(pointY),
@@ -67,6 +62,15 @@ public class CanvasGrid {
 
         for (GridPoint gridPoint : rectangleUnit.getAnchorPoints()) {
             gridPoint.anchor();
+        }
+    }
+
+    public static void unselectRectangleAnchorPoints(RectangleUnit rectangleUnit) {
+        for (GridPoint gridPoint : rectangleUnit.getAnchorPoints()) {
+            if (gridPoint == null) {
+                break;
+            }
+            gridPoint.unanchor();
         }
     }
 }
