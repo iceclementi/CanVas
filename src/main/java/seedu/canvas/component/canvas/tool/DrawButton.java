@@ -1,5 +1,6 @@
 package seedu.canvas.component.canvas.tool;
 
+import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import seedu.canvas.component.canvas.CanvasMode;
 import seedu.canvas.component.canvas.TheCanvas;
@@ -25,5 +26,6 @@ public class DrawButton extends ToolButton {
     private void onClick(MouseEvent mouseEvent) {
         selectButton(this);
         TheCanvas.getInstance().changeMode(CanvasMode.DRAW);
+        TheCanvas.getInstance().setCursor(Cursor.DEFAULT);
     }
 }

@@ -1,7 +1,6 @@
 package seedu.canvas.component.canvas.unit;
 
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import seedu.canvas.component.canvas.CanvasMode;
 import seedu.canvas.component.canvas.DragData;
@@ -46,10 +45,12 @@ public class UnitEventManager {
         unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
         unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
 
-        Node unit = (Node) mouseEvent.getSource();
+        RectangleUnit unit = (RectangleUnit) mouseEvent.getSource();
 
         unitDragData.setTranslateAnchorX(unit.getTranslateX());
         unitDragData.setTranslateAnchorY(unit.getTranslateY());
+
+        unit.selectAnchorPoints();
     };
 
     private EventHandler<MouseEvent> onMouseDraggedRectangle = mouseEvent -> {
@@ -70,9 +71,8 @@ public class UnitEventManager {
         double translateX = unitDragData.getTranslateAnchorX() + translateDeltaX;
         double translateY = unitDragData.getTranslateAnchorY() + translateDeltaY;
 
-        unit.snapX(translateX);
-        unit.snapY(translateY);
-
+        unit.moveSnapX(translateX);
+        unit.moveSnapY(translateY);
 
         // System.out.println(String.format("EventManager: %s %s", unit.getTranslateX(), unit.getTranslateY()));
 

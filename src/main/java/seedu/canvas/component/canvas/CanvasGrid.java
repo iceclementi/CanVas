@@ -10,9 +10,9 @@ public class CanvasGrid {
     private static final double HEIGHT = 600;
     public static final double OFFSET = 20d;
     public static final int MIN_X = 0;
-    public static final int MAX_X = (int) Math.round(WIDTH / OFFSET) - 1;
+    public static final int MAX_X = (int) Math.round(WIDTH / OFFSET);
     public static final int MIN_Y = 0;
-    public static final int MAX_Y = (int) Math.round(HEIGHT / OFFSET) - 1;
+    public static final int MAX_Y = (int) Math.round(HEIGHT / OFFSET);
 
     public static ArrayList<ArrayList<GridPoint>> gridPoints = new ArrayList<>();
 

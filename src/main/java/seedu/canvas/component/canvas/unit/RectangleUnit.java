@@ -1,7 +1,5 @@
 package seedu.canvas.component.canvas.unit;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -23,8 +21,8 @@ public class RectangleUnit extends Rectangle {
     private int widthUnit;
     private int heightUnit;
 
-    private IntegerProperty maxX = new SimpleIntegerProperty();
-    private IntegerProperty maxY = new SimpleIntegerProperty();
+    private int maxX;
+    private int maxY;
 
     public RectangleUnit(double x, double y, double width, double height) {
         super(x, y, width, height);
@@ -32,35 +30,33 @@ public class RectangleUnit extends Rectangle {
         startX = x;
         startY = y;
 
-        pointX = ((int) Math.round(x / CanvasGrid.OFFSET));
-        pointY = ((int) Math.round(y / CanvasGrid.OFFSET));
+        pointX = (int) Math.round(x / CanvasGrid.OFFSET);
+        pointY = (int) Math.round(y / CanvasGrid.OFFSET);
         widthUnit = (int) Math.round(width / CanvasGrid.OFFSET);
         heightUnit = (int) Math.round(height / CanvasGrid.OFFSET);
 
-        maxX.set(CanvasGrid.MAX_X - widthUnit);
-        maxY.set(CanvasGrid.MAX_Y - heightUnit);
-
-        CanvasGrid.selectRectangleAnchorPoints(this, pointX, pointY, widthUnit, heightUnit);
+        maxX = CanvasGrid.MAX_X - widthUnit;
+        maxY = CanvasGrid.MAX_Y - heightUnit;
 
         initialiseStyle();
         initialiseEvents();
     }
 
-    public int getWidthUnit() {
-        return widthUnit;
-    }
-
-    public void setWidthUnit(int widthUnit) {
-        this.widthUnit = widthUnit;
-    }
-
-    public int getHeightUnit() {
-        return heightUnit;
-    }
-
-    public void setHeightUnit(int heightUnit) {
-        this.heightUnit = heightUnit;
-    }
+    // public int getWidthUnit() {
+    //     return widthUnit.get();
+    // }
+    //
+    // public void setWidthUnit(int widthUnit) {
+    //     this.widthUnit.set(widthUnit);
+    // }
+    //
+    // public int getHeightUnit() {
+    //     return heightUnit.get();
+    // }
+    //
+    // public void setHeightUnit(int heightUnit) {
+    //     this.heightUnit.set(heightUnit);
+    // }
 
     public GridPoint[] getAnchorPoints() {
         return new GridPoint[]{anchorPointNW, anchorPointNE, anchorPointSW, anchorPointSE};
@@ -72,6 +68,10 @@ public class RectangleUnit extends Rectangle {
         this.anchorPointNE = anchorPointNE;
         this.anchorPointSW = anchorPointSW;
         this.anchorPointSE = anchorPointSE;
+    }
+
+    public void selectAnchorPoints() {
+        CanvasGrid.selectRectangleAnchorPoints(this, pointX, pointY, widthUnit, heightUnit);
     }
 
     private void initialiseStyle() {
@@ -87,35 +87,53 @@ public class RectangleUnit extends Rectangle {
         addEventFilter(MouseEvent.MOUSE_DRAGGED, unitEventManager.getOnMouseDraggedRectangle());
     }
 
-    private int clampX(int value) {
-        return Math.min(Math.max(value, 0), maxX.get());
+    private int clamp(int value, int minValue, int maxValue) {
+        return Math.min(Math.max(value, minValue), maxValue);
     }
 
-    private int clampY(int value) {
-        return Math.min(Math.max(value, 0), maxY.get());
-    }
-
-    public void snapX(double translateX) {
-        int newPointX = clampX((int) Math.round((startX + translateX) / CanvasGrid.OFFSET));
+    public void moveSnapX(double translateX) {
+        int newPointX = clamp((int) Math.round((startX + translateX) / CanvasGrid.OFFSET), 0, maxX);
 
         // System.out.println(String.format("RectangleUnit X: %s %s", getTranslateX(), getTranslateY()));
 
         if (newPointX != pointX) {
             pointX = newPointX;
-            CanvasGrid.selectRectangleAnchorPoints(this, pointX, pointY, widthUnit, heightUnit);
+            selectAnchorPoints();
             setTranslateX(pointX * CanvasGrid.OFFSET - startX);
         }
     }
 
-    public void snapY(double translateY) {
-        int newPointY = clampY((int) Math.round((startY + translateY) / CanvasGrid.OFFSET));
+    public void moveSnapY(double translateY) {
+        int newPointY = clamp((int) Math.round((startY + translateY) / CanvasGrid.OFFSET), 0, maxY);
 
         // System.out.println(String.format("RectangleUnit Y: %s %s", getTranslateX(), getTranslateY()));
 
         if (newPointY != pointY) {
             pointY = newPointY;
-            CanvasGrid.selectRectangleAnchorPoints(this, pointX, pointY, widthUnit, heightUnit);
+            selectAnchorPoints();
             setTranslateY(pointY * CanvasGrid.OFFSET - startY);
+        }
+    }
+
+    public void resizeSnapX(double width) {
+        int newWidthUnit = clamp((int) Math.round(width / CanvasGrid.OFFSET), 1, CanvasGrid.MAX_X - pointX);
+
+        if (newWidthUnit != widthUnit) {
+            widthUnit = newWidthUnit;
+            maxX = CanvasGrid.MAX_X - widthUnit;
+            setWidth(newWidthUnit * CanvasGrid.OFFSET);
+            selectAnchorPoints();
+        }
+    }
+
+    public void resizeSnapY(double height) {
+        int newHeightUnit = clamp((int) Math.round(height / CanvasGrid.OFFSET), 1, CanvasGrid.MAX_Y - pointY);
+
+        if (newHeightUnit != heightUnit) {
+            heightUnit = newHeightUnit;
+            maxY = CanvasGrid.MAX_Y - heightUnit;
+            setHeight(newHeightUnit * CanvasGrid.OFFSET);
+            selectAnchorPoints();
         }
     }
 }

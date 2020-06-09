@@ -9,6 +9,8 @@ public class CanvasEventManager {
 
     private TheCanvas canvas = TheCanvas.getInstance();
     private DragData unitDragData = new DragData();
+    private DragData canvasDragData = new DragData();
+    private RectangleUnit rectangleUnit;
 
     private static final double MIN_SCALE = 0.5d;
     private static final double MAX_SCALE = 4.0d;
@@ -48,30 +50,50 @@ public class CanvasEventManager {
             double x = targetPoint.getCenterX();
             double y = targetPoint.getCenterY();
 
-            canvas.getChildren().add(new RectangleUnit(x, y, 60, 20));
+            rectangleUnit = new RectangleUnit(x, y, CanvasGrid.OFFSET, CanvasGrid.OFFSET);
 
-            mouseEvent.consume();
-        } else {
+            canvas.getChildren().add(rectangleUnit);
+
             unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
             unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
 
-            unitDragData.setTranslateAnchorX(canvas.getTranslateX());
-            unitDragData.setTranslateAnchorY(canvas.getTranslateY());
+            // unitDragData.setTranslateAnchorX(rectangleUnit.getTranslateX());
+            // unitDragData.setTranslateAnchorY(rectangleUnit.getTranslateY());
+        } else if (mouseEvent.isSecondaryButtonDown()) {
+            canvasDragData.setMouseAnchorX(mouseEvent.getSceneX());
+            canvasDragData.setMouseAnchorY(mouseEvent.getSceneY());
+
+            canvasDragData.setTranslateAnchorX(canvas.getTranslateX());
+            canvasDragData.setTranslateAnchorY(canvas.getTranslateY());
         }
     };
 
     private EventHandler<MouseEvent> onMouseDragged = mouseEvent -> {
-        if (!mouseEvent.isSecondaryButtonDown()) {
-            return;
+
+        if (mouseEvent.isPrimaryButtonDown()) {
+            if (canvas.getCanvasMode() != CanvasMode.MODEL) {
+                return;
+            }
+
+            double scale = canvas.getCanvasScale();
+
+            double width = (mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()) / scale;
+            double height = (mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()) / scale;
+
+            rectangleUnit.resizeSnapX(width);
+            rectangleUnit.resizeSnapY(height);
+
+            mouseEvent.consume();
+        } else if (mouseEvent.isSecondaryButtonDown()) {
+
+            double translateDeltaX = mouseEvent.getSceneX() - canvasDragData.getMouseAnchorX();
+            double translateDeltaY = mouseEvent.getSceneY() - canvasDragData.getMouseAnchorY();
+
+            canvas.setTranslateX(canvasDragData.getTranslateAnchorX() + translateDeltaX);
+            canvas.setTranslateY(canvasDragData.getTranslateAnchorY() + translateDeltaY);
+
+            mouseEvent.consume();
         }
-
-        double translateDeltaX = mouseEvent.getSceneX() - unitDragData.getMouseAnchorX();
-        double translateDeltaY = mouseEvent.getSceneY() - unitDragData.getMouseAnchorY();
-
-        canvas.setTranslateX(unitDragData.getTranslateAnchorX() + translateDeltaX);
-        canvas.setTranslateY(unitDragData.getTranslateAnchorY() + translateDeltaY);
-
-        mouseEvent.consume();
     };
 
     private EventHandler<ScrollEvent> onScroll = scrollEvent -> {
