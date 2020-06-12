@@ -30,6 +30,10 @@ public class CanvasEventManager {
         return onMouseDragged;
     }
 
+    public EventHandler<MouseEvent> getOnMouseReleased() {
+        return onMouseReleased;
+    }
+
     public EventHandler<ScrollEvent> getOnScroll() {
         return onScroll;
     }
@@ -52,8 +56,6 @@ public class CanvasEventManager {
 
             rectangleUnit = new RectangleUnit(x, y, CanvasGrid.OFFSET, CanvasGrid.OFFSET);
 
-            canvas.getChildren().add(rectangleUnit);
-
             unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
             unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
 
@@ -75,13 +77,12 @@ public class CanvasEventManager {
                 return;
             }
 
-            double scale = canvas.getCanvasScale();
+            if (rectangleUnit == null) {
+                return;
+            }
 
-            double width = (mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()) / scale;
-            double height = (mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()) / scale;
-
-            rectangleUnit.resizeSnapX(width);
-            rectangleUnit.resizeSnapY(height);
+            rectangleUnit.resizeSnapX(mouseEvent.getX());
+            rectangleUnit.resizeSnapY(mouseEvent.getY());
 
             mouseEvent.consume();
         } else if (mouseEvent.isSecondaryButtonDown()) {
@@ -94,6 +95,10 @@ public class CanvasEventManager {
 
             mouseEvent.consume();
         }
+    };
+
+    private EventHandler<MouseEvent> onMouseReleased = mouseEvent -> {
+        rectangleUnit = null;
     };
 
     private EventHandler<ScrollEvent> onScroll = scrollEvent -> {
@@ -128,5 +133,4 @@ public class CanvasEventManager {
     private double clamp(double value) {
         return Math.min(Math.max(value, MIN_SCALE), MAX_SCALE);
     }
-
 }

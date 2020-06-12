@@ -1,5 +1,7 @@
 package seedu.canvas.component.canvas.unit;
 
+import javafx.scene.Cursor;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -45,6 +47,8 @@ public class RectangleUnit extends Rectangle {
         maxX = CanvasGrid.MAX_X - widthUnit;
         maxY = CanvasGrid.MAX_Y - heightUnit;
 
+        canvas.getChildren().add(this);
+
         initialiseStyle();
         initialiseEvents();
     }
@@ -65,10 +69,28 @@ public class RectangleUnit extends Rectangle {
         return heightUnit;
     }
 
+    /**
+     * Gets the anchor points of this rectangle unit.
+     *
+     * @return
+     *  The anchor points
+     */
     public GridPoint[] getAnchorPoints() {
         return new GridPoint[]{anchorPointNW, anchorPointNE, anchorPointSW, anchorPointSE};
     }
 
+    /**
+     * Sets the anchor points of this rectangle unit.
+     *
+     * @param anchorPointNW
+     *  The NW anchor point
+     * @param anchorPointNE
+     *  The NE anchor point
+     * @param anchorPointSW
+     *  The SW anchor point
+     * @param anchorPointSE
+     *  The SE anchor point
+     */
     public void setAnchorPoints(GridPoint anchorPointNW, GridPoint anchorPointNE,
             GridPoint anchorPointSW, GridPoint anchorPointSE) {
         this.anchorPointNW = anchorPointNW;
@@ -77,32 +99,26 @@ public class RectangleUnit extends Rectangle {
         this.anchorPointSE = anchorPointSE;
     }
 
+    /**
+     * Selects/Reselects and highlights the anchor points of this rectangle unit.
+     */
     public void selectAnchorPoints() {
         CanvasGrid.selectRectangleAnchorPoints(this, pointX, pointY, widthUnit, heightUnit);
     }
 
+    /**
+     * Unselects the anchor points of this rectangle unit.
+     */
     public void unselectAnchorPoints() {
         CanvasGrid.unselectRectangleAnchorPoints(this);
     }
 
-    private void initialiseStyle() {
-        setStroke(Color.MIDNIGHTBLUE);
-        setStrokeWidth(2);
-        setFill(Color.TRANSPARENT);
-    }
-
-    private void initialiseEvents() {
-        UnitEventManager unitEventManager = new UnitEventManager();
-
-        addEventFilter(MouseEvent.MOUSE_PRESSED, unitEventManager.getOnMousePressedRectangle());
-        addEventFilter(MouseEvent.MOUSE_DRAGGED, unitEventManager.getOnMouseDraggedRectangle());
-        addEventFilter(MouseEvent.MOUSE_RELEASED, unitEventManager.getOnMouseReleasedRectangle());
-    }
-
-    private int clamp(int value, int minValue, int maxValue) {
-        return Math.min(Math.max(value, minValue), maxValue);
-    }
-
+    /**
+     * Snaps the x value of this rectangle unit on MOVE.
+     *
+     * @param translateX
+     *  The translate x value of the rectangle unit
+     */
     public void moveSnapX(double translateX) {
         int newPointX = clamp((int) Math.round((startX + translateX) / CanvasGrid.OFFSET), 0, maxX);
 
@@ -115,6 +131,12 @@ public class RectangleUnit extends Rectangle {
         }
     }
 
+    /**
+     * Snaps the y value of this rectangle unit on MOVE.
+     *
+     * @param translateY
+     *  The translate y value of the rectangle unit
+     */
     public void moveSnapY(double translateY) {
         int newPointY = clamp((int) Math.round((startY + translateY) / CanvasGrid.OFFSET), 0, maxY);
 
@@ -127,7 +149,14 @@ public class RectangleUnit extends Rectangle {
         }
     }
 
-    public void resizeSnapX(double width) {
+    /**
+     * Snaps the x value of this rectangle unit on RESIZE.
+     *
+     * @param rawMouseX
+     *  The x value of the mouse event
+     */
+    public void resizeSnapX(double rawMouseX) {
+        double width = rawMouseX  - startX;
         int newWidthUnit = clamp((int) Math.round(width / CanvasGrid.OFFSET), 1, CanvasGrid.MAX_X - pointX);
 
         if (newWidthUnit != widthUnit) {
@@ -138,7 +167,14 @@ public class RectangleUnit extends Rectangle {
         }
     }
 
-    public void resizeSnapY(double height) {
+    /**
+     * Snaps the y value of this rectangle unit on RESIZE.
+     *
+     * @param rawMouseY
+     *  The y value of the mouse event
+     */
+    public void resizeSnapY(double rawMouseY) {
+        double height = rawMouseY - startY;
         int newHeightUnit = clamp((int) Math.round(height / CanvasGrid.OFFSET), 1, CanvasGrid.MAX_Y - pointY);
 
         if (newHeightUnit != heightUnit) {
@@ -149,6 +185,16 @@ public class RectangleUnit extends Rectangle {
         }
     }
 
+    /**
+     * Copies the selected rectangle unit along the drag direction.
+     *
+     * @param rawMouseX
+     *  The x value of the mouse event
+     * @param rawMouseY
+     *  The y value of the mouse event
+     * @param dragData
+     *  The drag data of the rectangle unit
+     */
     public void dragCopy(double rawMouseX, double rawMouseY, DragData dragData) {
         ArrayList<RectangleUnit> copiedRectangles = dragData.getCopiedRectangles();
         Direction copyDirection = dragData.getCopyDirection();
@@ -187,6 +233,27 @@ public class RectangleUnit extends Rectangle {
             break;
         }
     }
+
+    private void initialiseStyle() {
+        setStroke(Color.MIDNIGHTBLUE);
+        setStrokeWidth(2);
+        setFill(Color.TRANSPARENT);
+    }
+
+    private void initialiseEvents() {
+        UnitEventManager unitEventManager = new UnitEventManager();
+
+        addEventFilter(MouseEvent.MOUSE_PRESSED, unitEventManager.getOnMousePressedRectangle());
+        addEventFilter(MouseEvent.MOUSE_DRAGGED, unitEventManager.getOnMouseDraggedRectangle());
+        addEventFilter(MouseEvent.MOUSE_RELEASED, unitEventManager.getOnMouseReleasedRectangle());
+
+        // getScene().setOnKeyPressed(keyEvent -> {
+        //     if (keyEvent.getCode() == KeyCode.SHIFT) {
+        //         System.out.println("yo!");
+        //     }
+        // });
+    }
+
 
     private void dragCopyLeft(double mouseX, double mouseY, DragData dragData) {
         ArrayList<RectangleUnit> copiedRectangles = dragData.getCopiedRectangles();
@@ -266,7 +333,6 @@ public class RectangleUnit extends Rectangle {
                     newHeightUnit * CanvasGrid.OFFSET);
 
             copiedRectangles.add(newRectangle);
-            canvas.getChildren().add(newRectangle);
 
             targetRectangle.unselectAnchorPoints();
             newRectangle.selectAnchorPoints();
@@ -288,6 +354,10 @@ public class RectangleUnit extends Rectangle {
         if (copiedRectangles.size() == 1) {
             dragData.setCopyDirection(null);
         }
+    }
+
+    private int clamp(int value, int minValue, int maxValue) {
+        return Math.min(Math.max(value, minValue), maxValue);
     }
 
     private static Direction computeDirection(double mouseX, double mouseY, RectangleUnit unit) {

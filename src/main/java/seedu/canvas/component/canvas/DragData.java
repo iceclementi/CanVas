@@ -62,6 +62,9 @@ public class DragData {
         this.copyDirection = copyDirection;
     }
 
+    /**
+     * Resets the drag data to its default values.
+     */
     public void reset() {
         mouseAnchorX = 0;
         mouseAnchorY = 0;

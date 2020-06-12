@@ -4,12 +4,14 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import seedu.canvas.component.canvas.CanvasMode;
 import seedu.canvas.component.canvas.DragData;
+import seedu.canvas.component.canvas.Gesture;
 import seedu.canvas.component.canvas.TheCanvas;
 
 public class UnitEventManager {
 
     private TheCanvas canvas = TheCanvas.getInstance();
     private DragData unitDragData = new DragData();
+    private Gesture gesture = Gesture.MOVE;
 
     /**
      * Constructor for the event manager of the units in the canvas.
@@ -63,6 +65,9 @@ public class UnitEventManager {
 
         if (mouseEvent.isControlDown()) {
             unitDragData.getCopiedRectangles().add(unit);
+            gesture = Gesture.COPY;
+        } else if (mouseEvent.isShiftDown()) {
+            gesture = Gesture.RESIZE;
         }
     };
 
@@ -84,10 +89,12 @@ public class UnitEventManager {
         double translateX = unitDragData.getTranslateAnchorX() + translateDeltaX;
         double translateY = unitDragData.getTranslateAnchorY() + translateDeltaY;
 
-        if (mouseEvent.isControlDown()) {
-            System.out.println(String.format("%s %s", mouseEvent.getX(), mouseEvent.getY()));
+        if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
             unit.dragCopy(mouseEvent.getX(), mouseEvent.getY(), unitDragData);
-        } else {
+        } else if (mouseEvent.isShiftDown() && gesture == Gesture.RESIZE) {
+            unit.resizeSnapX(mouseEvent.getX());
+            unit.resizeSnapY(mouseEvent.getY());
+        } else if (gesture == Gesture.MOVE) {
             unit.moveSnapX(translateX);
             unit.moveSnapY(translateY);
         }
@@ -99,5 +106,6 @@ public class UnitEventManager {
 
     private EventHandler<MouseEvent> onMouseReleased = mouseEvent -> {
         unitDragData.reset();
+        gesture = Gesture.MOVE;
     };
 }

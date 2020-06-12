@@ -24,6 +24,9 @@ public class CanvasGrid {
     public CanvasGrid() {
     }
 
+    /**
+     * Initialises the grid points on the canvas.
+     */
     public void initialise() {
         TheCanvas canvas = TheCanvas.getInstance();
 
@@ -41,14 +44,40 @@ public class CanvasGrid {
         }
     }
 
+    /**
+     * Gets the target grid point.
+     *
+     * @return
+     *  The target grid point
+     */
     public static GridPoint getTargetGridPoint() {
         return targetGridPoint;
     }
 
+    /**
+     * Sets the target grid point.
+     *
+     * @param targetGridPoint
+     *  The targeted grid point
+     */
     public static void setTargetGridPoint(GridPoint targetGridPoint) {
         CanvasGrid.targetGridPoint = targetGridPoint;
     }
 
+    /**
+     * Selects/Reselects and highlights the anchor points of the rectangle unit.
+     *
+     * @param rectangleUnit
+     *  The rectangle unit of which the anchor points are to be selected.
+     * @param pointX
+     *  The x coordinate of the upper left corner of the unit
+     * @param pointY
+     *  The y coordinate of the upper left corner of the unit
+     * @param widthUnit
+     *  The width of the unit
+     * @param heightUnit
+     *  The height of the unit
+     */
     public static void selectRectangleAnchorPoints(RectangleUnit rectangleUnit,
             int pointX, int pointY, int widthUnit, int heightUnit) {
         unselectRectangleAnchorPoints((rectangleUnit));
@@ -65,6 +94,12 @@ public class CanvasGrid {
         }
     }
 
+    /**
+     * Unselects the anchor points of the rectangle unit.
+     *
+     * @param rectangleUnit
+     *  The rectangle unit of which the anchor points are to be unselected
+     */
     public static void unselectRectangleAnchorPoints(RectangleUnit rectangleUnit) {
         for (GridPoint gridPoint : rectangleUnit.getAnchorPoints()) {
             if (gridPoint == null) {

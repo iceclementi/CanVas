@@ -100,6 +100,7 @@ public class TheCanvas extends Pane {
 
         addEventFilter(MouseEvent.MOUSE_PRESSED, canvasEventManager.getOnMousePressed());
         addEventFilter(MouseEvent.MOUSE_DRAGGED, canvasEventManager.getOnMouseDragged());
+        addEventFilter(MouseEvent.MOUSE_RELEASED, canvasEventManager.getOnMouseReleased());
         addEventFilter(ScrollEvent.ANY, canvasEventManager.getOnScroll());
     }
 
