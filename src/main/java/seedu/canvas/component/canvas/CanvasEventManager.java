@@ -3,14 +3,14 @@ package seedu.canvas.component.canvas;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import seedu.canvas.component.canvas.unit.RectangleUnit;
+import seedu.canvas.component.canvas.unit.ModelUnit;
 
 public class CanvasEventManager {
 
     private TheCanvas canvas = TheCanvas.getInstance();
     private DragData unitDragData = new DragData();
     private DragData canvasDragData = new DragData();
-    private RectangleUnit rectangleUnit;
+    private ModelUnit modelUnit;
 
     private static final double MIN_SCALE = 0.5d;
     private static final double MAX_SCALE = 4.0d;
@@ -54,7 +54,7 @@ public class CanvasEventManager {
             double x = targetPoint.getCenterX();
             double y = targetPoint.getCenterY();
 
-            rectangleUnit = new RectangleUnit(x, y, CanvasGrid.OFFSET, CanvasGrid.OFFSET);
+            modelUnit = new ModelUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y), 0, 0);
 
             unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
             unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
@@ -77,12 +77,18 @@ public class CanvasEventManager {
                 return;
             }
 
-            if (rectangleUnit == null) {
+            if (modelUnit == null) {
                 return;
             }
 
-            rectangleUnit.resizeSnapX(mouseEvent.getX());
-            rectangleUnit.resizeSnapY(mouseEvent.getY());
+            double scale = TheCanvas.getInstance().getCanvasScale();
+
+            int newUnitWidth = CanvasGrid.toUnit((mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()) / scale);
+            int newUnitHeight = CanvasGrid.toUnit((mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()) / scale);
+
+            modelUnit.scale(newUnitWidth, newUnitHeight);
+
+            // modelUnit.resize(mouseEvent.getX(), mouseEvent.getY());
 
             mouseEvent.consume();
         } else if (mouseEvent.isSecondaryButtonDown()) {
@@ -98,7 +104,13 @@ public class CanvasEventManager {
     };
 
     private EventHandler<MouseEvent> onMouseReleased = mouseEvent -> {
-        rectangleUnit = null;
+        if (modelUnit != null) {
+            if (modelUnit.getWidth() == 0 || modelUnit.getHeight() == 0) {
+                canvas.getChildren().remove(modelUnit);
+            }
+        }
+
+        modelUnit = null;
     };
 
     private EventHandler<ScrollEvent> onScroll = scrollEvent -> {
@@ -119,10 +131,10 @@ public class CanvasEventManager {
 
         double pivotFactor = (scale / previousScale) - 1;
 
-        double deltaX = scrollEvent.getSceneX() -
-                (canvas.getBoundsInParent().getWidth() / 2 + canvas.getBoundsInParent().getMinX());
-        double deltaY = scrollEvent.getSceneY() -
-                (canvas.getBoundsInParent().getHeight() / 2 + canvas.getBoundsInParent().getMinY());
+        double deltaX = scrollEvent.getSceneX()
+                - (canvas.getBoundsInParent().getWidth() / 2 + canvas.getBoundsInParent().getMinX());
+        double deltaY = scrollEvent.getSceneY()
+                - (canvas.getBoundsInParent().getHeight() / 2 + canvas.getBoundsInParent().getMinY());
 
         canvas.setCanvasScale(scale);
         canvas.setPivot(pivotFactor * deltaX,pivotFactor * deltaY);

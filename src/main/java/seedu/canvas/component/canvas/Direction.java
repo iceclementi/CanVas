@@ -1,8 +1,12 @@
 package seedu.canvas.component.canvas;
 
 public enum Direction {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
+    NORTH,
+    SOUTH,
+    EAST,
+    WEST,
+    NORTHEAST,
+    NORTHWEST,
+    SOUTHEAST,
+    SOUTHWEST
 }

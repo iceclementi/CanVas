@@ -2,21 +2,19 @@ package seedu.canvas.component.canvas.unit;
 
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
-import seedu.canvas.component.canvas.CanvasMode;
-import seedu.canvas.component.canvas.DragData;
-import seedu.canvas.component.canvas.Gesture;
-import seedu.canvas.component.canvas.TheCanvas;
+import seedu.canvas.component.canvas.*;
 
-public class UnitEventManager {
+public class ModelUnitEventManager {
 
     private TheCanvas canvas = TheCanvas.getInstance();
     private DragData unitDragData = new DragData();
+    private UnitPoint previousPivotLocation = null;
     private Gesture gesture = Gesture.MOVE;
 
     /**
      * Constructor for the event manager of the units in the canvas.
      */
-    public UnitEventManager() {
+    public ModelUnitEventManager() {
     }
 
     /**
@@ -54,20 +52,17 @@ public class UnitEventManager {
             return;
         }
 
-        RectangleUnit unit = (RectangleUnit) mouseEvent.getSource();
-        unit.selectAnchorPoints();
+        ModelUnit modelUnit = (ModelUnit) mouseEvent.getSource();
+        modelUnit.selectAnchorPoints();
 
         unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
         unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
 
-        unitDragData.setTranslateAnchorX(unit.getTranslateX());
-        unitDragData.setTranslateAnchorY(unit.getTranslateY());
+        previousPivotLocation = new UnitPoint(modelUnit.getUnitX(), modelUnit.getUnitY());
 
         if (mouseEvent.isControlDown()) {
-            unitDragData.getCopiedRectangles().add(unit);
+            unitDragData.getCopiedUnits().add(modelUnit);
             gesture = Gesture.COPY;
-        } else if (mouseEvent.isShiftDown()) {
-            gesture = Gesture.RESIZE;
         }
     };
 
@@ -76,30 +71,30 @@ public class UnitEventManager {
             return;
         }
 
-        double scale = canvas.getCanvasScale();
-
-        RectangleUnit unit = (RectangleUnit) mouseEvent.getSource();
-
-        double translateDeltaX = (mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()) / scale;
-        double translateDeltaY = (mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()) / scale;
-
-        // unit.setTranslateX(unitDragData.getTranslateAnchorX() + translateDeltaX);
-        // unit.setTranslateY(unitDragData.getTranslateAnchorY() + translateDeltaY);
-
-        double translateX = unitDragData.getTranslateAnchorX() + translateDeltaX;
-        double translateY = unitDragData.getTranslateAnchorY() + translateDeltaY;
-
-        if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
-            unit.dragCopy(mouseEvent.getX(), mouseEvent.getY(), unitDragData);
-        } else if (mouseEvent.isShiftDown() && gesture == Gesture.RESIZE) {
-            unit.resizeSnapX(mouseEvent.getX());
-            unit.resizeSnapY(mouseEvent.getY());
-        } else if (gesture == Gesture.MOVE) {
-            unit.moveSnapX(translateX);
-            unit.moveSnapY(translateY);
+        if (previousPivotLocation == null) {
+            return;
         }
 
-        // System.out.println(String.format("EventManager: %s %s", unit.getTranslateX(), unit.getTranslateY()));
+        double scale = canvas.getCanvasScale();
+
+        ModelUnit modelUnit = (ModelUnit) mouseEvent.getSource();
+
+        if (gesture == Gesture.MOVE) {
+            int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()) / scale);
+            int deltaY = CanvasGrid.toUnit((mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()) / scale);
+
+            int newUnitX = previousPivotLocation.getUnitX() + deltaX;
+            int newUnitY = previousPivotLocation.getUnitY() + deltaY;
+
+            modelUnit.move(newUnitX, newUnitY);
+        }
+
+        if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
+            int mouseUnitX = CanvasGrid.toUnit(mouseEvent.getX());
+            int mouseUnitY = CanvasGrid.toUnit(mouseEvent.getY());
+
+            modelUnit.dragCopy(mouseUnitX, mouseUnitY, unitDragData);
+        }
 
         mouseEvent.consume();
     };
