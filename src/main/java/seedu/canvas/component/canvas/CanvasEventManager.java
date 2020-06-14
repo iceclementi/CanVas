@@ -41,6 +41,17 @@ public class CanvasEventManager {
     private EventHandler<MouseEvent> onMousePressed = mouseEvent -> {
 
         if (mouseEvent.isPrimaryButtonDown()) {
+
+            // Checks if focus is not on model unit
+            if (canvas.getCanvasMode() == CanvasMode.POINT) {
+                int mouseUnitX = CanvasGrid.toUnit(mouseEvent.getX());
+                int mouseUnitY = CanvasGrid.toUnit(mouseEvent.getY());
+
+                if (!canvas.isIntersectUnit(mouseUnitX, mouseUnitY)) {
+                    canvas.focusUnit(null);
+                }
+            }
+
             if (canvas.getCanvasMode() != CanvasMode.MODEL) {
                 return;
             }
@@ -48,6 +59,7 @@ public class CanvasEventManager {
             GridPoint targetPoint = CanvasGrid.getTargetGridPoint();
 
             if (targetPoint == null) {
+                canvas.focusUnit(null);
                 return;
             }
 
@@ -55,12 +67,11 @@ public class CanvasEventManager {
             double y = targetPoint.getCenterY();
 
             modelUnit = new ModelUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y), 0, 0);
+            modelUnit.interact();
 
             unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
             unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
 
-            // unitDragData.setTranslateAnchorX(rectangleUnit.getTranslateX());
-            // unitDragData.setTranslateAnchorY(rectangleUnit.getTranslateY());
         } else if (mouseEvent.isSecondaryButtonDown()) {
             canvasDragData.setMouseAnchorX(mouseEvent.getSceneX());
             canvasDragData.setMouseAnchorY(mouseEvent.getSceneY());
@@ -88,8 +99,6 @@ public class CanvasEventManager {
 
             modelUnit.scale(newUnitWidth, newUnitHeight);
 
-            // modelUnit.resize(mouseEvent.getX(), mouseEvent.getY());
-
             mouseEvent.consume();
         } else if (mouseEvent.isSecondaryButtonDown()) {
 
@@ -107,6 +116,8 @@ public class CanvasEventManager {
         if (modelUnit != null) {
             if (modelUnit.getWidth() == 0 || modelUnit.getHeight() == 0) {
                 canvas.getChildren().remove(modelUnit);
+            } else {
+                canvas.focusUnit(modelUnit);
             }
         }
 

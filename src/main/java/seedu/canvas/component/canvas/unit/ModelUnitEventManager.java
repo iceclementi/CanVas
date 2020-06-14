@@ -8,6 +8,7 @@ public class ModelUnitEventManager {
 
     private TheCanvas canvas = TheCanvas.getInstance();
     private DragData unitDragData = new DragData();
+    private ModelUnit modelUnit = null;
     private UnitPoint previousPivotLocation = null;
     private Gesture gesture = Gesture.MOVE;
 
@@ -23,7 +24,7 @@ public class ModelUnitEventManager {
      * @return
      *  The mouse pressed event handler
      */
-    public EventHandler<MouseEvent> getOnMousePressedRectangle() {
+    public EventHandler<MouseEvent> getOnMousePressed() {
         return onMousePressedRectangle;
     }
 
@@ -33,7 +34,7 @@ public class ModelUnitEventManager {
      * @return
      *  The mouse dragged event handler
      */
-    public EventHandler<MouseEvent> getOnMouseDraggedRectangle() {
+    public EventHandler<MouseEvent> getOnMouseDragged() {
         return onMouseDraggedRectangle;
     }
 
@@ -43,8 +44,12 @@ public class ModelUnitEventManager {
      * @return
      *  The mouse released event handler
      */
-    public EventHandler<MouseEvent> getOnMouseReleasedRectangle() {
+    public EventHandler<MouseEvent> getOnMouseReleased() {
         return onMouseReleased;
+    }
+
+    public EventHandler<MouseEvent> getOnMouseClicked() {
+        return onMouseClicked;
     }
 
     private EventHandler<MouseEvent> onMousePressedRectangle = mouseEvent -> {
@@ -52,8 +57,8 @@ public class ModelUnitEventManager {
             return;
         }
 
-        ModelUnit modelUnit = (ModelUnit) mouseEvent.getSource();
-        modelUnit.selectAnchorPoints();
+        modelUnit = (ModelUnit) mouseEvent.getSource();
+        modelUnit.interact();
 
         unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
         unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
@@ -77,7 +82,7 @@ public class ModelUnitEventManager {
 
         double scale = canvas.getCanvasScale();
 
-        ModelUnit modelUnit = (ModelUnit) mouseEvent.getSource();
+        modelUnit = (ModelUnit) mouseEvent.getSource();
 
         if (gesture == Gesture.MOVE) {
             int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()) / scale);
@@ -102,5 +107,13 @@ public class ModelUnitEventManager {
     private EventHandler<MouseEvent> onMouseReleased = mouseEvent -> {
         unitDragData.reset();
         gesture = Gesture.MOVE;
+    };
+
+    private EventHandler<MouseEvent> onMouseClicked = mouseEvent -> {
+        if (modelUnit != null) {
+            canvas.focusUnit(modelUnit);
+        }
+
+        modelUnit = null;
     };
 }

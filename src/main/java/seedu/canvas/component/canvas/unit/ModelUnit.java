@@ -17,8 +17,6 @@ import java.util.Arrays;
 
 public class ModelUnit extends Rectangle {
 
-    private static final double OFFSET = CanvasGrid.OFFSET;
-
     private TheCanvas canvas = TheCanvas.getInstance();
 
     private IntegerProperty unitX = new SimpleIntegerProperty();
@@ -46,7 +44,7 @@ public class ModelUnit extends Rectangle {
         this.unitWidth.set(unitWidth);
         this.unitHeight.set(unitHeight);
 
-        canvas.getChildren().addAll(this, resizeHandleNW, resizeHandleNE, resizeHandleSW, resizeHandleSE);
+        canvas.addUnit(this);
 
         initialiseEvents();
     }
@@ -131,6 +129,27 @@ public class ModelUnit extends Rectangle {
         CanvasGrid.unselectRectangleAnchorPoints(this);
     }
 
+    public void interact() {
+        resizeHandleNW.interact();
+        resizeHandleNE.interact();
+        resizeHandleSW.interact();
+        resizeHandleSE.interact();
+    }
+
+    public void focus() {
+        resizeHandleNW.focus();
+        resizeHandleNE.focus();
+        resizeHandleSW.focus();
+        resizeHandleSE.focus();
+    }
+
+    public void unfocus() {
+        resizeHandleNW.unfocus();
+        resizeHandleNE.unfocus();
+        resizeHandleSW.unfocus();
+        resizeHandleSE.unfocus();
+    }
+
     public void scale(int newUnitWidth, int newUnitHeight) {
         unitWidth.set(clamp(newUnitWidth, 0, CanvasGrid.MAX_X - unitX.get()));
         unitHeight.set(clamp(newUnitHeight, 0, CanvasGrid.MAX_Y - unitY.get()));
@@ -139,6 +158,11 @@ public class ModelUnit extends Rectangle {
     public void move(int newUnitX, int newUnitY) {
         unitX.set(clamp(newUnitX, 0, CanvasGrid.MAX_X - unitWidth.get()));
         unitY.set(clamp(newUnitY, 0, CanvasGrid.MAX_Y - unitHeight.get()));
+    }
+
+    public boolean isIntersect(int pointX, int pointY) {
+        return (pointX >= unitX.get() && pointX <= unitX.get() + unitWidth.get())
+                && (pointY >= unitY.get() && pointY <= unitY.get() + unitHeight.get());
     }
 
     /**
@@ -198,14 +222,17 @@ public class ModelUnit extends Rectangle {
         yProperty().bind(unitY.multiply(CanvasGrid.OFFSET));
         widthProperty().bind(unitWidth.multiply((CanvasGrid.OFFSET)));
         heightProperty().bind(unitHeight.multiply(CanvasGrid.OFFSET));
+
+        unfocus();
     }
 
     private void initialiseEvents() {
         ModelUnitEventManager modelUnitEventManager = new ModelUnitEventManager();
 
-        addEventFilter(MouseEvent.MOUSE_PRESSED, modelUnitEventManager.getOnMousePressedRectangle());
-        addEventFilter(MouseEvent.MOUSE_DRAGGED, modelUnitEventManager.getOnMouseDraggedRectangle());
-        addEventFilter(MouseEvent.MOUSE_RELEASED, modelUnitEventManager.getOnMouseReleasedRectangle());
+        addEventFilter(MouseEvent.MOUSE_PRESSED, modelUnitEventManager.getOnMousePressed());
+        addEventFilter(MouseEvent.MOUSE_DRAGGED, modelUnitEventManager.getOnMouseDragged());
+        addEventFilter(MouseEvent.MOUSE_RELEASED, modelUnitEventManager.getOnMouseReleased());
+        addEventFilter(MouseEvent.MOUSE_CLICKED, modelUnitEventManager.getOnMouseClicked());
     }
 
     private void dragCopyWest(int mouseUnitX, int mouseUnitY, DragData dragData) {
@@ -299,7 +326,7 @@ public class ModelUnit extends Rectangle {
             targetUnit.unselectAnchorPoints();
 
             copiedUnits.remove(targetUnit);
-            canvas.getChildren().removeAll(targetUnit.getUnitGroup());
+            canvas.removeUnit(targetUnit);
 
             copiedUnits.get(copiedUnits.size() - 1).selectAnchorPoints();
         }

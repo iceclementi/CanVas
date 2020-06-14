@@ -8,13 +8,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import seedu.canvas.component.canvas.unit.ModelUnit;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
+
+import java.util.ArrayList;
 
 public class TheCanvas extends Pane {
 
     private DoubleProperty canvasScale = new SimpleDoubleProperty(1.0d);
     private CanvasMode canvasMode = CanvasMode.POINT;
+
+    private ModelUnit focussedUnit = null;
+    private ArrayList<ModelUnit> modelUnits = new ArrayList<>();
 
     private static TheCanvas canvas = null;
 
@@ -74,6 +80,37 @@ public class TheCanvas extends Pane {
      */
     public void changeMode(CanvasMode canvasMode) {
         this.canvasMode = canvasMode;
+    }
+
+    public void focusUnit(ModelUnit unit) {
+        if (focussedUnit != null) {
+            focussedUnit.unfocus();
+        }
+
+        focussedUnit = unit;
+
+        if (focussedUnit != null) {
+            focussedUnit.focus();
+        }
+    }
+
+    public void addUnit(ModelUnit unit) {
+        modelUnits.add(unit);
+        this.getChildren().addAll(unit.getUnitGroup());
+    }
+
+    public void removeUnit(ModelUnit unit) {
+        modelUnits.remove(unit);
+        this.getChildren().removeAll(unit.getUnitGroup());
+    }
+
+    public boolean isIntersectUnit(int pointX, int pointY) {
+        for (ModelUnit unit : modelUnits) {
+            if (unit.isIntersect(pointX, pointY)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

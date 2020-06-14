@@ -1,6 +1,7 @@
 package seedu.canvas.component.canvas.unit;
 
 import javafx.geometry.Point2D;
+import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -12,6 +13,7 @@ public class ModelResizeHandle extends Circle {
 
     private Point2D mouseLocation = null;
     private UnitPoint previousHandleLocation = null;
+    private boolean isResizing = false;
 
     private ModelUnit unit;
     private Direction location;
@@ -24,6 +26,24 @@ public class ModelResizeHandle extends Circle {
 
         initialiseStyle();
         initialiseEvents();
+    }
+
+    public void interact() {
+        setFill(Color.CORNFLOWERBLUE);
+        setOpacity(0.8);
+
+        setVisible(true);
+    }
+
+    public void focus() {
+        setFill(Color.LIGHTGREEN);
+        setOpacity(0.8);
+
+        setVisible(true);
+    }
+
+    public void unfocus() {
+        setVisible(false);
     }
 
     private void initialiseStyle() {
@@ -54,14 +74,42 @@ public class ModelResizeHandle extends Circle {
     }
 
     private void initialiseEvents() {
+        setOnMouseEntered(mouseEvent -> {
+            switch (location) {
+            case NORTHWEST:
+                setCursor(Cursor.NW_RESIZE);
+                break;
+            case NORTHEAST:
+                setCursor(Cursor.NE_RESIZE);
+                break;
+            case SOUTHWEST:
+                setCursor(Cursor.SW_RESIZE);
+                break;
+            case SOUTHEAST:
+                setCursor(Cursor.SE_RESIZE);
+                break;
+            default:
+                setCursor(Cursor.DEFAULT);
+                break;
+            }
+        });
+
+        setOnMouseExited(mouseEvent -> {
+            if (!isResizing) {
+                setCursor(Cursor.DEFAULT);
+            }
+        });
+
         setOnMousePressed(mouseEvent -> {
             mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             previousHandleLocation = findPreviousHandleLocation();
+            isResizing = true;
         });
 
         setOnMouseReleased(mouseEvent -> {
             mouseLocation = null;
             previousHandleLocation = null;
+            isResizing = false;
         });
 
         switch (location) {
