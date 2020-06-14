@@ -1,23 +1,21 @@
-package seedu.canvas.component.canvas.tool;
+package seedu.canvas.component.canvas.utility;
 
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import seedu.canvas.component.canvas.CanvasMode;
 import seedu.canvas.component.canvas.TheCanvas;
 
-public class PointButton extends ToolButton {
+public class ModelButton extends ToolButton {
 
     /**
-     * Constructor for the point tool button.
+     * Constructor for the model tool button.
      *
      * @param backgroundPath
-     *  The path to the background of the point tool button
+     *  The path to the background of the model tool button
      */
-    public PointButton(String backgroundPath) {
+    public ModelButton(String backgroundPath) {
         super(backgroundPath);
 
-        selectButton(this);
-        TheCanvas.getInstance().changeMode(CanvasMode.POINT);
         initialiseEvents();
     }
 
@@ -27,7 +25,7 @@ public class PointButton extends ToolButton {
 
     private void onClick(MouseEvent mouseEvent) {
         selectButton(this);
-        TheCanvas.getInstance().changeMode(CanvasMode.POINT);
-        TheCanvas.getInstance().setCursor(Cursor.DEFAULT);
+        TheCanvas.getInstance().changeMode(CanvasMode.MODEL);
+        TheCanvas.getInstance().setCursor(Cursor.CROSSHAIR);
     }
 }

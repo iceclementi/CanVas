@@ -5,10 +5,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
-import seedu.canvas.component.canvas.tool.DrawButton;
-import seedu.canvas.component.canvas.tool.ModelButton;
+import javafx.scene.layout.VBox;
+import seedu.canvas.component.canvas.CanvasMode;
+import seedu.canvas.component.canvas.utility.ColourButton;
+import seedu.canvas.component.canvas.utility.DrawButton;
+import seedu.canvas.component.canvas.utility.ModelButton;
 import seedu.canvas.component.canvas.TheCanvas;
-import seedu.canvas.component.canvas.tool.PointButton;
+import seedu.canvas.component.canvas.utility.PointButton;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
@@ -24,6 +27,11 @@ public class CanvasController implements Initializable {
     private HBox toolBox;
 
     @FXML
+    private HBox accessoryBox;
+    @FXML
+    private VBox colourPopupBox;
+
+    @FXML
     private ScrollPane canvasScrollPane;
 
     private TheCanvas canvas = TheCanvas.getInstance();
@@ -32,6 +40,7 @@ public class CanvasController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initialiseTitle();
         initialiseToolBox();
+        initialiseAccessoryBox();
         initialiseCanvas();
     }
 
@@ -47,9 +56,16 @@ public class CanvasController implements Initializable {
         );
     }
 
+    private void initialiseAccessoryBox() {
+        accessoryBox.getChildren().addAll(
+            new ColourButton(FilePath.CANVAS_COLOUR_BUTTON_IMAGE_PATH, colourPopupBox)
+        );
+    }
+
     private void initialiseCanvas() {
         canvas.initialise();
         canvasScrollPane.setContent(canvas);
         canvas.showGridLines();
+        canvas.changeMode(CanvasMode.POINT);
     }
 }
