@@ -10,12 +10,20 @@
 }
 
 
-/* Tool Button */
+/* Utility Button */
 .utility-button {
     -fx-pref-width: 80;
     -fx-pref-height: 80;
 
     -fx-cursor: default;
+}
+
+/* Accessory Popup */
+.accessory-popup {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, grey, 8, 0, 3, 3);
+
 }
 
 /* Canvas */

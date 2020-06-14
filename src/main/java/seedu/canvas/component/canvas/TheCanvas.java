@@ -97,8 +97,11 @@ public class TheCanvas extends Pane {
         return fillColour == null ? DEFAULT_FILL_COLOUR : fillColour;
     }
 
-    public void selectColour(Color lineColour, Color fillColour) {
+    public void setLineColour(Color lineColour) {
         this.lineColour = lineColour;
+    }
+
+    public void setFillColour(Color fillColour) {
         this.fillColour = fillColour;
     }
 

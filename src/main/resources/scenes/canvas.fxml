@@ -13,22 +13,23 @@
 
 <StackPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seedu.canvas.controller.CanvasController">
    <children>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: white;" StackPane.alignment="CENTER">
+      <VBox alignment="CENTER" focusTraversable="true" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: white;">
          <children>
             <HBox alignment="CENTER" fillHeight="false" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #203864;" VBox.vgrow="NEVER">
                <children>
                   <Label fx:id="titleLabel" text="Can/Vas" />
-               </children></HBox>
+               </children>
+            </HBox>
             <Separator prefWidth="200.0" />
-            <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="NEVER">
+            <HBox prefHeight="100.0" VBox.vgrow="NEVER">
                <children>
                   <HBox fx:id="toolBox" alignment="CENTER_LEFT" minHeight="100.0" prefHeight="100.0" spacing="5.0">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
-                  <Separator orientation="VERTICAL" prefHeight="200.0" />
-                  <HBox fx:id="accessoryBox" alignment="CENTER_LEFT" prefHeight="100.0" spacing="5.0">
+                  <Separator orientation="VERTICAL" prefHeight="100.0" />
+                  <HBox fx:id="accessoryBox" alignment="CENTER_LEFT" prefHeight="100.0" spacing="5.0" HBox.hgrow="SOMETIMES">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
@@ -43,10 +44,11 @@
                   <VBox alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="250.0" HBox.hgrow="NEVER" />
                </children>
             </HBox>
-         </children></VBox>
-      <VBox fx:id="colourPopupBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" style="-fx-background-color: white;" visible="false" StackPane.alignment="TOP_LEFT">
+         </children>
+      </VBox>
+      <VBox fx:id="colourPopupBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="300.0" visible="false" StackPane.alignment="TOP_LEFT">
          <children>
-            <GridPane alignment="CENTER" VBox.vgrow="SOMETIMES">
+            <GridPane>
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -56,7 +58,16 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label text="Label" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.valignment="CENTER" GridPane.vgrow="SOMETIMES" />
+                  <HBox fx:id="lineColourBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.valignment="CENTER" GridPane.vgrow="SOMETIMES">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                  <HBox fx:id="fillColourBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="SOMETIMES">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
                </children>
             </GridPane>
          </children>

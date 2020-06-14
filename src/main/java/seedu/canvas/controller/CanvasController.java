@@ -30,6 +30,10 @@ public class CanvasController implements Initializable {
     private HBox accessoryBox;
     @FXML
     private VBox colourPopupBox;
+    @FXML
+    private HBox lineColourBox;
+    @FXML
+    private HBox fillColourBox;
 
     @FXML
     private ScrollPane canvasScrollPane;
@@ -54,12 +58,24 @@ public class CanvasController implements Initializable {
             new ModelButton(FilePath.CANVAS_MODEL_BUTTON_IMAGE_PATH),
             new DrawButton(FilePath.CANVAS_DRAW_BUTTON_IMAGE_PATH)
         );
+
+        toolBox.setOnMousePressed(mouseEvent -> {
+            toolBox.requestFocus();
+        });
     }
 
     private void initialiseAccessoryBox() {
+        ColourButton colourButton = new ColourButton(FilePath.CANVAS_COLOUR_BUTTON_IMAGE_PATH);
+
         accessoryBox.getChildren().addAll(
-            new ColourButton(FilePath.CANVAS_COLOUR_BUTTON_IMAGE_PATH, colourPopupBox)
+            colourButton
         );
+
+        colourButton.initialisePopup(colourPopupBox, lineColourBox, fillColourBox);
+
+        accessoryBox.setOnMousePressed(mouseEvent -> {
+            accessoryBox.requestFocus();
+        });
     }
 
     private void initialiseCanvas() {

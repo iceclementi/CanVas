@@ -4,7 +4,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
@@ -129,11 +129,6 @@ public class ModelUnit extends Rectangle {
         CanvasGrid.unselectRectangleAnchorPoints(this);
     }
 
-    public void colour() {
-        setStroke(canvas.getLineColour());
-        setFill(canvas.getFillColour());
-    }
-
     public void interact() {
         resizeHandleNW.interact();
         resizeHandleNE.interact();
@@ -219,9 +214,8 @@ public class ModelUnit extends Rectangle {
     }
 
     private void initialiseStyle() {
-        setStroke(Color.MIDNIGHTBLUE);
-        setStrokeWidth(2);
-        setFill(Color.TRANSPARENT);
+        colour();
+        setStrokeWidth(3);
 
         xProperty().bind(unitX.multiply(CanvasGrid.OFFSET));
         yProperty().bind(unitY.multiply(CanvasGrid.OFFSET));
@@ -229,6 +223,16 @@ public class ModelUnit extends Rectangle {
         heightProperty().bind(unitHeight.multiply(CanvasGrid.OFFSET));
 
         unfocus();
+    }
+
+    private void colour() {
+        setStroke(canvas.getLineColour());
+        setFill(canvas.getFillColour());
+    }
+
+    private void colour(Paint lineColour, Paint fillColor) {
+        setStroke(lineColour);
+        setFill(fillColor);
     }
 
     private void initialiseEvents() {
@@ -316,6 +320,8 @@ public class ModelUnit extends Rectangle {
                     newUnitY,
                     newUnitWidth,
                     newUnitHeight);
+
+            newUnit.colour(targetUnit.getStroke(), targetUnit.getFill());
 
             copiedUnits.add(newUnit);
 
