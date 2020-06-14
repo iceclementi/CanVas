@@ -1,4 +1,4 @@
-package seedu.canvas.component.canvas.utility;
+package seedu.canvas.component.canvas.tool;
 
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
@@ -14,7 +14,7 @@ public abstract class ToolButton extends Button {
     private String backgroundPath;
 
     /**
-     * Constructor for a general tool button.
+     * Constructor for a general menu button.
      *
      * @param backgroundPath
      *  The path to the background image of the button
@@ -29,7 +29,7 @@ public abstract class ToolButton extends Button {
 
     private void initialiseStyle() {
         ComponentUtil.setBackground(this, backgroundPath);
-        ComponentUtil.setStyleClass(this, FilePath.CANVAS_STYLE_PATH, "utility-button");
+        ComponentUtil.setStyleClass(this, FilePath.CANVAS_STYLE_PATH, "tool-button");
     }
 
     private void initialiseEvents() {
@@ -53,6 +53,7 @@ public abstract class ToolButton extends Button {
     private void onPress(MouseEvent mouseEvent) {
         setEffect(new ColorAdjust(0, 0, -0.2, 0));
     }
+
 
     protected void reset() {
         setEffect(null);

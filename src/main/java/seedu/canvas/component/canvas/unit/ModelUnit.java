@@ -129,11 +129,6 @@ public class ModelUnit extends Rectangle {
         CanvasGrid.unselectRectangleAnchorPoints(this);
     }
 
-    public void colour() {
-        setStroke(canvas.getLineColour());
-        setFill(canvas.getFillColour());
-    }
-
     public void interact() {
         resizeHandleNW.interact();
         resizeHandleNE.interact();

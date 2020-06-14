@@ -9,7 +9,6 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import seedu.canvas.component.canvas.unit.ModelUnit;
-import seedu.canvas.component.canvas.utility.ColourButton;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
@@ -17,14 +16,8 @@ import java.util.ArrayList;
 
 public class TheCanvas extends Pane {
 
-    public static final Color DEFAULT_LINE_COLOUR = Color.MIDNIGHTBLUE;
-    public static final Color DEFAULT_FILL_COLOUR = Color.TRANSPARENT;
-
     private DoubleProperty canvasScale = new SimpleDoubleProperty(1.0d);
     private CanvasMode canvasMode = CanvasMode.POINT;
-
-    private Color lineColour = null;
-    private Color fillColour = null;
 
     private ModelUnit focussedUnit = null;
     private ArrayList<ModelUnit> modelUnits = new ArrayList<>();
@@ -87,19 +80,6 @@ public class TheCanvas extends Pane {
      */
     public void changeMode(CanvasMode canvasMode) {
         this.canvasMode = canvasMode;
-    }
-
-    public Color getLineColour() {
-        return lineColour == null ? DEFAULT_LINE_COLOUR : lineColour;
-    }
-
-    public Color getFillColour() {
-        return fillColour == null ? DEFAULT_FILL_COLOUR : fillColour;
-    }
-
-    public void selectColour(Color lineColour, Color fillColour) {
-        this.lineColour = lineColour;
-        this.fillColour = fillColour;
     }
 
     public void focusUnit(ModelUnit unit) {
