@@ -9,7 +9,6 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import seedu.canvas.component.canvas.unit.ModelUnit;
-import seedu.canvas.component.canvas.utility.ColourButton;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 

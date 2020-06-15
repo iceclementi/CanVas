@@ -13,11 +13,9 @@ import seedu.canvas.util.ComponentUtil;
 public class ColourButton extends AccessoryButton {
 
     private TheCanvas canvas = TheCanvas.getInstance();
-    private Circle colourCircle = new Circle(16);
+    private Circle previewColour = new Circle(16);
 
     private VBox colourPopupBox;
-    private HBox lineColourBox;
-    private HBox fillColourBox;
 
     /**
      * Constructor for the colour accessory button.
@@ -32,10 +30,8 @@ public class ColourButton extends AccessoryButton {
         initialiseEvents();
     }
 
-    public void initialisePopup(VBox colourPopupBox, HBox lineColourBox, HBox fillColourBox) {
+    public void initialisePopup(VBox colourPopupBox, VBox colourTargetBox, HBox paletteBox) {
         this.colourPopupBox = colourPopupBox;
-        this.lineColourBox = lineColourBox;
-        this.fillColourBox = fillColourBox;
 
         ComponentUtil.setStyleClass(colourPopupBox, FilePath.CANVAS_STYLE_PATH, "accessory-popup");
 
@@ -43,44 +39,28 @@ public class ColourButton extends AccessoryButton {
         colourPopupBox.setTranslateX(285);
         colourPopupBox.setTranslateY(125);
 
-        fillPopup();
+        Palette palette = new Palette(this, colourTargetBox, paletteBox);
+        palette.initialise();
     }
 
     public void pickLineColour(Color colour) {
-        colourCircle.setStroke(colour);
+        previewColour.setStroke(colour);
         canvas.setLineColour(colour);
     }
 
     public void pickFillColour(Color colour) {
-        colourCircle.setFill(colour);
+        previewColour.setFill(colour);
         canvas.setFillColour(colour);
     }
 
     private void initialiseStyle() {
-        colourCircle.setStroke(TheCanvas.DEFAULT_LINE_COLOUR);
-        colourCircle.setStrokeWidth(5);
-        colourCircle.setFill(TheCanvas.DEFAULT_FILL_COLOUR);
+        previewColour.setStroke(TheCanvas.DEFAULT_LINE_COLOUR);
+        previewColour.setStrokeWidth(5);
+        previewColour.setFill(TheCanvas.DEFAULT_FILL_COLOUR);
 
-        setGraphic(colourCircle);
+        setGraphic(previewColour);
         setText(" ");
         setContentDisplay(ContentDisplay.TOP);
-    }
-
-    private void fillPopup() {
-        lineColourBox.getChildren().addAll(
-                new LineColourPicker(this, Color.RED),
-                new LineColourPicker(this, Color.GREEN),
-                new LineColourPicker(this, Color.MIDNIGHTBLUE),
-                new LineColourPicker(this, Color.PURPLE)
-        );
-
-        fillColourBox.getChildren().addAll(
-                new FillColourPicker(this, Color.RED),
-                new FillColourPicker(this, Color.GREEN),
-                new FillColourPicker(this, Color.MIDNIGHTBLUE),
-                new FillColourPicker(this, Color.PURPLE),
-                new FillColourPicker(this, Color.TRANSPARENT)
-        );
     }
 
     private void showPopup() {
@@ -98,6 +78,11 @@ public class ColourButton extends AccessoryButton {
 
 
         focusedProperty().addListener(observable -> {
+            if (getScene().getFocusOwner() instanceof ColourTargetButton) {
+                requestFocus();
+                return;
+            }
+
             if (!isFocused()) {
                 hidePopup();
             }

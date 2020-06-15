@@ -31,9 +31,9 @@ public class CanvasController implements Initializable {
     @FXML
     private VBox colourPopupBox;
     @FXML
-    private HBox lineColourBox;
+    private VBox colourTargetBox;
     @FXML
-    private HBox fillColourBox;
+    private HBox paletteBox;
 
     @FXML
     private ScrollPane canvasScrollPane;
@@ -71,7 +71,7 @@ public class CanvasController implements Initializable {
             colourButton
         );
 
-        colourButton.initialisePopup(colourPopupBox, lineColourBox, fillColourBox);
+        colourButton.initialisePopup(colourPopupBox, colourTargetBox, paletteBox);
 
         accessoryBox.setOnMousePressed(mouseEvent -> {
             accessoryBox.requestFocus();

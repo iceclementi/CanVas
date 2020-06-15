@@ -33,6 +33,7 @@ public class ModelResizeHandle extends Circle {
         setOpacity(0.8);
 
         setVisible(true);
+        toFront();
     }
 
     public void focus() {
@@ -40,6 +41,7 @@ public class ModelResizeHandle extends Circle {
         setOpacity(0.8);
 
         setVisible(true);
+        toFront();
     }
 
     public void unfocus() {

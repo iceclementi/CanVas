@@ -24,6 +24,8 @@ public class FilePath {
     public static final String CANVAS_MODEL_BUTTON_IMAGE_PATH = "/images/icons/model_button.png";
     public static final String CANVAS_DRAW_BUTTON_IMAGE_PATH = "/images/icons/draw_button.png";
     public static final String CANVAS_COLOUR_BUTTON_IMAGE_PATH = "/images/icons/colour_button.png";
+    public static final String CANVAS_COLOUR_LINE_BUTTON_IMAGE_PATH = "/images/icons/line_button.png";
+    public static final String CANVAS_COLOUR_FILL_BUTTON_IMAGE_PATH = "/images/icons/fill_button.png";
 
     /* Path to Miscellaneous Images */
     public static final String CANVAS_ICON_IMAGE_PATH = "/images/misc/canvas_icon.png";

@@ -130,6 +130,8 @@ public class ModelUnit extends Rectangle {
     }
 
     public void interact() {
+        toFront();
+
         resizeHandleNW.interact();
         resizeHandleNE.interact();
         resizeHandleSW.interact();
@@ -137,6 +139,8 @@ public class ModelUnit extends Rectangle {
     }
 
     public void focus() {
+        toFront();
+
         resizeHandleNW.focus();
         resizeHandleNE.focus();
         resizeHandleSW.focus();

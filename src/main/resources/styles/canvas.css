@@ -23,7 +23,14 @@
     -fx-background-color: white;
     -fx-background-radius: 8;
     -fx-effect: dropshadow(three-pass-box, grey, 8, 0, 3, 3);
+}
 
+/* Colour Target Button */
+.colour-target-button {
+    -fx-pref-width: 60;
+    -fx-pref-height: 60;
+
+    -fx-cursor: default;
 }
 
 /* Canvas */
