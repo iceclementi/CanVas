@@ -1,4 +1,4 @@
-package seedu.canvas.component.canvas.utility;
+package seedu.canvas.component.canvas.utility.format;
 
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
@@ -6,25 +6,21 @@ import javafx.scene.input.MouseEvent;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
-public class ColourTargetButton extends Button {
+public abstract class AccessoryButton extends Button {
 
-    private boolean isSelected = false;
-    private static ColourTargetButton selectedTarget = null;
+    protected boolean isSelected = false;
+    protected static AccessoryButton selectedButton = null;
 
-    private Palette palette;
-    private ColourTarget target;
     private String backgroundPath;
 
     /**
-     * Constructor for a colour target button.
+     * Constructor for a general accessory button.
      *
      * @param backgroundPath
      *  The path to the background image of the button
      */
-    public ColourTargetButton(Palette palette, ColourTarget target, String backgroundPath) {
+    public AccessoryButton(String backgroundPath) {
         super();
-        this.palette = palette;
-        this.target = target;
         this.backgroundPath = backgroundPath;
 
         initialiseStyle();
@@ -33,18 +29,13 @@ public class ColourTargetButton extends Button {
 
     private void initialiseStyle() {
         ComponentUtil.setBackground(this, backgroundPath);
-        ComponentUtil.setStyleClass(this, FilePath.CANVAS_STYLE_PATH, "colour-target-button");
-
-        if (target == ColourTarget.LINE) {
-            selectButton();
-        }
+        ComponentUtil.setStyleClass(this, FilePath.CANVAS_STYLE_PATH, "utility-button");
     }
 
     private void initialiseEvents() {
         setOnMouseEntered(this::onHover);
         setOnMouseExited(this::onUnhover);
         setOnMousePressed(this::onPress);
-        setOnMouseReleased(this::onRelease);
     }
 
     private void onHover(MouseEvent mouseEvent) {
@@ -63,24 +54,21 @@ public class ColourTargetButton extends Button {
         setEffect(new ColorAdjust(0, 0, -0.2, 0));
     }
 
-    private void onRelease(MouseEvent mouseEvent) {
-        selectButton();
+    protected void reset() {
+        setEffect(null);
     }
 
-    private void selectButton() {
-        if (selectedTarget != null) {
-            selectedTarget.isSelected = false;
-            selectedTarget.reset();
+    protected void selectButton(AccessoryButton toSelect) {
+        if (selectedButton != null) {
+            selectedButton.isSelected = false;
+            selectedButton.reset();
         }
 
-        isSelected = true;
-        setEffect(new ColorAdjust(0, 0, -0.1, 0));
+        selectedButton = toSelect;
 
-        selectedTarget = this;
-        palette.changeTarget(target);
-    }
-
-    private void reset() {
-        setEffect(null);
+        if (toSelect != null) {
+            toSelect.isSelected = true;
+            toSelect.setEffect(new ColorAdjust(0, 0, -0.1, 0));
+        }
     }
 }

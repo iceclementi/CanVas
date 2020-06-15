@@ -4,6 +4,8 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
@@ -51,6 +53,16 @@ public class TheCanvas extends Pane {
     public void initialise() {
         initialiseStyle();
         initialiseEvents();
+
+
+        // // Delete unit
+        // canvasScrollPane.getScene().setOnKeyPressed(keyEvent -> {
+        //     if (keyEvent.getCode() == KeyCode.DELETE || keyEvent.getCode() == KeyCode.BACK_SPACE) {
+        //         if (focussedUnit != null) {
+        //             getChildren().removeAll(focussedUnit.getUnitGroup());
+        //         }
+        //     }
+        // });
     }
 
     public double getCanvasScale() {
@@ -98,10 +110,18 @@ public class TheCanvas extends Pane {
 
     public void setLineColour(Color lineColour) {
         this.lineColour = lineColour;
+
+        if (focussedUnit != null) {
+            focussedUnit.setStroke(lineColour);
+        }
     }
 
     public void setFillColour(Color fillColour) {
         this.fillColour = fillColour;
+
+        if (focussedUnit != null) {
+            focussedUnit.setFill(fillColour);
+        }
     }
 
     public void focusUnit(ModelUnit unit) {
@@ -161,12 +181,11 @@ public class TheCanvas extends Pane {
         addEventFilter(MouseEvent.MOUSE_DRAGGED, canvasEventManager.getOnMouseDragged());
         addEventFilter(MouseEvent.MOUSE_RELEASED, canvasEventManager.getOnMouseReleased());
         addEventFilter(ScrollEvent.ANY, canvasEventManager.getOnScroll());
+
+        addDeleteUnitEvent();
     }
 
     private Canvas generateGridLines() {
-        // double width = getBoundsInLocal().getWidth();
-        // double height = getBoundsInLocal().getHeight();
-
         double width = 600;
         double height = 600;
 
@@ -185,5 +204,21 @@ public class TheCanvas extends Pane {
         }
 
         return gridLines;
+    }
+
+    private void addDeleteUnitEvent() {
+        sceneProperty().addListener(observable -> {
+            if (getScene() == null) {
+                return;
+            }
+
+            getScene().setOnKeyPressed(keyEvent -> {
+                if (keyEvent.getCode() == KeyCode.DELETE || keyEvent.getCode() == KeyCode.BACK_SPACE) {
+                    if (focussedUnit != null) {
+                        getChildren().removeAll(focussedUnit.getUnitGroup());
+                    }
+                }
+            });
+        });
     }
 }

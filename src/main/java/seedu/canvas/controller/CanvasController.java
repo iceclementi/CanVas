@@ -7,11 +7,11 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import seedu.canvas.component.canvas.CanvasMode;
-import seedu.canvas.component.canvas.utility.ColourButton;
-import seedu.canvas.component.canvas.utility.DrawButton;
-import seedu.canvas.component.canvas.utility.ModelButton;
+import seedu.canvas.component.canvas.utility.format.ColourButton;
+import seedu.canvas.component.canvas.utility.tool.DrawButton;
+import seedu.canvas.component.canvas.utility.tool.ModelButton;
 import seedu.canvas.component.canvas.TheCanvas;
-import seedu.canvas.component.canvas.utility.PointButton;
+import seedu.canvas.component.canvas.utility.tool.PointButton;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
@@ -79,8 +79,9 @@ public class CanvasController implements Initializable {
     }
 
     private void initialiseCanvas() {
-        canvas.initialise();
         canvasScrollPane.setContent(canvas);
+        canvas.initialise();
+
         canvas.showGridLines();
         canvas.changeMode(CanvasMode.POINT);
     }

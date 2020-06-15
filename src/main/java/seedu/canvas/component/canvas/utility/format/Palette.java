@@ -1,4 +1,4 @@
-package seedu.canvas.component.canvas.utility;
+package seedu.canvas.component.canvas.utility.format;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
