@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.StrokeLineCap;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.TheCanvas;
@@ -147,6 +148,7 @@ public class LineUnit extends Line {
     private void initialiseStyle() {
         colour();
         setStrokeWidth(3);
+        setStrokeLineCap(StrokeLineCap.ROUND);
 
         startXProperty().bind(unitStartX.multiply(CanvasGrid.OFFSET));
         startYProperty().bind(unitStartY.multiply(CanvasGrid.OFFSET));

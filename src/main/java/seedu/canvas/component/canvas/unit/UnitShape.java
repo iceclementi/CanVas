@@ -4,5 +4,5 @@ public enum UnitShape {
     MODEL,
     LINE,
     ANCHOR_LINE,
-    CURLY_BRACKET
+    GROUP_LINE
 }

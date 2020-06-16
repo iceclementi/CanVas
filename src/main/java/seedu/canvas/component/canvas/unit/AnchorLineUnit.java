@@ -3,6 +3,7 @@ package seedu.canvas.component.canvas.unit;
 import javafx.scene.Node;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.StrokeLineCap;
 import seedu.canvas.component.canvas.CanvasGrid;
 
 import java.util.ArrayList;
@@ -66,9 +67,12 @@ public class AnchorLineUnit extends LineUnit {
     }
 
     private void initialiseStyle() {
-        adjustAnchorLines();
         startAnchorLine.setStrokeWidth(3);
         endAnchorLine.setStrokeWidth(3);
+        startAnchorLine.setStrokeLineCap(StrokeLineCap.ROUND);
+        endAnchorLine.setStrokeLineCap(StrokeLineCap.ROUND);
+
+        adjustAnchorLines();
     }
 
     private void initialiseEvents() {
@@ -86,13 +90,13 @@ public class AnchorLineUnit extends LineUnit {
         isVertical = !isVertical;
 
         if (isVertical) {
-            adjustAnchorVertical();
+            faceVertical();
         } else {
-            adjustAnchorHorizontal();
+            faceHorizontal();
         }
     }
 
-    private void adjustAnchorVertical() {
+    private void faceVertical() {
         resetBind();
 
         startAnchorLine.startXProperty().bind(startXProperty());
@@ -106,7 +110,7 @@ public class AnchorLineUnit extends LineUnit {
         endAnchorLine.endYProperty().bind(endYProperty().add(OFFSET));
     }
 
-    private void adjustAnchorHorizontal() {
+    private void faceHorizontal() {
         resetBind();
 
         startAnchorLine.startXProperty().bind(startXProperty().subtract(OFFSET));

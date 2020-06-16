@@ -3,10 +3,7 @@ package seedu.canvas.component.canvas;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import seedu.canvas.component.canvas.unit.AnchorLineUnit;
-import seedu.canvas.component.canvas.unit.LineUnit;
-import seedu.canvas.component.canvas.unit.ModelUnit;
-import seedu.canvas.component.canvas.unit.UnitShape;
+import seedu.canvas.component.canvas.unit.*;
 
 public class CanvasEventManager {
 
@@ -86,6 +83,11 @@ public class CanvasEventManager {
                         CanvasGrid.toUnit(x), CanvasGrid.toUnit(y));
                 lineUnit.interact();
                 break;
+            case GROUP_LINE:
+                lineUnit = new GroupLineUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y),
+                        CanvasGrid.toUnit(x), CanvasGrid.toUnit(y));
+                lineUnit.interact();
+                break;
             default:
                 return;
             }
@@ -124,6 +126,7 @@ public class CanvasEventManager {
                 break;
             case LINE:
             case ANCHOR_LINE:
+            case GROUP_LINE:
                 int newUnitEndX = CanvasGrid.toUnit(mouseEvent.getX());
                 int newUnitEndY = CanvasGrid.toUnit(mouseEvent.getY());
 

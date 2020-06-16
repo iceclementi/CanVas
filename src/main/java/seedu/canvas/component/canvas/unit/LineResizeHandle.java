@@ -109,11 +109,16 @@ public class LineResizeHandle extends UnitHandle {
         int newUnitStartX = CanvasGrid.clamp(
                 previousHandleLocation.getUnitX() + deltaX,
                 CanvasGrid.MIN_X, CanvasGrid.MAX_X);
-        unit.setUnitStartX(newUnitStartX);
 
         int newUnitStartY = CanvasGrid.clamp(
                 previousHandleLocation.getUnitY() + deltaY,
                 CanvasGrid.MIN_Y, CanvasGrid.MAX_Y);
+
+        if ((unit.getUnitEndX() == newUnitStartX) && (unit.getUnitEndY() == newUnitStartY)) {
+            return;
+        }
+
+        unit.setUnitStartX(newUnitStartX);
         unit.setUnitStartY(newUnitStartY);
     }
 
@@ -121,11 +126,16 @@ public class LineResizeHandle extends UnitHandle {
         int newUnitEndX = CanvasGrid.clamp(
                 previousHandleLocation.getUnitX() + deltaX,
                 CanvasGrid.MIN_X, CanvasGrid.MAX_X);
-        unit.setUnitEndX(newUnitEndX);
 
         int newUnitEndY = CanvasGrid.clamp(
                 previousHandleLocation.getUnitY() + deltaY,
                 CanvasGrid.MIN_Y, CanvasGrid.MAX_Y);
+
+        if ((unit.getUnitStartX() == newUnitEndX) && (unit.getUnitStartY() == newUnitEndY)) {
+            return;
+        }
+
+        unit.setUnitEndX(newUnitEndX);
         unit.setUnitEndY(newUnitEndY);
     }
 
