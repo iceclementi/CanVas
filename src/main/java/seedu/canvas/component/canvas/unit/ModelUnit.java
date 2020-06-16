@@ -9,7 +9,6 @@ import javafx.scene.shape.Rectangle;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.DragData;
-import seedu.canvas.component.canvas.GridPoint;
 import seedu.canvas.component.canvas.TheCanvas;
 
 import java.util.ArrayList;
@@ -23,11 +22,6 @@ public class ModelUnit extends Rectangle {
     private IntegerProperty unitY = new SimpleIntegerProperty();
     private IntegerProperty unitWidth = new SimpleIntegerProperty();
     private IntegerProperty unitHeight = new SimpleIntegerProperty();
-
-    private GridPoint anchorPointNW;
-    private GridPoint anchorPointNE;
-    private GridPoint anchorPointSW;
-    private GridPoint anchorPointSE;
 
     private ModelResizeHandle resizeHandleNW = new ModelResizeHandle(this, Direction.NORTHWEST);
     private ModelResizeHandle resizeHandleNE = new ModelResizeHandle(this, Direction.NORTHEAST);
@@ -83,50 +77,6 @@ public class ModelUnit extends Rectangle {
 
     public ArrayList<Node> getUnitGroup() {
         return new ArrayList<>(Arrays.asList(this, resizeHandleNW, resizeHandleNE, resizeHandleSW, resizeHandleSE));
-    }
-
-    /**
-     * Gets the anchor points of this rectangle unit.
-     *
-     * @return
-     *  The anchor points
-     */
-    public GridPoint[] getAnchorPoints() {
-        return new GridPoint[]{anchorPointNW, anchorPointNE, anchorPointSW, anchorPointSE};
-    }
-
-    /**
-     * Sets the anchor points of this rectangle unit.
-     *
-     * @param anchorPointNW
-     *  The NW anchor point
-     * @param anchorPointNE
-     *  The NE anchor point
-     * @param anchorPointSW
-     *  The SW anchor point
-     * @param anchorPointSE
-     *  The SE anchor point
-     */
-    public void setAnchorPoints(GridPoint anchorPointNW, GridPoint anchorPointNE,
-            GridPoint anchorPointSW, GridPoint anchorPointSE) {
-        this.anchorPointNW = anchorPointNW;
-        this.anchorPointNE = anchorPointNE;
-        this.anchorPointSW = anchorPointSW;
-        this.anchorPointSE = anchorPointSE;
-    }
-
-    /**
-     * Selects/Reselects and highlights the anchor points of this rectangle unit.
-     */
-    public void selectAnchorPoints() {
-        CanvasGrid.selectRectangleAnchorPoints(this, unitX.get(), unitY.get(), unitWidth.get(), unitHeight.get());
-    }
-
-    /**
-     * Unselects the anchor points of this rectangle unit.
-     */
-    public void unselectAnchorPoints() {
-        CanvasGrid.unselectRectangleAnchorPoints(this);
     }
 
     public void interact() {
@@ -328,9 +278,6 @@ public class ModelUnit extends Rectangle {
             newUnit.colour(targetUnit.getStroke(), targetUnit.getFill());
 
             copiedUnits.add(newUnit);
-
-            targetUnit.unselectAnchorPoints();
-            newUnit.selectAnchorPoints();
         }
     }
 
@@ -338,12 +285,8 @@ public class ModelUnit extends Rectangle {
         ArrayList<ModelUnit> copiedUnits = dragData.getCopiedUnits();
 
         if (copiedUnits.size() > 1) {
-            targetUnit.unselectAnchorPoints();
-
             copiedUnits.remove(targetUnit);
             canvas.removeUnit(targetUnit);
-
-            copiedUnits.get(copiedUnits.size() - 1).selectAnchorPoints();
         }
 
         if (copiedUnits.size() == 1) {
@@ -370,7 +313,7 @@ public class ModelUnit extends Rectangle {
         }
     }
 
-    public static boolean isUnitWithinCanvas(int unitX, int unitY, int unitWidth, int unitHeight) {
+    private static boolean isUnitWithinCanvas(int unitX, int unitY, int unitWidth, int unitHeight) {
         return (unitX >= 0) && (unitX + unitWidth <= CanvasGrid.MAX_X)
                 && (unitY >= 0) && (unitY + unitHeight <= CanvasGrid.MAX_Y);
     }

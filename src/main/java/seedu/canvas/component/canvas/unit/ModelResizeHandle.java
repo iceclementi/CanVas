@@ -3,54 +3,24 @@ package seedu.canvas.component.canvas.unit;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.TheCanvas;
 
-public class ModelResizeHandle extends Circle {
-
-    private Point2D mouseLocation = null;
-    private UnitPoint previousHandleLocation = null;
-    private boolean isResizing = false;
+public class ModelResizeHandle extends ResizeHandle {
 
     private ModelUnit unit;
-    private Direction location;
 
     public ModelResizeHandle(ModelUnit unit, Direction location) {
-        super(3);
-
+        super(location);
         this.unit = unit;
-        this.location = location;
 
         initialiseStyle();
         initialiseEvents();
     }
 
-    public void interact() {
-        setFill(Color.CORNFLOWERBLUE);
-        setOpacity(0.8);
-
-        setVisible(true);
-        toFront();
-    }
-
-    public void focus() {
-        setFill(Color.LIGHTGREEN);
-        setOpacity(0.8);
-
-        setVisible(true);
-        toFront();
-    }
-
-    public void unfocus() {
-        setVisible(false);
-    }
-
     private void initialiseStyle() {
-        setFill(Color.LIGHTGREEN);
-        setOpacity(0.7);
+        focus();
 
         switch (location) {
         case NORTHWEST:

@@ -1,7 +1,5 @@
 package seedu.canvas.component.canvas;
 
-import seedu.canvas.component.canvas.unit.ModelUnit;
-
 import java.util.ArrayList;
 
 public class CanvasGrid {
@@ -62,51 +60,6 @@ public class CanvasGrid {
      */
     public static void setTargetGridPoint(GridPoint targetGridPoint) {
         CanvasGrid.targetGridPoint = targetGridPoint;
-    }
-
-    /**
-     * Selects/Reselects and highlights the anchor points of the rectangle unit.
-     *
-     * @param modelUnit
-     *  The rectangle unit of which the anchor points are to be selected.
-     * @param pointX
-     *  The x coordinate of the upper left corner of the unit
-     * @param pointY
-     *  The y coordinate of the upper left corner of the unit
-     * @param widthUnit
-     *  The width of the unit
-     * @param heightUnit
-     *  The height of the unit
-     */
-    public static void selectRectangleAnchorPoints(ModelUnit modelUnit,
-                                                   int pointX, int pointY, int widthUnit, int heightUnit) {
-        unselectRectangleAnchorPoints((modelUnit));
-
-        modelUnit.setAnchorPoints(
-                gridPoints.get(pointX).get(pointY),
-                gridPoints.get(pointX + widthUnit).get(pointY),
-                gridPoints.get(pointX).get(pointY + heightUnit),
-                gridPoints.get(pointX + widthUnit).get(pointY + heightUnit
-        ));
-
-        for (GridPoint gridPoint : modelUnit.getAnchorPoints()) {
-            gridPoint.anchor();
-        }
-    }
-
-    /**
-     * Unselects the anchor points of the rectangle unit.
-     *
-     * @param modelUnit
-     *  The rectangle unit of which the anchor points are to be unselected
-     */
-    public static void unselectRectangleAnchorPoints(ModelUnit modelUnit) {
-        for (GridPoint gridPoint : modelUnit.getAnchorPoints()) {
-            if (gridPoint == null) {
-                break;
-            }
-            gridPoint.unanchor();
-        }
     }
 
     public static int toUnit(double value) {

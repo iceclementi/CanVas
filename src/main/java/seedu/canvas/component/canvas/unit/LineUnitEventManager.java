@@ -1,6 +1,7 @@
 package seedu.canvas.component.canvas.unit;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.CanvasMode;
@@ -8,18 +9,19 @@ import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.Gesture;
 import seedu.canvas.component.canvas.TheCanvas;
 
-public class ModelUnitEventManager {
+public class LineUnitEventManager {
 
     private TheCanvas canvas = TheCanvas.getInstance();
+    private Point2D mouseAnchorLocation = null;
     private DragData unitDragData = new DragData();
-    private ModelUnit modelUnit = null;
+    private LineUnit lineUnit = null;
     private UnitPoint previousPivotLocation = null;
     private Gesture gesture = Gesture.MOVE;
 
     /**
      * Constructor for the event manager of the units in the canvas.
      */
-    public ModelUnitEventManager() {
+    public LineUnitEventManager() {
     }
 
     /**
@@ -39,7 +41,7 @@ public class ModelUnitEventManager {
      *  The mouse dragged event handler
      */
     public EventHandler<MouseEvent> getOnMouseDragged() {
-        return onMouseDragged;
+        return onMouseDraggedRectangle;
     }
 
     /**
@@ -61,21 +63,20 @@ public class ModelUnitEventManager {
             return;
         }
 
-        modelUnit = (ModelUnit) mouseEvent.getSource();
-        modelUnit.interact();
+        lineUnit = (LineUnit) mouseEvent.getSource();
+        lineUnit.interact();
 
-        unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
-        unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
+        mouseAnchorLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
 
-        previousPivotLocation = new UnitPoint(modelUnit.getUnitX(), modelUnit.getUnitY());
+        previousPivotLocation = new UnitPoint(lineUnit.getUnitStartX(), lineUnit.getUnitStartY());
 
-        if (mouseEvent.isControlDown()) {
-            unitDragData.getCopiedUnits().add(modelUnit);
-            gesture = Gesture.COPY;
-        }
+        // if (mouseEvent.isControlDown()) {
+        //     unitDragData.getCopiedUnits().add(lineUnit);
+        //     gesture = Gesture.COPY;
+        // }
     };
 
-    private EventHandler<MouseEvent> onMouseDragged = mouseEvent -> {
+    private EventHandler<MouseEvent> onMouseDraggedRectangle = mouseEvent -> {
         if (canvas.getCanvasMode() != CanvasMode.POINT || !mouseEvent.isPrimaryButtonDown()) {
             return;
         }
@@ -86,24 +87,24 @@ public class ModelUnitEventManager {
 
         double scale = canvas.getCanvasScale();
 
-        modelUnit = (ModelUnit) mouseEvent.getSource();
+        lineUnit = (LineUnit) mouseEvent.getSource();
 
         if (gesture == Gesture.MOVE) {
-            int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()) / scale);
-            int deltaY = CanvasGrid.toUnit((mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()) / scale);
+            int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - mouseAnchorLocation.getX()) / scale);
+            int deltaY = CanvasGrid.toUnit((mouseEvent.getSceneY() - mouseAnchorLocation.getY()) / scale);
 
             int newUnitX = previousPivotLocation.getUnitX() + deltaX;
             int newUnitY = previousPivotLocation.getUnitY() + deltaY;
 
-            modelUnit.move(newUnitX, newUnitY);
+            lineUnit.move(newUnitX, newUnitY);
         }
 
-        if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
-            int mouseUnitX = CanvasGrid.toUnit(mouseEvent.getX());
-            int mouseUnitY = CanvasGrid.toUnit(mouseEvent.getY());
-
-            modelUnit.dragCopy(mouseUnitX, mouseUnitY, unitDragData);
-        }
+        // if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
+        //     int mouseUnitX = CanvasGrid.toUnit(mouseEvent.getX());
+        //     int mouseUnitY = CanvasGrid.toUnit(mouseEvent.getY());
+        //
+        //     lineUnit.dragCopy(mouseUnitX, mouseUnitY, unitDragData);
+        // }
 
         mouseEvent.consume();
     };
@@ -114,10 +115,10 @@ public class ModelUnitEventManager {
     };
 
     private EventHandler<MouseEvent> onMouseClicked = mouseEvent -> {
-        if (modelUnit != null) {
-            canvas.focusUnit(modelUnit);
+        if (lineUnit != null) {
+            canvas.focusUnit(lineUnit);
         }
 
-        modelUnit = null;
+        lineUnit = null;
     };
 }

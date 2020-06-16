@@ -46,7 +46,7 @@
             </HBox>
          </children>
       </VBox>
-      <VBox fx:id="colourPopupBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="150.0" prefWidth="375.0" visible="false" StackPane.alignment="TOP_LEFT">
+      <VBox fx:id="colourPopupBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="150.0" prefWidth="400.0" visible="false" StackPane.alignment="TOP_LEFT">
          <children>
             <GridPane alignment="CENTER" VBox.vgrow="SOMETIMES">
               <columnConstraints>

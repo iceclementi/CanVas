@@ -48,7 +48,7 @@ public class CanvasEventManager {
                 int mouseUnitY = CanvasGrid.toUnit(mouseEvent.getY());
 
                 if (!canvas.isIntersectUnit(mouseUnitX, mouseUnitY)) {
-                    canvas.focusUnit(null);
+                    canvas.focusNone();
                 }
             }
 
@@ -59,7 +59,7 @@ public class CanvasEventManager {
             GridPoint targetPoint = CanvasGrid.getTargetGridPoint();
 
             if (targetPoint == null) {
-                canvas.focusUnit(null);
+                canvas.focusNone();
                 return;
             }
 

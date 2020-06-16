@@ -19,7 +19,7 @@ public class PaletteColour extends Circle {
     private Color colour;
 
     public PaletteColour(Palette palette, Color colour) {
-        super(16);
+        super(18);
         this.palette = palette;
         this.colour = colour;
 
@@ -43,7 +43,7 @@ public class PaletteColour extends Circle {
             setStroke(Color.LIGHTGRAY);
         } else if (colour == Color.TRANSPARENT) {
             setStroke(Color.LIGHTGRAY);
-            getStrokeDashArray().addAll(7d, 3d);
+            getStrokeDashArray().addAll(5d, 3d);
         } else {
             setStroke(Color.TRANSPARENT);
         }

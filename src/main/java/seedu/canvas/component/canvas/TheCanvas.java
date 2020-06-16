@@ -4,12 +4,12 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import seedu.canvas.component.canvas.unit.LineUnit;
 import seedu.canvas.component.canvas.unit.ModelUnit;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
@@ -27,7 +27,8 @@ public class TheCanvas extends Pane {
     private Color lineColour = null;
     private Color fillColour = null;
 
-    private ModelUnit focussedUnit = null;
+    private ModelUnit focussedModelUnit = null;
+    private LineUnit focussedLineUnit = null;
     private ArrayList<ModelUnit> modelUnits = new ArrayList<>();
 
     private static TheCanvas canvas = null;
@@ -53,16 +54,6 @@ public class TheCanvas extends Pane {
     public void initialise() {
         initialiseStyle();
         initialiseEvents();
-
-
-        // // Delete unit
-        // canvasScrollPane.getScene().setOnKeyPressed(keyEvent -> {
-        //     if (keyEvent.getCode() == KeyCode.DELETE || keyEvent.getCode() == KeyCode.BACK_SPACE) {
-        //         if (focussedUnit != null) {
-        //             getChildren().removeAll(focussedUnit.getUnitGroup());
-        //         }
-        //     }
-        // });
     }
 
     public double getCanvasScale() {
@@ -111,39 +102,59 @@ public class TheCanvas extends Pane {
     public void setLineColour(Color lineColour) {
         this.lineColour = lineColour;
 
-        if (focussedUnit != null) {
-            focussedUnit.setStroke(lineColour);
+        if (focussedModelUnit != null) {
+            focussedModelUnit.setStroke(lineColour);
         }
     }
 
     public void setFillColour(Color fillColour) {
         this.fillColour = fillColour;
 
-        if (focussedUnit != null) {
-            focussedUnit.setFill(fillColour);
+        if (focussedModelUnit != null) {
+            focussedModelUnit.setFill(fillColour);
         }
     }
 
     public void focusUnit(ModelUnit unit) {
-        if (focussedUnit != null) {
-            focussedUnit.unfocus();
+        focusNone();
+        focussedModelUnit = unit;
+        focussedModelUnit.focus();
+    }
+
+    public void focusUnit(LineUnit unit) {
+        focusNone();
+        focussedLineUnit = unit;
+        focussedLineUnit.focus();
+    }
+
+    public void focusNone() {
+        if (focussedModelUnit != null) {
+            focussedModelUnit.unfocus();
+            focussedModelUnit = null;
         }
 
-        focussedUnit = unit;
-
-        if (focussedUnit != null) {
-            focussedUnit.focus();
+        if (focussedLineUnit != null) {
+            focussedLineUnit.unfocus();
+            focussedLineUnit = null;
         }
     }
 
     public void addUnit(ModelUnit unit) {
         modelUnits.add(unit);
-        this.getChildren().addAll(unit.getUnitGroup());
+        getChildren().addAll(unit.getUnitGroup());
+    }
+
+    public void addUnit(LineUnit unit) {
+        getChildren().addAll(unit.getUnitGroup());
     }
 
     public void removeUnit(ModelUnit unit) {
         modelUnits.remove(unit);
-        this.getChildren().removeAll(unit.getUnitGroup());
+        getChildren().removeAll(unit.getUnitGroup());
+    }
+
+    public void removeUnit(LineUnit unit) {
+        getChildren().removeAll(unit.getUnitGroup());
     }
 
     public boolean isIntersectUnit(int pointX, int pointY) {
@@ -214,8 +225,8 @@ public class TheCanvas extends Pane {
 
             getScene().setOnKeyPressed(keyEvent -> {
                 if (keyEvent.getCode() == KeyCode.DELETE || keyEvent.getCode() == KeyCode.BACK_SPACE) {
-                    if (focussedUnit != null) {
-                        getChildren().removeAll(focussedUnit.getUnitGroup());
+                    if (focussedModelUnit != null) {
+                        getChildren().removeAll(focussedModelUnit.getUnitGroup());
                     }
                 }
             });
