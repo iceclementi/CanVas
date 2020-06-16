@@ -4,6 +4,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import seedu.canvas.component.canvas.CanvasGrid;
@@ -116,6 +117,14 @@ public class ModelUnit extends Rectangle {
     public void move(int newUnitX, int newUnitY) {
         unitX.set(clamp(newUnitX, 0, CanvasGrid.MAX_X - unitWidth.get()));
         unitY.set(clamp(newUnitY, 0, CanvasGrid.MAX_Y - unitHeight.get()));
+    }
+
+    public void colourLine(Color lineColour) {
+        setStroke(lineColour);
+    }
+
+    public void colourFill(Color fillColour) {
+        setFill(fillColour);
     }
 
     public boolean isIntersect(int pointX, int pointY) {

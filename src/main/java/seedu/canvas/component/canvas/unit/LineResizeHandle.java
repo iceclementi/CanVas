@@ -7,7 +7,7 @@ import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.TheCanvas;
 
-public class LineResizeHandle extends ResizeHandle {
+public class LineResizeHandle extends UnitHandle {
 
     private LineUnit unit;
 
@@ -41,7 +41,7 @@ public class LineResizeHandle extends ResizeHandle {
         setOnMouseEntered(mouseEvent -> updateCursor());
 
         setOnMouseExited(mouseEvent -> {
-            if (!isResizing) {
+            if (!isInteracting) {
                 setCursor(Cursor.DEFAULT);
             }
         });
@@ -49,7 +49,7 @@ public class LineResizeHandle extends ResizeHandle {
         setOnMousePressed(mouseEvent -> {
             mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             previousHandleLocation = findPreviousHandleLocation();
-            isResizing = true;
+            isInteracting = true;
 
             unit.interact();
         });
@@ -57,7 +57,7 @@ public class LineResizeHandle extends ResizeHandle {
         setOnMouseReleased(mouseEvent -> {
             mouseLocation = null;
             previousHandleLocation = null;
-            isResizing = false;
+            isInteracting = false;
 
             unit.focus();
         });

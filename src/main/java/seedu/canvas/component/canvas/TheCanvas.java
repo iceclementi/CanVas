@@ -106,7 +106,11 @@ public class TheCanvas extends Pane {
         this.lineColour = lineColour;
 
         if (focussedModelUnit != null) {
-            focussedModelUnit.setStroke(lineColour);
+            focussedModelUnit.colourLine(lineColour);
+        }
+
+        if (focussedLineUnit != null) {
+            focussedLineUnit.colour(lineColour);
         }
     }
 
@@ -114,7 +118,7 @@ public class TheCanvas extends Pane {
         this.fillColour = fillColour;
 
         if (focussedModelUnit != null) {
-            focussedModelUnit.setFill(fillColour);
+            focussedModelUnit.colourFill(fillColour);
         }
     }
 

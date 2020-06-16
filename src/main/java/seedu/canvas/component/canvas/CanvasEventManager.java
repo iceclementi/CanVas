@@ -3,6 +3,7 @@ package seedu.canvas.component.canvas;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import seedu.canvas.component.canvas.unit.AnchorLineUnit;
 import seedu.canvas.component.canvas.unit.LineUnit;
 import seedu.canvas.component.canvas.unit.ModelUnit;
 import seedu.canvas.component.canvas.unit.UnitShape;
@@ -70,14 +71,22 @@ public class CanvasEventManager {
             double x = targetPoint.getCenterX();
             double y = targetPoint.getCenterY();
 
-            if (canvas.getUnitShape() == UnitShape.MODEL) {
+            switch(canvas.getUnitShape()) {
+            case MODEL:
                 modelUnit = new ModelUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y), 0, 0);
                 modelUnit.interact();
-            } else if (canvas.getUnitShape() == UnitShape.LINE) {
+                break;
+            case LINE:
                 lineUnit = new LineUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y),
                         CanvasGrid.toUnit(x), CanvasGrid.toUnit(y));
                 lineUnit.interact();
-            } else {
+                break;
+            case ANCHOR_LINE:
+                lineUnit = new AnchorLineUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y),
+                        CanvasGrid.toUnit(x), CanvasGrid.toUnit(y));
+                lineUnit.interact();
+                break;
+            default:
                 return;
             }
 
@@ -106,17 +115,21 @@ public class CanvasEventManager {
 
             double scale = TheCanvas.getInstance().getCanvasScale();
 
-            if (canvas.getUnitShape() == UnitShape.MODEL) {
+            switch (canvas.getUnitShape()) {
+            case MODEL:
                 int newUnitWidth = CanvasGrid.toUnit((mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()) / scale);
                 int newUnitHeight = CanvasGrid.toUnit((mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()) / scale);
 
                 modelUnit.scale(newUnitWidth, newUnitHeight);
-            } else if (canvas.getUnitShape() == UnitShape.LINE) {
+                break;
+            case LINE:
+            case ANCHOR_LINE:
                 int newUnitEndX = CanvasGrid.toUnit(mouseEvent.getX());
                 int newUnitEndY = CanvasGrid.toUnit(mouseEvent.getY());
 
                 lineUnit.scale(newUnitEndX, newUnitEndY);
-            } else {
+                break;
+            default:
                 return;
             }
 

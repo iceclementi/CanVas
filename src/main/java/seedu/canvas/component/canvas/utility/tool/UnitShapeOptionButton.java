@@ -39,8 +39,9 @@ public class UnitShapeOptionButton extends ToolButton {
         unitShapePopupBox.setTranslateY(35);
 
         unitShapePopupBox.getChildren().addAll(
-            new UnitShapeButton(this, UnitShape.MODEL, FilePath.CANVAS_MODEL_BUTTON_IMAGE_PATH),
-            new UnitShapeButton(this, UnitShape.LINE, FilePath.CANVAS_LINE_BUTTON_IMAGE_PATH)
+                new UnitShapeButton(this, UnitShape.MODEL, FilePath.CANVAS_MODEL_BUTTON_IMAGE_PATH),
+                new UnitShapeButton(this, UnitShape.LINE, FilePath.CANVAS_LINE_BUTTON_IMAGE_PATH),
+                new UnitShapeButton(this, UnitShape.ANCHOR_LINE, FilePath.CANVAS_ANCHOR_LINE_BUTTON_IMAGE_PATH)
         );
     }
 
@@ -54,6 +55,9 @@ public class UnitShapeOptionButton extends ToolButton {
             break;
         case LINE:
             ComponentUtil.setBackground(this, FilePath.CANVAS_LINE_OPTION_BUTTON_IMAGE_PATH);
+            break;
+        case ANCHOR_LINE:
+            ComponentUtil.setBackground(this, FilePath.CANVAS_ANCHOR_LINE_OPTION_BUTTON_IMAGE_PATH);
             break;
         default:
             System.out.println("UnitShapeOptionButton: Invalid shape!!");

@@ -7,7 +7,7 @@ import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.TheCanvas;
 
-public class ModelResizeHandle extends ResizeHandle {
+public class ModelResizeHandle extends UnitHandle {
 
     private ModelUnit unit;
 
@@ -67,7 +67,7 @@ public class ModelResizeHandle extends ResizeHandle {
         });
 
         setOnMouseExited(mouseEvent -> {
-            if (!isResizing) {
+            if (!isInteracting) {
                 setCursor(Cursor.DEFAULT);
             }
         });
@@ -77,7 +77,7 @@ public class ModelResizeHandle extends ResizeHandle {
 
             mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             previousHandleLocation = findPreviousHandleLocation();
-            isResizing = true;
+            isInteracting = true;
         });
 
         setOnMouseReleased(mouseEvent -> {
@@ -85,7 +85,7 @@ public class ModelResizeHandle extends ResizeHandle {
 
             mouseLocation = null;
             previousHandleLocation = null;
-            isResizing = false;
+            isInteracting = false;
         });
 
         switch (location) {

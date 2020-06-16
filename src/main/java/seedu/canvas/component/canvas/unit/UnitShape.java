@@ -3,6 +3,6 @@ package seedu.canvas.component.canvas.unit;
 public enum UnitShape {
     MODEL,
     LINE,
-    SQUARE_BRACKET,
+    ANCHOR_LINE,
     CURLY_BRACKET
 }

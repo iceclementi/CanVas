@@ -15,12 +15,12 @@ import java.util.Arrays;
 
 public class LineUnit extends Line {
 
-    private TheCanvas canvas = TheCanvas.getInstance();
+    protected TheCanvas canvas = TheCanvas.getInstance();
 
-    private IntegerProperty unitStartX = new SimpleIntegerProperty();
-    private IntegerProperty unitStartY = new SimpleIntegerProperty();
-    private IntegerProperty unitEndX = new SimpleIntegerProperty();
-    private IntegerProperty unitEndY = new SimpleIntegerProperty();
+    protected IntegerProperty unitStartX = new SimpleIntegerProperty();
+    protected IntegerProperty unitStartY = new SimpleIntegerProperty();
+    protected IntegerProperty unitEndX = new SimpleIntegerProperty();
+    protected IntegerProperty unitEndY = new SimpleIntegerProperty();
 
     private LineResizeHandle resizeHandleWest = new LineResizeHandle(this, Direction.WEST);
     private LineResizeHandle resizeHandleEast = new LineResizeHandle(this, Direction.EAST);
@@ -28,6 +28,8 @@ public class LineUnit extends Line {
 
     public LineUnit(int unitStartX, int unitStartY, int unitEndX, int unitEndY) {
         super();
+
+        initialiseOther();
 
         initialiseStyle();
 
@@ -103,11 +105,6 @@ public class LineUnit extends Line {
         moveHandle.unfocus();
     }
 
-    // public boolean isIntersect(int pointX, int pointY) {
-    //     return (pointX >= unitStartX.get() && pointX <= unitStartX.get() + unitEndX.get())
-    //             && (pointY >= unitStartY.get() && pointY <= unitStartY.get() + unitEndY.get());
-    // }
-
     public void scale(int newUnitEndX, int newUnitEndY) {
         unitEndX.set(clamp(newUnitEndX, CanvasGrid.MIN_X, CanvasGrid.MAX_X));
         unitEndY.set(clamp(newUnitEndY, CanvasGrid.MIN_Y, CanvasGrid.MAX_Y));
@@ -136,6 +133,17 @@ public class LineUnit extends Line {
         unitEndY.set(unitStartY.get() + height);
     }
 
+    public void colour(Paint lineColour) {
+        setStroke(lineColour);
+    }
+
+    protected void colour() {
+        setStroke(canvas.getLineColour());
+    }
+
+    protected void initialiseOther() {
+    }
+
     private void initialiseStyle() {
         colour();
         setStrokeWidth(3);
@@ -146,14 +154,6 @@ public class LineUnit extends Line {
         endYProperty().bind(unitEndY.multiply(CanvasGrid.OFFSET));
 
         unfocus();
-    }
-
-    private void colour() {
-        setStroke(canvas.getLineColour());
-    }
-
-    private void colour(Paint lineColour, Paint fillColor) {
-        setStroke(lineColour);
     }
 
     private void initialiseEvents() {

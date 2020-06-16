@@ -25,6 +25,8 @@ public class FilePath {
     public static final String CANVAS_MODEL_OPTION_BUTTON_IMAGE_PATH = "/images/icons/model_button_2.png";
     public static final String CANVAS_LINE_BUTTON_IMAGE_PATH = "/images/icons/line_button.png";
     public static final String CANVAS_LINE_OPTION_BUTTON_IMAGE_PATH = "/images/icons/line_button_2.png";
+    public static final String CANVAS_ANCHOR_LINE_BUTTON_IMAGE_PATH = "/images/icons/anchor_line_button.png";
+    public static final String CANVAS_ANCHOR_LINE_OPTION_BUTTON_IMAGE_PATH = "/images/icons/anchor_line_button_2.png";
     public static final String CANVAS_DRAW_BUTTON_IMAGE_PATH = "/images/icons/draw_button.png";
     public static final String CANVAS_COLOUR_BUTTON_IMAGE_PATH = "/images/icons/colour_button.png";
     public static final String CANVAS_COLOUR_LINE_BUTTON_IMAGE_PATH = "/images/icons/colour_line_button.png";

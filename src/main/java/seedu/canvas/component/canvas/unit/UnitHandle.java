@@ -5,15 +5,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import seedu.canvas.component.canvas.Direction;
 
-public abstract class ResizeHandle extends Circle {
+public abstract class UnitHandle extends Circle {
 
     protected Point2D mouseLocation = null;
     protected UnitPoint previousHandleLocation = null;
-    protected boolean isResizing = false;
+    protected boolean isInteracting = false;
 
     protected Direction location;
 
-    public ResizeHandle(Direction location) {
+    public UnitHandle(Direction location) {
         super(4);
 
         this.location = location;
