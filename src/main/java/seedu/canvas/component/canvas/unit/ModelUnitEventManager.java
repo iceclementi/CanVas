@@ -115,7 +115,7 @@ public class ModelUnitEventManager {
 
     private EventHandler<MouseEvent> onMouseClicked = mouseEvent -> {
         if (modelUnit != null) {
-            canvas.focusUnit(modelUnit);
+            modelUnit.focus();
         }
 
         modelUnit = null;

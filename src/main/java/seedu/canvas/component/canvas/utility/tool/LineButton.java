@@ -1,4 +1,4 @@
 package seedu.canvas.component.canvas.utility.tool;
 
-public class ModelButton {
+public class LineButton {
 }

@@ -9,7 +9,7 @@ import javafx.scene.layout.VBox;
 import seedu.canvas.component.canvas.CanvasMode;
 import seedu.canvas.component.canvas.utility.format.ColourButton;
 import seedu.canvas.component.canvas.utility.tool.DrawButton;
-import seedu.canvas.component.canvas.utility.tool.ModelButton;
+import seedu.canvas.component.canvas.utility.tool.UnitShapeOptionButton;
 import seedu.canvas.component.canvas.TheCanvas;
 import seedu.canvas.component.canvas.utility.tool.PointButton;
 import seedu.canvas.storage.FilePath;
@@ -25,6 +25,8 @@ public class CanvasController implements Initializable {
 
     @FXML
     private HBox toolBox;
+    @FXML
+    private HBox unitShapePopupBox;
 
     @FXML
     private HBox accessoryBox;
@@ -53,11 +55,16 @@ public class CanvasController implements Initializable {
     }
 
     private void initialiseToolBox() {
+        UnitShapeOptionButton unitShapeOptionButton =
+                new UnitShapeOptionButton(FilePath.CANVAS_MODEL_OPTION_BUTTON_IMAGE_PATH);
+
         toolBox.getChildren().addAll(
             new PointButton(FilePath.CANVAS_POINT_BUTTON_IMAGE_PATH),
-            new ModelButton(FilePath.CANVAS_MODEL_BUTTON_IMAGE_PATH),
+            unitShapeOptionButton,
             new DrawButton(FilePath.CANVAS_DRAW_BUTTON_IMAGE_PATH)
         );
+
+        unitShapeOptionButton.initialisePopup(unitShapePopupBox);
 
         toolBox.setOnMousePressed(mouseEvent -> {
             toolBox.requestFocus();

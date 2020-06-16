@@ -33,7 +33,7 @@ public class ColourButton extends AccessoryButton {
     public void initialisePopup(VBox colourPopupBox, VBox colourTargetBox, HBox paletteBox) {
         this.colourPopupBox = colourPopupBox;
 
-        ComponentUtil.setStyleClass(colourPopupBox, FilePath.CANVAS_STYLE_PATH, "accessory-popup");
+        ComponentUtil.setStyleClass(colourPopupBox, FilePath.CANVAS_STYLE_PATH, "popup");
 
         // Popup box position
         colourPopupBox.setTranslateX(285);
@@ -63,19 +63,8 @@ public class ColourButton extends AccessoryButton {
         setContentDisplay(ContentDisplay.TOP);
     }
 
-    private void showPopup() {
-        selectButton(this);
-        colourPopupBox.setVisible(true);
-    }
-
-    private void hidePopup() {
-        selectButton(null);
-        colourPopupBox.setVisible(false);
-    }
-
     private void initialiseEvents() {
         setOnMouseClicked(this::onClick);
-
 
         focusedProperty().addListener(observable -> {
             if (getScene().getFocusOwner() instanceof ColourTargetButton) {
@@ -95,5 +84,15 @@ public class ColourButton extends AccessoryButton {
         } else {
             showPopup();
         }
+    }
+
+    private void showPopup() {
+        selectButton(this);
+        colourPopupBox.setVisible(true);
+    }
+
+    private void hidePopup() {
+        selectButton(null);
+        colourPopupBox.setVisible(false);
     }
 }

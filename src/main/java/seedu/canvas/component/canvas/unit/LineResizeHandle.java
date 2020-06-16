@@ -50,12 +50,16 @@ public class LineResizeHandle extends ResizeHandle {
             mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             previousHandleLocation = findPreviousHandleLocation();
             isResizing = true;
+
+            unit.interact();
         });
 
         setOnMouseReleased(mouseEvent -> {
             mouseLocation = null;
             previousHandleLocation = null;
             isResizing = false;
+
+            unit.focus();
         });
 
         switch (location) {
@@ -102,19 +106,27 @@ public class LineResizeHandle extends ResizeHandle {
     }
 
     private void updateWest(int deltaX, int deltaY) {
-        int newUnitStartX = unit.getUnitStartX() + deltaX;
-        unit.setUnitStartX(CanvasGrid.clamp(newUnitStartX, CanvasGrid.MIN_X, CanvasGrid.MAX_X));
+        int newUnitStartX = CanvasGrid.clamp(
+                previousHandleLocation.getUnitX() + deltaX,
+                CanvasGrid.MIN_X, CanvasGrid.MAX_X);
+        unit.setUnitStartX(newUnitStartX);
 
-        int newUnitStartY = unit.getUnitStartY() + deltaY;
-        unit.setUnitStartY(CanvasGrid.clamp(newUnitStartY, CanvasGrid.MIN_Y, CanvasGrid.MAX_Y));
+        int newUnitStartY = CanvasGrid.clamp(
+                previousHandleLocation.getUnitY() + deltaY,
+                CanvasGrid.MIN_Y, CanvasGrid.MAX_Y);
+        unit.setUnitStartY(newUnitStartY);
     }
 
     private void updateEast(int deltaX, int deltaY) {
-        int newUnitEndX = unit.getUnitEndX() + deltaX;
-        unit.setUnitEndX(CanvasGrid.clamp(newUnitEndX, CanvasGrid.MIN_X, CanvasGrid.MAX_X));
+        int newUnitEndX = CanvasGrid.clamp(
+                previousHandleLocation.getUnitX() + deltaX,
+                CanvasGrid.MIN_X, CanvasGrid.MAX_X);
+        unit.setUnitEndX(newUnitEndX);
 
-        int newUnitEndY = unit.getUnitEndY() + deltaY;
-        unit.setUnitEndY(CanvasGrid.clamp(newUnitEndY, CanvasGrid.MIN_Y, CanvasGrid.MAX_Y));
+        int newUnitEndY = CanvasGrid.clamp(
+                previousHandleLocation.getUnitY() + deltaY,
+                CanvasGrid.MIN_Y, CanvasGrid.MAX_Y);
+        unit.setUnitEndY(newUnitEndY);
     }
 
     private Direction computeDirection() {

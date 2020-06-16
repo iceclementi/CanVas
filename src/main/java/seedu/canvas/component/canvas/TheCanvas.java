@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import seedu.canvas.component.canvas.unit.LineUnit;
 import seedu.canvas.component.canvas.unit.ModelUnit;
+import seedu.canvas.component.canvas.unit.UnitShape;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
@@ -22,11 +23,13 @@ public class TheCanvas extends Pane {
     public static final Color DEFAULT_FILL_COLOUR = Color.TRANSPARENT;
 
     private DoubleProperty canvasScale = new SimpleDoubleProperty(1.0d);
+
     private CanvasMode canvasMode = CanvasMode.POINT;
 
     private Color lineColour = null;
     private Color fillColour = null;
 
+    private UnitShape shape = UnitShape.MODEL;
     private ModelUnit focussedModelUnit = null;
     private LineUnit focussedLineUnit = null;
     private ArrayList<ModelUnit> modelUnits = new ArrayList<>();
@@ -115,16 +118,32 @@ public class TheCanvas extends Pane {
         }
     }
 
+    public UnitShape getUnitShape() {
+        return shape;
+    }
+
+    public void changeUnitShape(UnitShape shape) {
+        this.shape = shape;
+    }
+
+    public void interactUnit(ModelUnit unit) {
+        focusNone();
+        focussedModelUnit = unit;
+    }
+
+    public void interactUnit(LineUnit unit) {
+        focusNone();
+        focussedLineUnit = unit;
+    }
+
     public void focusUnit(ModelUnit unit) {
         focusNone();
         focussedModelUnit = unit;
-        focussedModelUnit.focus();
     }
 
     public void focusUnit(LineUnit unit) {
         focusNone();
         focussedLineUnit = unit;
-        focussedLineUnit.focus();
     }
 
     public void focusNone() {
@@ -226,7 +245,10 @@ public class TheCanvas extends Pane {
             getScene().setOnKeyPressed(keyEvent -> {
                 if (keyEvent.getCode() == KeyCode.DELETE || keyEvent.getCode() == KeyCode.BACK_SPACE) {
                     if (focussedModelUnit != null) {
-                        getChildren().removeAll(focussedModelUnit.getUnitGroup());
+                        removeUnit(focussedModelUnit);
+                    }
+                    if (focussedLineUnit != null) {
+                        removeUnit(focussedLineUnit);
                     }
                 }
             });

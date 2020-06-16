@@ -1,7 +1,6 @@
 package seedu.canvas.component.canvas.unit;
 
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -25,6 +24,7 @@ public class LineUnit extends Line {
 
     private LineResizeHandle resizeHandleWest = new LineResizeHandle(this, Direction.WEST);
     private LineResizeHandle resizeHandleEast = new LineResizeHandle(this, Direction.EAST);
+    private MoveHandle moveHandle = new MoveHandle(this);
 
     public LineUnit(int unitStartX, int unitStartY, int unitEndX, int unitEndY) {
         super();
@@ -36,7 +36,7 @@ public class LineUnit extends Line {
         this.unitEndX.set(unitEndX);
         this.unitEndY.set(unitEndY);
 
-        // canvas.addLine(this);
+        canvas.addUnit(this);
 
         initialiseEvents();
     }
@@ -74,26 +74,33 @@ public class LineUnit extends Line {
     }
 
     public ArrayList<Node> getUnitGroup() {
-        return new ArrayList<>(Arrays.asList(this, resizeHandleWest, resizeHandleEast));
+        return new ArrayList<>(Arrays.asList(this, resizeHandleWest, resizeHandleEast, moveHandle));
     }
 
     public void interact() {
+        canvas.interactUnit(this);
+
         toFront();
 
         resizeHandleWest.interact();
         resizeHandleEast.interact();
+        moveHandle.interact();
     }
 
     public void focus() {
+        canvas.focusUnit(this);
+
         toFront();
 
         resizeHandleWest.focus();
         resizeHandleEast.focus();
+        moveHandle.focus();
     }
 
     public void unfocus() {
         resizeHandleWest.unfocus();
         resizeHandleEast.unfocus();
+        moveHandle.unfocus();
     }
 
     // public boolean isIntersect(int pointX, int pointY) {
@@ -108,22 +115,22 @@ public class LineUnit extends Line {
 
     public void move(int newUnitStartX, int newUnitStartY) {
 
-        int width = Math.abs(unitEndX.get() - unitStartX.get());
+        int width = unitEndX.get() - unitStartX.get();
 
-        if ((unitEndX.get() >= unitStartX.get())) {
+        if (width >= 0) {
             unitStartX.set(clamp(newUnitStartX, 0, CanvasGrid.MAX_X - width));
         } else {
-            unitStartX.set(clamp(newUnitStartX, width, CanvasGrid.MAX_X));
+            unitStartX.set(clamp(newUnitStartX, -width, CanvasGrid.MAX_X));
         }
 
         unitEndX.set(unitStartX.get() + width);
 
-        int height = Math.abs(unitEndY.get() - unitStartY.get());
+        int height = unitEndY.get() - unitStartY.get();
 
-        if ((unitEndY.get() >= unitStartY.get())) {
+        if (height >= 0) {
             unitStartY.set(clamp(newUnitStartY, 0, CanvasGrid.MAX_Y - height));
         } else {
-            unitStartY.set(clamp(newUnitStartY, height, CanvasGrid.MAX_Y));
+            unitStartY.set(clamp(newUnitStartY, -height, CanvasGrid.MAX_Y));
         }
 
         unitEndY.set(unitStartY.get() + height);
@@ -160,11 +167,5 @@ public class LineUnit extends Line {
 
     private int clamp(int value, int minValue, int maxValue) {
         return Math.min(Math.max(value, minValue), maxValue);
-    }
-
-    private void swapPropertyValues(IntegerProperty firstProperty, IntegerProperty secondProperty) {
-        int temporaryValue = firstProperty.get();
-        firstProperty.set(secondProperty.get());
-        secondProperty.set(temporaryValue);
     }
 }

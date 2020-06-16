@@ -18,8 +18,8 @@
     -fx-cursor: default;
 }
 
-/* Accessory Popup */
-.accessory-popup {
+/* Popup */
+.popup {
     -fx-background-color: white;
     -fx-background-radius: 8;
     -fx-effect: dropshadow(three-pass-box, grey, 8, 0, 3, 3);

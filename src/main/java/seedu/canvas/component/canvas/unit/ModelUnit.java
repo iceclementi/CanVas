@@ -80,6 +80,8 @@ public class ModelUnit extends Rectangle {
     }
 
     public void interact() {
+        canvas.interactUnit(this);
+
         toFront();
 
         resizeHandleNW.interact();
@@ -89,6 +91,8 @@ public class ModelUnit extends Rectangle {
     }
 
     public void focus() {
+        canvas.focusUnit(this);
+
         toFront();
 
         resizeHandleNW.focus();

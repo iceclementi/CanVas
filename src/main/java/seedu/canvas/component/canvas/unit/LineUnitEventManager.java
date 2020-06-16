@@ -41,7 +41,7 @@ public class LineUnitEventManager {
      *  The mouse dragged event handler
      */
     public EventHandler<MouseEvent> getOnMouseDragged() {
-        return onMouseDraggedRectangle;
+        return onMouseDragged;
     }
 
     /**
@@ -76,7 +76,7 @@ public class LineUnitEventManager {
         // }
     };
 
-    private EventHandler<MouseEvent> onMouseDraggedRectangle = mouseEvent -> {
+    private EventHandler<MouseEvent> onMouseDragged = mouseEvent -> {
         if (canvas.getCanvasMode() != CanvasMode.POINT || !mouseEvent.isPrimaryButtonDown()) {
             return;
         }
@@ -93,10 +93,10 @@ public class LineUnitEventManager {
             int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - mouseAnchorLocation.getX()) / scale);
             int deltaY = CanvasGrid.toUnit((mouseEvent.getSceneY() - mouseAnchorLocation.getY()) / scale);
 
-            int newUnitX = previousPivotLocation.getUnitX() + deltaX;
-            int newUnitY = previousPivotLocation.getUnitY() + deltaY;
+            int newUnitStartX = previousPivotLocation.getUnitX() + deltaX;
+            int newUnitStartY = previousPivotLocation.getUnitY() + deltaY;
 
-            lineUnit.move(newUnitX, newUnitY);
+            lineUnit.move(newUnitStartX, newUnitStartY);
         }
 
         // if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
@@ -116,7 +116,7 @@ public class LineUnitEventManager {
 
     private EventHandler<MouseEvent> onMouseClicked = mouseEvent -> {
         if (lineUnit != null) {
-            canvas.focusUnit(lineUnit);
+            lineUnit.focus();
         }
 
         lineUnit = null;

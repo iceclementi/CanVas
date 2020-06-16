@@ -3,14 +3,18 @@ package seedu.canvas.component.canvas;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import seedu.canvas.component.canvas.unit.LineUnit;
 import seedu.canvas.component.canvas.unit.ModelUnit;
+import seedu.canvas.component.canvas.unit.UnitShape;
 
 public class CanvasEventManager {
 
     private TheCanvas canvas = TheCanvas.getInstance();
     private DragData unitDragData = new DragData();
     private DragData canvasDragData = new DragData();
+
     private ModelUnit modelUnit;
+    private LineUnit lineUnit;
 
     private static final double MIN_SCALE = 0.5d;
     private static final double MAX_SCALE = 4.0d;
@@ -52,7 +56,7 @@ public class CanvasEventManager {
                 }
             }
 
-            if (canvas.getCanvasMode() != CanvasMode.MODEL) {
+            if (canvas.getCanvasMode() != CanvasMode.SHAPE) {
                 return;
             }
 
@@ -66,8 +70,16 @@ public class CanvasEventManager {
             double x = targetPoint.getCenterX();
             double y = targetPoint.getCenterY();
 
-            modelUnit = new ModelUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y), 0, 0);
-            modelUnit.interact();
+            if (canvas.getUnitShape() == UnitShape.MODEL) {
+                modelUnit = new ModelUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y), 0, 0);
+                modelUnit.interact();
+            } else if (canvas.getUnitShape() == UnitShape.LINE) {
+                lineUnit = new LineUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y),
+                        CanvasGrid.toUnit(x), CanvasGrid.toUnit(y));
+                lineUnit.interact();
+            } else {
+                return;
+            }
 
             unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
             unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
@@ -84,20 +96,29 @@ public class CanvasEventManager {
     private EventHandler<MouseEvent> onMouseDragged = mouseEvent -> {
 
         if (mouseEvent.isPrimaryButtonDown()) {
-            if (canvas.getCanvasMode() != CanvasMode.MODEL) {
+            if (canvas.getCanvasMode() != CanvasMode.SHAPE) {
                 return;
             }
 
-            if (modelUnit == null) {
+            if (modelUnit == null && lineUnit == null) {
                 return;
             }
 
             double scale = TheCanvas.getInstance().getCanvasScale();
 
-            int newUnitWidth = CanvasGrid.toUnit((mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()) / scale);
-            int newUnitHeight = CanvasGrid.toUnit((mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()) / scale);
+            if (canvas.getUnitShape() == UnitShape.MODEL) {
+                int newUnitWidth = CanvasGrid.toUnit((mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()) / scale);
+                int newUnitHeight = CanvasGrid.toUnit((mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()) / scale);
 
-            modelUnit.scale(newUnitWidth, newUnitHeight);
+                modelUnit.scale(newUnitWidth, newUnitHeight);
+            } else if (canvas.getUnitShape() == UnitShape.LINE) {
+                int newUnitEndX = CanvasGrid.toUnit(mouseEvent.getX());
+                int newUnitEndY = CanvasGrid.toUnit(mouseEvent.getY());
+
+                lineUnit.scale(newUnitEndX, newUnitEndY);
+            } else {
+                return;
+            }
 
             mouseEvent.consume();
         } else if (mouseEvent.isSecondaryButtonDown()) {
@@ -114,14 +135,24 @@ public class CanvasEventManager {
 
     private EventHandler<MouseEvent> onMouseReleased = mouseEvent -> {
         if (modelUnit != null) {
-            if (modelUnit.getWidth() == 0 || modelUnit.getHeight() == 0) {
-                canvas.getChildren().remove(modelUnit);
+            if (modelUnit.getUnitWidth() == 0 || modelUnit.getUnitHeight() == 0) {
+                canvas.removeUnit(modelUnit);
             } else {
-                canvas.focusUnit(modelUnit);
+                modelUnit.focus();
+            }
+        }
+
+        if (lineUnit != null) {
+            if ((lineUnit.getUnitStartX() == lineUnit.getUnitEndX())
+                    && (lineUnit.getUnitStartY() == lineUnit.getUnitEndY())) {
+                canvas.removeUnit(lineUnit);
+            } else {
+                lineUnit.focus();
             }
         }
 
         modelUnit = null;
+        lineUnit = null;
     };
 
     private EventHandler<ScrollEvent> onScroll = scrollEvent -> {

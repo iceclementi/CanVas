@@ -73,12 +73,16 @@ public class ModelResizeHandle extends ResizeHandle {
         });
 
         setOnMousePressed(mouseEvent -> {
+            unit.interact();
+
             mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             previousHandleLocation = findPreviousHandleLocation();
             isResizing = true;
         });
 
         setOnMouseReleased(mouseEvent -> {
+            unit.focus();
+
             mouseLocation = null;
             previousHandleLocation = null;
             isResizing = false;
