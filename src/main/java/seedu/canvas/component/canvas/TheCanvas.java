@@ -9,6 +9,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import seedu.canvas.component.canvas.draw.DrawingCanvas;
 import seedu.canvas.component.canvas.unit.LineUnit;
 import seedu.canvas.component.canvas.unit.ModelUnit;
 import seedu.canvas.component.canvas.unit.UnitShape;
@@ -57,6 +58,10 @@ public class TheCanvas extends Pane {
     public void initialise() {
         initialiseStyle();
         initialiseEvents();
+
+        getChildren().add(DrawingCanvas.getInstance());
+
+        DrawingCanvas.getInstance().initialise();
     }
 
     public double getCanvasScale() {
@@ -92,6 +97,12 @@ public class TheCanvas extends Pane {
      */
     public void changeMode(CanvasMode canvasMode) {
         this.canvasMode = canvasMode;
+
+        if (canvasMode == CanvasMode.DRAW) {
+            DrawingCanvas.getInstance().startDrawing();
+        } else {
+            DrawingCanvas.getInstance().stopDrawing();
+        }
     }
 
     public Color getLineColour() {
@@ -187,6 +198,10 @@ public class TheCanvas extends Pane {
             }
         }
         return false;
+    }
+
+    public double toScale(double valueToScale) {
+        return valueToScale / canvasScale.get();
     }
 
     /**

@@ -164,7 +164,6 @@ public class LineUnit extends Line {
         addEventFilter(MouseEvent.MOUSE_PRESSED, lineUnitEventManager.getOnMousePressed());
         addEventFilter(MouseEvent.MOUSE_DRAGGED, lineUnitEventManager.getOnMouseDragged());
         addEventFilter(MouseEvent.MOUSE_RELEASED, lineUnitEventManager.getOnMouseReleased());
-        addEventFilter(MouseEvent.MOUSE_CLICKED, lineUnitEventManager.getOnMouseClicked());
     }
 
     private int clamp(int value, int minValue, int maxValue) {

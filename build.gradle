@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'seedu.canvas'
-version 'v0.0.1'
+version 'v0.1'
 
 repositories {
     mavenCentral()

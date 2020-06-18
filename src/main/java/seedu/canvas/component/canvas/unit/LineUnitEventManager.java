@@ -54,10 +54,6 @@ public class LineUnitEventManager {
         return onMouseReleased;
     }
 
-    public EventHandler<MouseEvent> getOnMouseClicked() {
-        return onMouseClicked;
-    }
-
     private EventHandler<MouseEvent> onMousePressed = mouseEvent -> {
         if (canvas.getCanvasMode() != CanvasMode.POINT || !mouseEvent.isPrimaryButtonDown()) {
             return;
@@ -112,9 +108,7 @@ public class LineUnitEventManager {
     private EventHandler<MouseEvent> onMouseReleased = mouseEvent -> {
         unitDragData.reset();
         gesture = Gesture.MOVE;
-    };
 
-    private EventHandler<MouseEvent> onMouseClicked = mouseEvent -> {
         if (lineUnit != null) {
             lineUnit.focus();
         }
