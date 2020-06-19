@@ -208,7 +208,6 @@ public class ModelUnit extends Rectangle {
         addEventFilter(MouseEvent.MOUSE_PRESSED, modelUnitEventManager.getOnMousePressed());
         addEventFilter(MouseEvent.MOUSE_DRAGGED, modelUnitEventManager.getOnMouseDragged());
         addEventFilter(MouseEvent.MOUSE_RELEASED, modelUnitEventManager.getOnMouseReleased());
-        addEventFilter(MouseEvent.MOUSE_CLICKED, modelUnitEventManager.getOnMouseClicked());
     }
 
     private void dragCopyWest(int mouseUnitX, int mouseUnitY, DragData dragData) {

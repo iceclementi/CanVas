@@ -81,13 +81,13 @@ public class LineUnitEventManager {
             return;
         }
 
-        double scale = canvas.getCanvasScale();
+        CanvasGrid.showGridPoints();
 
         lineUnit = (LineUnit) mouseEvent.getSource();
 
         if (gesture == Gesture.MOVE) {
-            int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - mouseAnchorLocation.getX()) / scale);
-            int deltaY = CanvasGrid.toUnit((mouseEvent.getSceneY() - mouseAnchorLocation.getY()) / scale);
+            int deltaX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - mouseAnchorLocation.getX()));
+            int deltaY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - mouseAnchorLocation.getY()));
 
             int newUnitStartX = previousPivotLocation.getUnitX() + deltaX;
             int newUnitStartY = previousPivotLocation.getUnitY() + deltaY;
@@ -114,5 +114,7 @@ public class LineUnitEventManager {
         }
 
         lineUnit = null;
+
+        CanvasGrid.hideGridPoints();
     };
 }

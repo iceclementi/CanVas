@@ -115,12 +115,10 @@ public class CanvasEventManager {
                 return;
             }
 
-            double scale = TheCanvas.getInstance().getCanvasScale();
-
             switch (canvas.getUnitShape()) {
             case MODEL:
-                int newUnitWidth = CanvasGrid.toUnit((mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()) / scale);
-                int newUnitHeight = CanvasGrid.toUnit((mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()) / scale);
+                int newUnitWidth = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()));
+                int newUnitHeight = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()));
 
                 modelUnit.scale(newUnitWidth, newUnitHeight);
                 break;

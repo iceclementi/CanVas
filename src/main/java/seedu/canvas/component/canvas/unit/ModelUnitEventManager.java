@@ -52,10 +52,6 @@ public class ModelUnitEventManager {
         return onMouseReleased;
     }
 
-    public EventHandler<MouseEvent> getOnMouseClicked() {
-        return onMouseClicked;
-    }
-
     private EventHandler<MouseEvent> onMousePressed = mouseEvent -> {
         if (canvas.getCanvasMode() != CanvasMode.POINT || !mouseEvent.isPrimaryButtonDown()) {
             return;
@@ -84,13 +80,13 @@ public class ModelUnitEventManager {
             return;
         }
 
-        double scale = canvas.getCanvasScale();
+        CanvasGrid.showGridPoints();
 
         modelUnit = (ModelUnit) mouseEvent.getSource();
 
         if (gesture == Gesture.MOVE) {
-            int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()) / scale);
-            int deltaY = CanvasGrid.toUnit((mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()) / scale);
+            int deltaX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()));
+            int deltaY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()));
 
             int newUnitX = previousPivotLocation.getUnitX() + deltaX;
             int newUnitY = previousPivotLocation.getUnitY() + deltaY;
@@ -111,13 +107,13 @@ public class ModelUnitEventManager {
     private EventHandler<MouseEvent> onMouseReleased = mouseEvent -> {
         unitDragData.reset();
         gesture = Gesture.MOVE;
-    };
 
-    private EventHandler<MouseEvent> onMouseClicked = mouseEvent -> {
         if (modelUnit != null) {
             modelUnit.focus();
         }
 
         modelUnit = null;
+
+        CanvasGrid.hideGridPoints();
     };
 }

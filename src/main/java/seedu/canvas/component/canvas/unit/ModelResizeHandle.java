@@ -9,6 +9,8 @@ import seedu.canvas.component.canvas.TheCanvas;
 
 public class ModelResizeHandle extends CanvasHandle {
 
+    private TheCanvas canvas = TheCanvas.getInstance();
+
     private ModelUnit unit;
 
     public ModelResizeHandle(ModelUnit unit, Direction location) {
@@ -74,6 +76,7 @@ public class ModelResizeHandle extends CanvasHandle {
 
         setOnMousePressed(mouseEvent -> {
             unit.interact();
+            CanvasGrid.showGridPoints();
 
             mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             previousHandleLocation = findPreviousHandleLocation();
@@ -82,6 +85,7 @@ public class ModelResizeHandle extends CanvasHandle {
 
         setOnMouseReleased(mouseEvent -> {
             unit.focus();
+            CanvasGrid.hideGridPoints();
 
             mouseLocation = null;
             previousHandleLocation = null;
@@ -112,10 +116,8 @@ public class ModelResizeHandle extends CanvasHandle {
             return;
         }
 
-        double scale = TheCanvas.getInstance().getCanvasScale();
-
-        int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - mouseLocation.getX()) / scale);
-        int deltaY = CanvasGrid.toUnit((mouseEvent.getSceneY() - mouseLocation.getY()) / scale);
+        int deltaX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - mouseLocation.getX()));
+        int deltaY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - mouseLocation.getY()));
         updateWestX(deltaX);
         updateNorthY(deltaY);
     }
@@ -125,10 +127,8 @@ public class ModelResizeHandle extends CanvasHandle {
             return;
         }
 
-        double scale = TheCanvas.getInstance().getCanvasScale();
-
-        int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - mouseLocation.getX()) / scale);
-        int deltaY = CanvasGrid.toUnit((mouseEvent.getSceneY() - mouseLocation.getY()) / scale);
+        int deltaX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - mouseLocation.getX()));
+        int deltaY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - mouseLocation.getY()));
         updateEastX(deltaX);
         updateNorthY(deltaY);
     }
@@ -138,10 +138,8 @@ public class ModelResizeHandle extends CanvasHandle {
             return;
         }
 
-        double scale = TheCanvas.getInstance().getCanvasScale();
-
-        int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - mouseLocation.getX()) / scale);
-        int deltaY = CanvasGrid.toUnit((mouseEvent.getSceneY() - mouseLocation.getY()) / scale);
+        int deltaX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - mouseLocation.getX()));
+        int deltaY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - mouseLocation.getY()));
         updateWestX(deltaX);
         updateSouthY(deltaY);
     }
@@ -151,10 +149,8 @@ public class ModelResizeHandle extends CanvasHandle {
             return;
         }
 
-        double scale = TheCanvas.getInstance().getCanvasScale();
-
-        int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - mouseLocation.getX()) / scale);
-        int deltaY = CanvasGrid.toUnit((mouseEvent.getSceneY() - mouseLocation.getY()) / scale);
+        int deltaX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - mouseLocation.getX()));
+        int deltaY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - mouseLocation.getY()));
         updateEastX(deltaX);
         updateSouthY(deltaY);
     }

@@ -9,6 +9,8 @@ import seedu.canvas.component.canvas.TheCanvas;
 
 public class LineResizeHandle extends CanvasHandle {
 
+    private TheCanvas canvas = TheCanvas.getInstance();
+
     private LineUnit unit;
 
     public LineResizeHandle(LineUnit unit, Direction location) {
@@ -52,6 +54,7 @@ public class LineResizeHandle extends CanvasHandle {
             isInteracting = true;
 
             unit.interact();
+            CanvasGrid.showGridPoints();
         });
 
         setOnMouseReleased(mouseEvent -> {
@@ -60,6 +63,7 @@ public class LineResizeHandle extends CanvasHandle {
             isInteracting = false;
 
             unit.focus();
+            CanvasGrid.hideGridPoints();
         });
 
         switch (location) {
@@ -81,11 +85,8 @@ public class LineResizeHandle extends CanvasHandle {
         }
 
         updateCursor();
-
-        double scale = TheCanvas.getInstance().getCanvasScale();
-
-        int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - mouseLocation.getX()) / scale);
-        int deltaY = CanvasGrid.toUnit((mouseEvent.getSceneY() - mouseLocation.getY()) / scale);
+        int deltaX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - mouseLocation.getX()));
+        int deltaY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - mouseLocation.getY()));
 
         updateWest(deltaX, deltaY);
     }

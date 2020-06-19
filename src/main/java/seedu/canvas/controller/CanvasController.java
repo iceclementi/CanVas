@@ -89,7 +89,7 @@ public class CanvasController implements Initializable {
         canvasScrollPane.setContent(canvas);
         canvas.initialise();
 
-        canvas.showGridLines();
+        canvas.hideGrid();
         canvas.changeMode(CanvasMode.POINT);
     }
 }

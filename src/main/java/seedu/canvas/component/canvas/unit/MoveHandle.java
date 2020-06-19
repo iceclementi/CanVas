@@ -6,6 +6,8 @@ import seedu.canvas.component.canvas.TheCanvas;
 
 public class MoveHandle extends CanvasHandle {
 
+    private TheCanvas canvas = TheCanvas.getInstance();
+
     private LineUnit unit;
 
     public MoveHandle(LineUnit unit) {
@@ -27,19 +29,21 @@ public class MoveHandle extends CanvasHandle {
         setOnMousePressed(mouseEvent -> {
             mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             previousHandleLocation = new UnitPoint(unit.getUnitStartX(), unit.getUnitStartY());
+
             unit.interact();
+            CanvasGrid.showGridPoints();
         });
 
         setOnMouseReleased(mouseEvent -> {
             mouseLocation = null;
+
             unit.focus();
+            CanvasGrid.hideGridPoints();
         });
 
         setOnMouseDragged(mouseEvent -> {
-            double scale = TheCanvas.getInstance().getCanvasScale();
-
-            int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - mouseLocation.getX()) / scale);
-            int deltaY = CanvasGrid.toUnit((mouseEvent.getSceneY() - mouseLocation.getY()) / scale);
+            int deltaX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - mouseLocation.getX()));
+            int deltaY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - mouseLocation.getY()));
 
             int newUnitStartX = previousHandleLocation.getUnitX() + deltaX;
             int newUnitStartY = previousHandleLocation.getUnitY() + deltaY;

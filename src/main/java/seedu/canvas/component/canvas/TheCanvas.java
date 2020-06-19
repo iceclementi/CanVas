@@ -68,6 +68,11 @@ public class TheCanvas extends Pane {
         initialiseStyle();
         initialiseEvents();
 
+        getChildren().add(CanvasGrid.getGridLines());
+        CanvasGrid.getGridLines().toBack();
+
+        getChildren().addAll(CanvasGrid.getGridPoints());
+
         getChildren().add(DrawingCanvas.getInstance());
 
         DrawingCanvas.getInstance().initialise();
@@ -106,6 +111,12 @@ public class TheCanvas extends Pane {
      */
     public void changeMode(CanvasMode canvasMode) {
         this.canvasMode = canvasMode;
+
+        if (canvasMode == CanvasMode.SHAPE) {
+            showGrid();
+        } else {
+            hideGrid();
+        }
 
         if (canvasMode == CanvasMode.DRAW) {
             DrawingCanvas.getInstance().startDrawing();
@@ -243,15 +254,16 @@ public class TheCanvas extends Pane {
     }
 
     /**
-     * Shows the grid lines on the canvas.
+     * Shows the grid on the canvas.
      */
-    public void showGridLines() {
-        Canvas gridLines = generateGridLines();
+    public void showGrid() {
+        CanvasGrid.showGridLines();
+        CanvasGrid.showGridPoints();
+    }
 
-        getChildren().add(gridLines);
-        gridLines.toBack();
-
-        new CanvasGrid().initialise();
+    public void hideGrid() {
+        CanvasGrid.hideGridLines();
+        CanvasGrid.hideGridPoints();
     }
 
     private void initialiseStyle() {
@@ -270,27 +282,6 @@ public class TheCanvas extends Pane {
         addEventFilter(ScrollEvent.ANY, canvasEventManager.getOnScroll());
 
         addDeleteUnitEvent();
-    }
-
-    private Canvas generateGridLines() {
-        double width = 600;
-        double height = 600;
-
-        Canvas gridLines = new Canvas(width, height);
-        gridLines.setMouseTransparent(true);
-
-        GraphicsContext gc = gridLines.getGraphicsContext2D();
-
-        gc.setStroke(Color.GRAY);
-        gc.setLineWidth(0.5);
-
-        double offset = 20d;
-        for (double i = 0d; i <= width; i += offset) {
-            gc.strokeLine(i, 0, i, height);
-            gc.strokeLine(0, i, width, i);
-        }
-
-        return gridLines;
     }
 
     private void addDeleteUnitEvent() {
