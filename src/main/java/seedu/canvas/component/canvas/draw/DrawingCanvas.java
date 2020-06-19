@@ -2,7 +2,6 @@ package seedu.canvas.component.canvas.draw;
 
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Line;
 import seedu.canvas.component.canvas.CanvasGrid;
 
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ public class DrawingCanvas extends Pane {
 
     private static DrawingCanvas drawingCanvas = null;
 
-    private ArrayList<Drawing> drawings = new ArrayList<>();
+    private ArrayList<DrawingStroke> strokes = new ArrayList<>();
 
     private DrawingCanvas() {
     }
@@ -29,17 +28,9 @@ public class DrawingCanvas extends Pane {
         initialiseEvents();
     }
 
-    public void addStroke(Line stroke) {
+    public void addStroke(DrawingStroke stroke) {
+        strokes.add(stroke);
         getChildren().add(stroke);
-    }
-
-    public void addDrawing(Drawing drawing) {
-        drawings.add(drawing);
-    }
-
-    public void removeDrawing(Drawing drawing) {
-        drawings.remove(drawing);
-        getChildren().removeAll(drawing.getDrawing());
     }
 
     public void startDrawing() {
@@ -48,6 +39,11 @@ public class DrawingCanvas extends Pane {
 
     public void stopDrawing() {
         toBack();
+    }
+
+    public void reset() {
+        getChildren().removeAll(strokes);
+        strokes.clear();
     }
 
     private void initialiseStyle() {

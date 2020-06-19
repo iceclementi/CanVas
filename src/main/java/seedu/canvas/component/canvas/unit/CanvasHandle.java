@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import seedu.canvas.component.canvas.Direction;
 
-public abstract class UnitHandle extends Circle {
+public abstract class CanvasHandle extends Circle {
 
     protected Point2D mouseLocation = null;
     protected UnitPoint previousHandleLocation = null;
@@ -13,7 +13,7 @@ public abstract class UnitHandle extends Circle {
 
     protected Direction location;
 
-    public UnitHandle(Direction location) {
+    public CanvasHandle(Direction location) {
         super(4);
 
         this.location = location;

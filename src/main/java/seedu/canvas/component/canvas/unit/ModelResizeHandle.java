@@ -7,7 +7,7 @@ import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.TheCanvas;
 
-public class ModelResizeHandle extends UnitHandle {
+public class ModelResizeHandle extends CanvasHandle {
 
     private ModelUnit unit;
 

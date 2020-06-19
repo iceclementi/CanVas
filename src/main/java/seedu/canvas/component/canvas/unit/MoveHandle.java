@@ -4,7 +4,7 @@ import javafx.geometry.Point2D;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.TheCanvas;
 
-public class MoveHandle extends UnitHandle {
+public class MoveHandle extends CanvasHandle {
 
     private LineUnit unit;
 
@@ -47,5 +47,4 @@ public class MoveHandle extends UnitHandle {
             unit.move(newUnitStartX, newUnitStartY);
         });
     }
-
 }

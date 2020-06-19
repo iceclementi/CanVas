@@ -7,7 +7,7 @@ import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.TheCanvas;
 
-public class LineResizeHandle extends UnitHandle {
+public class LineResizeHandle extends CanvasHandle {
 
     private LineUnit unit;
 

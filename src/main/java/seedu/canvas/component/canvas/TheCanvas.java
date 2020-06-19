@@ -9,6 +9,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import seedu.canvas.component.canvas.draw.Drawing;
 import seedu.canvas.component.canvas.draw.DrawingCanvas;
 import seedu.canvas.component.canvas.unit.LineUnit;
 import seedu.canvas.component.canvas.unit.ModelUnit;
@@ -30,10 +31,18 @@ public class TheCanvas extends Pane {
     private Color lineColour = null;
     private Color fillColour = null;
 
+    /* Unit shapes */
     private UnitShape shape = UnitShape.MODEL;
+
     private ModelUnit focussedModelUnit = null;
     private LineUnit focussedLineUnit = null;
+
     private ArrayList<ModelUnit> modelUnits = new ArrayList<>();
+    // private ArrayList<LineUnit> lineUnits = new ArrayList<>();
+
+    /* Drawing */
+    private Drawing focussedDrawing = null;
+    // private ArrayList<Drawing> drawings = new ArrayList<>();
 
     private static TheCanvas canvas = null;
 
@@ -123,6 +132,10 @@ public class TheCanvas extends Pane {
         if (focussedLineUnit != null) {
             focussedLineUnit.colour(lineColour);
         }
+
+        if (focussedDrawing != null) {
+            focussedDrawing.colour(lineColour);
+        }
     }
 
     public void setFillColour(Color fillColour) {
@@ -151,6 +164,11 @@ public class TheCanvas extends Pane {
         focussedLineUnit = unit;
     }
 
+    public void interactDrawing(Drawing drawing) {
+        focusNone();
+        focussedDrawing = drawing;
+    }
+
     public void focusUnit(ModelUnit unit) {
         focusNone();
         focussedModelUnit = unit;
@@ -159,6 +177,11 @@ public class TheCanvas extends Pane {
     public void focusUnit(LineUnit unit) {
         focusNone();
         focussedLineUnit = unit;
+    }
+
+    public void focusDrawing(Drawing drawing) {
+        focusNone();
+        focussedDrawing = drawing;
     }
 
     public void focusNone() {
@@ -171,6 +194,11 @@ public class TheCanvas extends Pane {
             focussedLineUnit.unfocus();
             focussedLineUnit = null;
         }
+
+        if (focussedDrawing != null) {
+            focussedDrawing.unfocus();
+            focussedDrawing = null;
+        }
     }
 
     public void addUnit(ModelUnit unit) {
@@ -179,6 +207,7 @@ public class TheCanvas extends Pane {
     }
 
     public void addUnit(LineUnit unit) {
+        // lineUnits.add(unit);
         getChildren().addAll(unit.getUnitGroup());
     }
 
@@ -188,7 +217,16 @@ public class TheCanvas extends Pane {
     }
 
     public void removeUnit(LineUnit unit) {
+        // lineUnits.remove(unit);
         getChildren().removeAll(unit.getUnitGroup());
+    }
+
+    public void addDrawing(Drawing drawing) {
+        getChildren().addAll(drawing.getDrawing());
+    }
+
+    public void removeDrawing(Drawing drawing) {
+        getChildren().removeAll(drawing.getDrawing());
     }
 
     public boolean isIntersectUnit(int pointX, int pointY) {
@@ -265,9 +303,15 @@ public class TheCanvas extends Pane {
                 if (keyEvent.getCode() == KeyCode.DELETE || keyEvent.getCode() == KeyCode.BACK_SPACE) {
                     if (focussedModelUnit != null) {
                         removeUnit(focussedModelUnit);
+                        focussedModelUnit = null;
                     }
                     if (focussedLineUnit != null) {
                         removeUnit(focussedLineUnit);
+                        focussedLineUnit = null;
+                    }
+                    if (focussedDrawing != null) {
+                        removeDrawing(focussedDrawing);
+                        focussedDrawing = null;
                     }
                 }
             });

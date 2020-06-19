@@ -3,7 +3,6 @@ package seedu.canvas.component.canvas.draw;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Line;
 import seedu.canvas.component.canvas.CanvasMode;
 import seedu.canvas.component.canvas.TheCanvas;
 
@@ -37,6 +36,9 @@ public class DrawingCanvasEventManager {
         startLocation = new Point2D(mouseEvent.getX(), mouseEvent.getY());
 
         drawing = new Drawing();
+        // drawing = new Drawing(new DrawingStroke(drawing, mouseEvent.getX(), mouseEvent.getY(),
+        //         mouseEvent.getX(), mouseEvent.getY()));
+        // drawing.addStroke(new DrawingStroke(mouseEvent.getX(), mouseEvent.getY(), mouseEvent.getX(), mouseEvent.getY()));
     };
 
     private EventHandler<MouseEvent> onMouseDragged = mouseEvent -> {
@@ -51,7 +53,7 @@ public class DrawingCanvasEventManager {
         double endX = mouseEvent.getX();
         double endY = mouseEvent.getY();
 
-        drawing.addStroke(new Line(startLocation.getX(), startLocation.getY(), endX, endY));
+        drawing.addStroke(new DrawingStroke(drawing, startLocation.getX(), startLocation.getY(), endX, endY));
 
         startLocation = new Point2D(endX, endY);
 
