@@ -21,10 +21,15 @@ public class DrawButton extends ToolButton {
 
     private void initialiseEvents() {
         setOnMouseReleased(this::onClick);
+
+        TheCanvas.getInstance().getCanvasModeProperty().addListener(observable -> {
+            if (TheCanvas.getInstance().getCanvasMode() == CanvasMode.DRAW) {
+                selectButton(this);
+            }
+        });
     }
 
     private void onClick(MouseEvent mouseEvent) {
-        selectButton(this);
         TheCanvas.getInstance().changeMode(CanvasMode.DRAW);
         TheCanvas.getInstance().setCursor(Cursor.DEFAULT);
     }

@@ -2,6 +2,7 @@ package seedu.canvas.component.canvas.unit;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Paint;
@@ -9,6 +10,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
+import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.TheCanvas;
 
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ public class LineUnit extends Line {
 
     private LineResizeHandle resizeHandleWest = new LineResizeHandle(this, Direction.WEST);
     private LineResizeHandle resizeHandleEast = new LineResizeHandle(this, Direction.EAST);
-    private MoveHandle moveHandle = new MoveHandle(this);
+    private LineMoveHandle moveHandle = new LineMoveHandle(this);
 
     public LineUnit(int unitStartX, int unitStartY, int unitEndX, int unitEndY) {
         super();
@@ -134,6 +136,43 @@ public class LineUnit extends Line {
         unitEndY.set(unitStartY.get() + height);
     }
 
+    public void dragCopy(int mouseUnitX, int mouseUnitY, DragData dragData) {
+        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
+        Direction copyDirection = dragData.getCopyDirection();
+
+        if (copiedUnits.isEmpty()) {
+            return;
+        }
+
+        if (copyDirection == null) {
+            copyDirection = computeDirection(this, mouseUnitX, mouseUnitY);
+
+            // Mouse is still within unit
+            if (copyDirection == null) {
+                return;
+            }
+
+            dragData.setCopyDirection(copyDirection);
+        }
+
+        switch (copyDirection) {
+        case WEST:
+            dragCopyWest(mouseUnitX, mouseUnitY, dragData);
+            break;
+        case EAST:
+            dragCopyEast(mouseUnitX, mouseUnitY, dragData);
+            break;
+        case NORTH:
+            dragCopyNorth(mouseUnitX, mouseUnitY, dragData);
+            break;
+        case SOUTH:
+            dragCopySouth(mouseUnitX, mouseUnitY, dragData);
+            break;
+        default:
+            break;
+        }
+    }
+
     public void colour(Paint lineColour) {
         setStroke(lineColour);
     }
@@ -155,6 +194,8 @@ public class LineUnit extends Line {
         endXProperty().bind(unitEndX.multiply((CanvasGrid.OFFSET)));
         endYProperty().bind(unitEndY.multiply(CanvasGrid.OFFSET));
 
+        setCursor(Cursor.HAND);
+
         unfocus();
     }
 
@@ -166,7 +207,142 @@ public class LineUnit extends Line {
         addEventFilter(MouseEvent.MOUSE_RELEASED, lineUnitEventManager.getOnMouseReleased());
     }
 
-    private int clamp(int value, int minValue, int maxValue) {
+    private void dragCopyWest(int mouseUnitX, int mouseUnitY, DragData dragData) {
+        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
+
+        LineUnit targetUnit = (LineUnit) copiedUnits.get(copiedUnits.size() - 1);
+        Direction currentCopyDirection = computeDirection(targetUnit, mouseUnitX, mouseUnitY);
+
+        int unitWidth = Math.max(Math.abs(targetUnit.getUnitEndX() - targetUnit.getUnitStartX()), 1);
+
+        if (currentCopyDirection == Direction.WEST) {
+            addUnit(copiedUnits, targetUnit,
+                    targetUnit.getUnitStartX() - unitWidth,
+                    targetUnit.getUnitStartY(),
+                    targetUnit.getUnitEndX() - unitWidth,
+                    targetUnit.getUnitEndY());
+        } else if (currentCopyDirection == Direction.EAST) {
+            removeUnit(targetUnit, dragData);
+        }
+    }
+
+    private void dragCopyEast(int mouseUnitX, int mouseUnitY, DragData dragData) {
+        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
+
+        LineUnit targetUnit = (LineUnit) copiedUnits.get(copiedUnits.size() - 1);
+        Direction currentCopyDirection = computeDirection(targetUnit, mouseUnitX, mouseUnitY);
+
+        int unitWidth = Math.max(Math.abs(targetUnit.getUnitEndX() - targetUnit.getUnitStartX()), 1);
+
+        if (currentCopyDirection == Direction.EAST) {
+            addUnit(copiedUnits, targetUnit,
+                    targetUnit.getUnitStartX() + unitWidth,
+                    targetUnit.getUnitStartY(),
+                    targetUnit.getUnitEndX() + unitWidth,
+                    targetUnit.getUnitEndY());
+        } else if (currentCopyDirection == Direction.WEST) {
+            removeUnit(targetUnit, dragData);
+        }
+    }
+
+    private void dragCopyNorth(int mouseUnitX, int mouseUnitY, DragData dragData) {
+        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
+
+        LineUnit targetUnit = (LineUnit) copiedUnits.get(copiedUnits.size() - 1);
+        Direction currentCopyDirection = computeDirection(targetUnit, mouseUnitX, mouseUnitY);
+
+        int unitHeight = Math.max(Math.abs(targetUnit.getUnitEndY() - targetUnit.getUnitStartY()), 1);
+
+        if (currentCopyDirection == Direction.NORTH) {
+            addUnit(copiedUnits, targetUnit,
+                    targetUnit.getUnitStartX(),
+                    targetUnit.getUnitStartY() - unitHeight,
+                    targetUnit.getUnitEndX(),
+                    targetUnit.getUnitEndY() - unitHeight);
+        } else if (currentCopyDirection == Direction.SOUTH) {
+            removeUnit(targetUnit, dragData);
+        }
+    }
+
+    private void dragCopySouth(int mouseUnitX, int mouseUnitY, DragData dragData) {
+        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
+
+        LineUnit targetUnit = (LineUnit) copiedUnits.get(copiedUnits.size() - 1);
+        Direction currentCopyDirection = computeDirection(targetUnit, mouseUnitX, mouseUnitY);
+
+        int unitHeight = Math.max(Math.abs(targetUnit.getUnitEndY() - targetUnit.getUnitStartY()), 1);
+
+        if (currentCopyDirection == Direction.SOUTH) {
+            addUnit(copiedUnits, targetUnit,
+                    targetUnit.getUnitStartX(),
+                    targetUnit.getUnitStartY() + unitHeight,
+                    targetUnit.getUnitEndX(),
+                    targetUnit.getUnitEndY() + unitHeight);
+        } else if (currentCopyDirection == Direction.NORTH) {
+            removeUnit(targetUnit, dragData);
+        }
+    }
+
+    private void addUnit(ArrayList<Node> copiedUnits, LineUnit targetUnit,
+             int newUnitStartX, int newUnitStartY, int newUnitEndX, int newUnitEndY) {
+        if (isUnitWithinCanvas(newUnitStartX, newUnitStartY, newUnitEndX, newUnitEndY)) {
+            LineUnit newUnit;
+
+            if (targetUnit instanceof AnchorLineUnit) {
+                newUnit = new AnchorLineUnit(newUnitStartX, newUnitStartY, newUnitEndX, newUnitEndY);
+            } else if (targetUnit instanceof GroupLineUnit) {
+                newUnit = new GroupLineUnit(newUnitStartX, newUnitStartY, newUnitEndX, newUnitEndY);
+            } else {
+                newUnit = new LineUnit(newUnitStartX, newUnitStartY, newUnitEndX, newUnitEndY);
+            }
+
+            newUnit.colour(targetUnit.getStroke());
+
+            copiedUnits.add(newUnit);
+        }
+    }
+
+    private void removeUnit(LineUnit unit, DragData dragData) {
+        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
+
+        if (copiedUnits.size() > 1) {
+            copiedUnits.remove(unit);
+            canvas.removeUnit(unit);
+        }
+
+        if (copiedUnits.size() == 1) {
+            dragData.setCopyDirection(null);
+        }
+    }
+
+    private static Direction computeDirection(LineUnit unit, int mouseUnitX, int mouseUnitY) {
+        int unitMinX = Math.min(unit.unitStartX.get(), unit.unitEndX.get());
+        int unitMinY = Math.min(unit.unitStartY.get(), unit.unitEndY.get());
+        int unitMaxX = Math.max(unit.unitStartX.get(), unit.unitEndX.get());
+        int unitMaxY = Math.max(unit.unitStartY.get(), unit.unitEndY.get());
+
+        if (mouseUnitX < unitMinX) {
+            return Direction.WEST;
+        } else if (mouseUnitX > unitMaxX) {
+            return Direction.EAST;
+        } else if (mouseUnitY < unitMinY) {
+            return Direction.NORTH;
+        } else if (mouseUnitY > unitMaxY) {
+            return Direction.SOUTH;
+        } else {
+            // Within the unit
+            return null;
+        }
+    }
+
+    private static boolean isUnitWithinCanvas(int unitStartX, int unitStartY, int unitEndX, int unitEndY) {
+        return (unitStartX >= 0) && (unitStartX <= CanvasGrid.MAX_X)
+                && (unitStartY >= 0) && (unitStartY <= CanvasGrid.MAX_Y)
+                && (unitEndX >= 0) && (unitEndX <= CanvasGrid.MAX_X)
+                && (unitEndY >= 0) && (unitEndY <= CanvasGrid.MAX_Y);
+    }
+
+    private static int clamp(int value, int minValue, int maxValue) {
         return Math.min(Math.max(value, minValue), maxValue);
     }
 }

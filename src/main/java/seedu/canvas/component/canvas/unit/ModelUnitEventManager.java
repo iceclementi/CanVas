@@ -53,21 +53,30 @@ public class ModelUnitEventManager {
     }
 
     private EventHandler<MouseEvent> onMousePressed = mouseEvent -> {
-        if (canvas.getCanvasMode() != CanvasMode.POINT || !mouseEvent.isPrimaryButtonDown()) {
-            return;
-        }
 
-        modelUnit = (ModelUnit) mouseEvent.getSource();
-        modelUnit.interact();
+        if (mouseEvent.isPrimaryButtonDown()) {
+            if (canvas.getCanvasMode() == CanvasMode.SHAPE) {
+                modelUnit = (ModelUnit) mouseEvent.getSource();
+                canvas.changeMode(CanvasMode.POINT);
+                return;
+            }
 
-        unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
-        unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
+            if (canvas.getCanvasMode() != CanvasMode.POINT) {
+                return;
+            }
 
-        previousPivotLocation = new UnitPoint(modelUnit.getUnitX(), modelUnit.getUnitY());
+            modelUnit = (ModelUnit) mouseEvent.getSource();
+            modelUnit.interact();
 
-        if (mouseEvent.isControlDown()) {
-            unitDragData.getCopiedUnits().add(modelUnit);
-            gesture = Gesture.COPY;
+            unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
+            unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
+
+            previousPivotLocation = new UnitPoint(modelUnit.getUnitX(), modelUnit.getUnitY());
+
+            if (mouseEvent.isControlDown()) {
+                unitDragData.getCopiedUnits().add(modelUnit);
+                gesture = Gesture.COPY;
+            }
         }
     };
 

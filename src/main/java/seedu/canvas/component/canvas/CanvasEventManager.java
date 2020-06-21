@@ -3,7 +3,10 @@ package seedu.canvas.component.canvas;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import seedu.canvas.component.canvas.unit.*;
+import seedu.canvas.component.canvas.unit.AnchorLineUnit;
+import seedu.canvas.component.canvas.unit.GroupLineUnit;
+import seedu.canvas.component.canvas.unit.LineUnit;
+import seedu.canvas.component.canvas.unit.ModelUnit;
 
 public class CanvasEventManager {
 
@@ -152,7 +155,7 @@ public class CanvasEventManager {
             if (modelUnit.getUnitWidth() == 0 || modelUnit.getUnitHeight() == 0) {
                 canvas.removeUnit(modelUnit);
             } else {
-                modelUnit.focus();
+                modelUnit.unfocus();
             }
         }
 
@@ -161,7 +164,7 @@ public class CanvasEventManager {
                     && (lineUnit.getUnitStartY() == lineUnit.getUnitEndY())) {
                 canvas.removeUnit(lineUnit);
             } else {
-                lineUnit.focus();
+                lineUnit.unfocus();
             }
         }
 

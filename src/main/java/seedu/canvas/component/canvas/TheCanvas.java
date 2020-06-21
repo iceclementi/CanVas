@@ -2,8 +2,8 @@ package seedu.canvas.component.canvas;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -27,6 +27,7 @@ public class TheCanvas extends Pane {
     private DoubleProperty canvasScale = new SimpleDoubleProperty(1.0d);
 
     private CanvasMode canvasMode = CanvasMode.POINT;
+    private StringProperty canvasModeProperty = new SimpleStringProperty(canvasMode.name());
 
     private Color lineColour = null;
     private Color fillColour = null;
@@ -103,6 +104,10 @@ public class TheCanvas extends Pane {
         return canvasMode;
     }
 
+    public StringProperty getCanvasModeProperty() {
+        return canvasModeProperty;
+    }
+
     /**
      * Changes the current canvas mode to the specified mode.
      *
@@ -111,6 +116,8 @@ public class TheCanvas extends Pane {
      */
     public void changeMode(CanvasMode canvasMode) {
         this.canvasMode = canvasMode;
+        canvasModeProperty.get();
+        canvasModeProperty.set(canvasMode.name());
 
         if (canvasMode == CanvasMode.SHAPE) {
             showGrid();

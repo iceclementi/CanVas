@@ -22,10 +22,15 @@ public class PointButton extends ToolButton {
 
     private void initialiseEvents() {
         setOnMouseReleased(this::onClick);
+
+        TheCanvas.getInstance().getCanvasModeProperty().addListener(observable -> {
+            if (TheCanvas.getInstance().getCanvasMode() == CanvasMode.POINT) {
+                selectButton(this);
+            }
+        });
     }
 
     private void onClick(MouseEvent mouseEvent) {
-        selectButton(this);
         TheCanvas.getInstance().changeMode(CanvasMode.POINT);
         TheCanvas.getInstance().setCursor(Cursor.DEFAULT);
     }

@@ -12,7 +12,7 @@ public class AnchorLineUnit extends LineUnit {
 
     private static final double OFFSET = CanvasGrid.OFFSET / 2;
 
-    private boolean isVertical = true;
+    private Boolean isVertical = null;
 
     private Line startAnchorLine;
     private Line endAnchorLine;
@@ -87,7 +87,7 @@ public class AnchorLineUnit extends LineUnit {
             return;
         }
 
-        isVertical = !isVertical;
+        isVertical = checkVertical();
 
         if (isVertical) {
             faceVertical();
@@ -136,7 +136,7 @@ public class AnchorLineUnit extends LineUnit {
         endAnchorLine.endYProperty().unbind();
     }
 
-    private boolean checkVertical() {
+    private Boolean checkVertical() {
         if (getUnitStartX() < getUnitEndX()) {
             return true;
         } else if (getUnitStartX() > getUnitEndX()) {

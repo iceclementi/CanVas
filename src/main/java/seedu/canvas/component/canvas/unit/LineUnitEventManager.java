@@ -55,21 +55,30 @@ public class LineUnitEventManager {
     }
 
     private EventHandler<MouseEvent> onMousePressed = mouseEvent -> {
-        if (canvas.getCanvasMode() != CanvasMode.POINT || !mouseEvent.isPrimaryButtonDown()) {
-            return;
+
+        if (mouseEvent.isPrimaryButtonDown()) {
+            if (canvas.getCanvasMode() == CanvasMode.SHAPE) {
+                lineUnit = (LineUnit) mouseEvent.getSource();
+                canvas.changeMode(CanvasMode.POINT);
+                return;
+            }
+
+            if (canvas.getCanvasMode() != CanvasMode.POINT) {
+                return;
+            }
+
+            lineUnit = (LineUnit) mouseEvent.getSource();
+            lineUnit.interact();
+
+            mouseAnchorLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+
+            previousPivotLocation = new UnitPoint(lineUnit.getUnitStartX(), lineUnit.getUnitStartY());
+
+            if (mouseEvent.isControlDown()) {
+                unitDragData.getCopiedUnits().add(lineUnit);
+                gesture = Gesture.COPY;
+            }
         }
-
-        lineUnit = (LineUnit) mouseEvent.getSource();
-        lineUnit.interact();
-
-        mouseAnchorLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-
-        previousPivotLocation = new UnitPoint(lineUnit.getUnitStartX(), lineUnit.getUnitStartY());
-
-        // if (mouseEvent.isControlDown()) {
-        //     unitDragData.getCopiedUnits().add(lineUnit);
-        //     gesture = Gesture.COPY;
-        // }
     };
 
     private EventHandler<MouseEvent> onMouseDragged = mouseEvent -> {
@@ -95,12 +104,12 @@ public class LineUnitEventManager {
             lineUnit.move(newUnitStartX, newUnitStartY);
         }
 
-        // if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
-        //     int mouseUnitX = CanvasGrid.toUnit(mouseEvent.getX());
-        //     int mouseUnitY = CanvasGrid.toUnit(mouseEvent.getY());
-        //
-        //     lineUnit.dragCopy(mouseUnitX, mouseUnitY, unitDragData);
-        // }
+        if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
+            int mouseUnitX = CanvasGrid.toUnit(mouseEvent.getX());
+            int mouseUnitY = CanvasGrid.toUnit(mouseEvent.getY());
+
+            lineUnit.dragCopy(mouseUnitX, mouseUnitY, unitDragData);
+        }
 
         mouseEvent.consume();
     };

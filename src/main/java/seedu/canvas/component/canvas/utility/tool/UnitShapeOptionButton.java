@@ -13,7 +13,6 @@ public class UnitShapeOptionButton extends ToolButton {
 
     private TheCanvas canvas = TheCanvas.getInstance();
 
-    private UnitShape shape = null;
     private HBox unitShapePopupBox;
     private boolean isShowPopup = false;
 
@@ -47,7 +46,6 @@ public class UnitShapeOptionButton extends ToolButton {
     }
 
     public void changeShape(UnitShape shape) {
-        this.shape = shape;
         canvas.changeUnitShape(shape);
 
         switch (shape) {
@@ -72,6 +70,12 @@ public class UnitShapeOptionButton extends ToolButton {
     private void initialiseEvents() {
         setOnMouseReleased(this::onClick);
 
+        TheCanvas.getInstance().getCanvasModeProperty().addListener(observable -> {
+            if (TheCanvas.getInstance().getCanvasMode() == CanvasMode.SHAPE) {
+                selectButton(this);
+            }
+        });
+
         focusedProperty().addListener(observable -> {
             if (getScene().getFocusOwner() instanceof UnitShapeButton) {
                 requestFocus();
@@ -85,8 +89,6 @@ public class UnitShapeOptionButton extends ToolButton {
     }
 
     private void onClick(MouseEvent mouseEvent) {
-        selectButton(this);
-
         if (isShowPopup) {
             hidePopup();
         } else {

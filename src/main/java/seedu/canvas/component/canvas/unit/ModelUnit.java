@@ -2,6 +2,7 @@ package seedu.canvas.component.canvas.unit;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -143,9 +144,8 @@ public class ModelUnit extends Rectangle {
      *  The drag data of the rectangle unit
      */
     public void dragCopy(int mouseUnitX, int mouseUnitY, DragData dragData) {
-        ArrayList<ModelUnit> copiedUnits = dragData.getCopiedUnits();
+        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
         Direction copyDirection = dragData.getCopyDirection();
-        // System.out.println(copyDirection);
 
         if (copiedUnits.isEmpty()) {
             return;
@@ -190,6 +190,8 @@ public class ModelUnit extends Rectangle {
         heightProperty().bind(unitHeight.multiply(CanvasGrid.OFFSET));
 
         unfocus();
+
+        setCursor(Cursor.HAND);
     }
 
     private void colour() {
@@ -211,9 +213,9 @@ public class ModelUnit extends Rectangle {
     }
 
     private void dragCopyWest(int mouseUnitX, int mouseUnitY, DragData dragData) {
-        ArrayList<ModelUnit> copiedUnits = dragData.getCopiedUnits();
+        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
 
-        ModelUnit targetUnit = copiedUnits.get(copiedUnits.size() - 1);
+        ModelUnit targetUnit = (ModelUnit) copiedUnits.get(copiedUnits.size() - 1);
         Direction currentCopyDirection = computeDirection(mouseUnitX, mouseUnitY, targetUnit);
 
         if (currentCopyDirection == Direction.WEST) {
@@ -228,9 +230,9 @@ public class ModelUnit extends Rectangle {
     }
 
     private void dragCopyEast(int mouseUnitX, int mouseUnitY, DragData dragData) {
-        ArrayList<ModelUnit> copiedUnits = dragData.getCopiedUnits();
+        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
 
-        ModelUnit targetUnit = copiedUnits.get(copiedUnits.size() - 1);
+        ModelUnit targetUnit = (ModelUnit) copiedUnits.get(copiedUnits.size() - 1);
         Direction currentCopyDirection = computeDirection(mouseUnitX, mouseUnitY, targetUnit);
 
         if (currentCopyDirection == Direction.EAST) {
@@ -245,9 +247,9 @@ public class ModelUnit extends Rectangle {
     }
 
     private void dragCopyNorth(int mouseUnitX, int mouseUnitY, DragData dragData) {
-        ArrayList<ModelUnit> copiedUnits = dragData.getCopiedUnits();
+        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
 
-        ModelUnit targetUnit = copiedUnits.get(copiedUnits.size() - 1);
+        ModelUnit targetUnit = (ModelUnit) copiedUnits.get(copiedUnits.size() - 1);
         Direction currentCopyDirection = computeDirection(mouseUnitX, mouseUnitY, targetUnit);
 
         if (currentCopyDirection == Direction.NORTH) {
@@ -262,9 +264,9 @@ public class ModelUnit extends Rectangle {
     }
 
     private void dragCopySouth(int mouseUnitX, int mouseUnitY, DragData dragData) {
-        ArrayList<ModelUnit> copiedUnits = dragData.getCopiedUnits();
+        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
 
-        ModelUnit targetUnit = copiedUnits.get(copiedUnits.size() - 1);
+        ModelUnit targetUnit = (ModelUnit) copiedUnits.get(copiedUnits.size() - 1);
         Direction currentCopyDirection = computeDirection(mouseUnitX, mouseUnitY, targetUnit);
 
         if (currentCopyDirection == Direction.SOUTH) {
@@ -278,8 +280,8 @@ public class ModelUnit extends Rectangle {
         }
     }
 
-    private void addUnit(ArrayList<ModelUnit> copiedUnits, ModelUnit targetUnit,
-                         int newUnitX, int newUnitY, int newUnitWidth, int newUnitHeight) {
+    private void addUnit(ArrayList<Node> copiedUnits, ModelUnit targetUnit,
+            int newUnitX, int newUnitY, int newUnitWidth, int newUnitHeight) {
         if (isUnitWithinCanvas(newUnitX, newUnitY, newUnitWidth, newUnitHeight)) {
             ModelUnit newUnit = new ModelUnit(
                     newUnitX,
@@ -294,7 +296,7 @@ public class ModelUnit extends Rectangle {
     }
 
     private void removeUnit(ModelUnit targetUnit, DragData dragData) {
-        ArrayList<ModelUnit> copiedUnits = dragData.getCopiedUnits();
+        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
 
         if (copiedUnits.size() > 1) {
             copiedUnits.remove(targetUnit);
@@ -320,7 +322,7 @@ public class ModelUnit extends Rectangle {
         } else if (mouseUnitY > (unit.getUnitY() + unit.getUnitHeight())) {
             return Direction.SOUTH;
         } else {
-            // Within the rectangle
+            // Within the unit
             return null;
         }
     }
