@@ -36,9 +36,6 @@ public class DrawingCanvasEventManager {
         startLocation = new Point2D(mouseEvent.getX(), mouseEvent.getY());
 
         drawing = new Drawing();
-        // drawing = new Drawing(new DrawingStroke(drawing, mouseEvent.getX(), mouseEvent.getY(),
-        //         mouseEvent.getX(), mouseEvent.getY()));
-        // drawing.addStroke(new DrawingStroke(mouseEvent.getX(), mouseEvent.getY(), mouseEvent.getX(), mouseEvent.getY()));
     };
 
     private EventHandler<MouseEvent> onMouseDragged = mouseEvent -> {

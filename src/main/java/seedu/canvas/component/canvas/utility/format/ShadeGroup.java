@@ -5,7 +5,7 @@ import javafx.scene.layout.VBox;
 
 public class ShadeGroup extends VBox {
 
-    public ShadeGroup(PaletteColour ... paletteColours) {
+    public ShadeGroup(PaletteColour... paletteColours) {
 
         initialiseStyle();
         getChildren().addAll(paletteColours);

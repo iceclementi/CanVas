@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import seedu.canvas.component.canvas.CanvasComponent;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.DragData;
@@ -16,7 +17,7 @@ import seedu.canvas.component.canvas.TheCanvas;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ModelUnit extends Rectangle {
+public class ModelUnit extends Rectangle implements CanvasComponent {
 
     private TheCanvas canvas = TheCanvas.getInstance();
 

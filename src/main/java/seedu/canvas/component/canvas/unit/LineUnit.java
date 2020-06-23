@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
+import seedu.canvas.component.canvas.CanvasComponent;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.DragData;
@@ -16,7 +17,7 @@ import seedu.canvas.component.canvas.TheCanvas;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class LineUnit extends Line {
+public class LineUnit extends Line implements CanvasComponent {
 
     protected TheCanvas canvas = TheCanvas.getInstance();
 

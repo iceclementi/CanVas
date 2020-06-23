@@ -4,12 +4,13 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
+import seedu.canvas.component.canvas.CanvasComponent;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.TheCanvas;
 
 import java.util.ArrayList;
 
-public class Drawing {
+public class Drawing implements CanvasComponent {
 
     private TheCanvas canvas = TheCanvas.getInstance();
     private DrawingCanvas drawingCanvas = DrawingCanvas.getInstance();

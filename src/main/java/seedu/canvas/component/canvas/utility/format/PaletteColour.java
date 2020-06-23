@@ -38,6 +38,18 @@ public class PaletteColour extends Circle {
         }
     }
 
+    private void pick() {
+        if (pickedColour != null) {
+            pickedColour.isPicked = false;
+            pickedColour.reset();
+        }
+
+        pickedColour = this;
+
+        isPicked = true;
+        setEffect(new DropShadow(BlurType.TWO_PASS_BOX, Color.GOLD, 5, 2, 0, 0));
+    }
+
     private void initialiseStyle() {
         if (colour == Color.WHITE) {
             setStroke(Color.LIGHTGRAY);
@@ -78,18 +90,6 @@ public class PaletteColour extends Circle {
     private void onRelease(MouseEvent mouseEvent) {
         pick();
         palette.pickColour(colour);
-    }
-
-    private void pick() {
-        if (pickedColour != null) {
-            pickedColour.isPicked = false;
-            pickedColour.reset();
-        }
-
-        pickedColour = this;
-
-        isPicked = true;
-        setEffect(new DropShadow(BlurType.TWO_PASS_BOX, Color.GOLD, 5, 2, 0, 0));
     }
 
     private void reset() {

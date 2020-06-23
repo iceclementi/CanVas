@@ -39,6 +39,9 @@ dependencies {
     implementation group: 'org.openjfx', name: 'javafx-controls', version: javaFxVersion, classifier: 'linux'
     implementation group: 'org.openjfx', name: 'javafx-fxml', version: javaFxVersion, classifier: 'linux'
     implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'linux'
+
+    compile group: 'org.fxmisc.richtext', name: 'richtextfx', version: '0.10.5'
+    implementation 'org.fxmisc.richtext:richtextfx:0.10.5'
 }
 
 java {

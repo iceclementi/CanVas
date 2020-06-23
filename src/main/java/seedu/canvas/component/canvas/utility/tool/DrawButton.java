@@ -25,12 +25,12 @@ public class DrawButton extends ToolButton {
         TheCanvas.getInstance().getCanvasModeProperty().addListener(observable -> {
             if (TheCanvas.getInstance().getCanvasMode() == CanvasMode.DRAW) {
                 selectButton(this);
+                TheCanvas.getInstance().setCursor(Cursor.DEFAULT);
             }
         });
     }
 
     private void onClick(MouseEvent mouseEvent) {
         TheCanvas.getInstance().changeMode(CanvasMode.DRAW);
-        TheCanvas.getInstance().setCursor(Cursor.DEFAULT);
     }
 }

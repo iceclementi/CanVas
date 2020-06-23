@@ -3,6 +3,7 @@ package seedu.canvas.component.canvas;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import seedu.canvas.component.canvas.text.TextBox;
 import seedu.canvas.component.canvas.unit.AnchorLineUnit;
 import seedu.canvas.component.canvas.unit.GroupLineUnit;
 import seedu.canvas.component.canvas.unit.LineUnit;
@@ -16,6 +17,7 @@ public class CanvasEventManager {
 
     private ModelUnit modelUnit;
     private LineUnit lineUnit;
+    private TextBox textBox;
 
     private static final double MIN_SCALE = 0.5d;
     private static final double MAX_SCALE = 4.0d;
@@ -61,6 +63,15 @@ public class CanvasEventManager {
                 return;
             }
 
+            if (mouseEvent.isAltDown()) {
+                double x = mouseEvent.getX();
+                double y = mouseEvent.getY();
+
+                textBox = new TextBox(x, y);
+
+                return;
+            }
+
             GridPoint targetPoint = CanvasGrid.getTargetGridPoint();
 
             if (targetPoint == null) {
@@ -71,7 +82,7 @@ public class CanvasEventManager {
             double x = targetPoint.getCenterX();
             double y = targetPoint.getCenterY();
 
-            switch(canvas.getUnitShape()) {
+            switch (canvas.getUnitShape()) {
             case MODEL:
                 modelUnit = new ModelUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y), 0, 0);
                 modelUnit.interact();
@@ -114,14 +125,21 @@ public class CanvasEventManager {
                 return;
             }
 
+            if (mouseEvent.isAltDown()) {
+                textBox.scale(mouseEvent.getX(), mouseEvent.getY());
+                return;
+            }
+
             if (modelUnit == null && lineUnit == null) {
                 return;
             }
 
             switch (canvas.getUnitShape()) {
             case MODEL:
-                int newUnitWidth = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()));
-                int newUnitHeight = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()));
+                int newUnitWidth =
+                        CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()));
+                int newUnitHeight =
+                        CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()));
 
                 modelUnit.scale(newUnitWidth, newUnitHeight);
                 break;
@@ -168,8 +186,15 @@ public class CanvasEventManager {
             }
         }
 
+        if (textBox != null) {
+            if (textBox.getWidth() == 0 || textBox.getHeight() == 0) {
+                textBox.setDefaultSize();
+            }
+        }
+
         modelUnit = null;
         lineUnit = null;
+        textBox = null;
     };
 
     private EventHandler<ScrollEvent> onScroll = scrollEvent -> {

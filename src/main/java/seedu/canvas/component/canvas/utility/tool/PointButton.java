@@ -26,12 +26,12 @@ public class PointButton extends ToolButton {
         TheCanvas.getInstance().getCanvasModeProperty().addListener(observable -> {
             if (TheCanvas.getInstance().getCanvasMode() == CanvasMode.POINT) {
                 selectButton(this);
+                TheCanvas.getInstance().setCursor(Cursor.DEFAULT);
             }
         });
     }
 
     private void onClick(MouseEvent mouseEvent) {
         TheCanvas.getInstance().changeMode(CanvasMode.POINT);
-        TheCanvas.getInstance().setCursor(Cursor.DEFAULT);
     }
 }

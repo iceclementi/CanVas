@@ -73,6 +73,7 @@ public class UnitShapeOptionButton extends ToolButton {
         TheCanvas.getInstance().getCanvasModeProperty().addListener(observable -> {
             if (TheCanvas.getInstance().getCanvasMode() == CanvasMode.SHAPE) {
                 selectButton(this);
+                TheCanvas.getInstance().setCursor(Cursor.CROSSHAIR);
             }
         });
 
@@ -96,7 +97,6 @@ public class UnitShapeOptionButton extends ToolButton {
         }
 
         TheCanvas.getInstance().changeMode(CanvasMode.SHAPE);
-        TheCanvas.getInstance().setCursor(Cursor.CROSSHAIR);
     }
 
     private void showPopup() {
