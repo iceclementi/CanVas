@@ -3,14 +3,13 @@ package seedu.canvas.component.canvas.text;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import seedu.canvas.component.canvas.CanvasComponent;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.unit.CanvasHandle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TextBoxWrapper extends Rectangle implements CanvasComponent {
+public class TextBoxWrapper extends Rectangle {
 
     private TextBoxMoveHandle moveHandle;
     private TextBoxResizeHandle resizeHandleNW;

@@ -10,14 +10,15 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import org.fxmisc.richtext.StyleClassedTextArea;
-import seedu.canvas.component.canvas.CanvasComponent;
+import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.TheCanvas;
 
 import java.util.ArrayList;
 
-public class TextBox extends StyleClassedTextArea implements CanvasComponent {
+public class TextBox extends StyleClassedTextArea implements CanvasNode {
 
+    private TheCanvas canvas = TheCanvas.getInstance();
     private TextBoxWrapper wrapper = new TextBoxWrapper(this);
 
     public TextBox(double x, double y) {
@@ -26,7 +27,7 @@ public class TextBox extends StyleClassedTextArea implements CanvasComponent {
         initialiseStyle();
         initialiseEvents();
 
-        TheCanvas.getInstance().getChildren().addAll(getGroup());
+        canvas.addNode(this);
         relocate(x, y);
     }
 
@@ -40,11 +41,13 @@ public class TextBox extends StyleClassedTextArea implements CanvasComponent {
 
     public void interact() {
         toFront();
+        canvas.interactSingle(this);
         wrapper.interact();
     }
 
     public void focus() {
         toFront();
+        canvas.focusSingle(this);
         wrapper.focus();
     }
 
@@ -66,9 +69,10 @@ public class TextBox extends StyleClassedTextArea implements CanvasComponent {
         relocate(finalNewX, finalNewY);
     }
 
-    public void colour() {
-
+    public void colourLine(Color colour) {
     }
+
+    public void colourFill(Color colour) {}
 
     public void colour(Color textColour) {
         

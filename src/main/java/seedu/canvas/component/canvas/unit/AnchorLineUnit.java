@@ -1,7 +1,7 @@
 package seedu.canvas.component.canvas.unit;
 
 import javafx.scene.Node;
-import javafx.scene.paint.Paint;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
 import seedu.canvas.component.canvas.CanvasGrid;
@@ -25,8 +25,8 @@ public class AnchorLineUnit extends LineUnit {
     }
 
     @Override
-    public ArrayList<Node> getUnitGroup() {
-        ArrayList<Node> unitGroup = super.getUnitGroup();
+    public ArrayList<Node> getGroup() {
+        ArrayList<Node> unitGroup = super.getGroup();
         unitGroup.add(startAnchorLine);
         unitGroup.add(endAnchorLine);
         return unitGroup;
@@ -47,8 +47,8 @@ public class AnchorLineUnit extends LineUnit {
     }
 
     @Override
-    public void colour(Paint lineColour) {
-        super.colour(lineColour);
+    public void colourLine(Color lineColour) {
+        super.colourLine(lineColour);
         startAnchorLine.setStroke(lineColour);
         endAnchorLine.setStroke(lineColour);
     }

@@ -4,13 +4,13 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import seedu.canvas.component.canvas.CanvasComponent;
+import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.TheCanvas;
 
 import java.util.ArrayList;
 
-public class Drawing implements CanvasComponent {
+public class Drawing implements CanvasNode {
 
     private TheCanvas canvas = TheCanvas.getInstance();
     private DrawingCanvas drawingCanvas = DrawingCanvas.getInstance();
@@ -59,7 +59,7 @@ public class Drawing implements CanvasComponent {
         return endY;
     }
 
-    public ArrayList<Node> getDrawing() {
+    public ArrayList<Node> getGroup() {
         ArrayList<Node> drawingUnit = new ArrayList<>(drawing);
         drawingUnit.addAll(selectionBox.getGroup());
 
@@ -80,20 +80,20 @@ public class Drawing implements CanvasComponent {
     public void finishDrawing() {
         selectionBox = new DrawingSelectionBox(this);
         drawingCanvas.reset();
-        canvas.addDrawing(this);
+        canvas.addNode(this);
 
         selectionBox.unfocus();
         unfocus();
     }
 
     public void interact() {
-        canvas.interactDrawing(this);
+        canvas.interactSingle(this);
         toFront();
         selectionBox.interact();
     }
 
     public void focus() {
-        canvas.focusDrawing(this);
+        canvas.focusSingle(this);
         toFront();
         selectionBox.focus();
     }
@@ -114,9 +114,11 @@ public class Drawing implements CanvasComponent {
         endY.set(endY.get() + deltaY);
     }
 
-    public void colour(Color colour) {
+    public void colourLine(Color colour) {
         drawing.forEach(stroke -> stroke.colour(colour));
     }
+
+    public void colourFill(Color colour) {}
 
     private void updateBounds(double strokeStartX, double strokeStartY, double strokeEndX, double strokeEndY) {
         double newStartX = Math.min(strokeStartX, strokeEndX);

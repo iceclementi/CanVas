@@ -1,6 +1,7 @@
 package seedu.canvas.component.canvas.unit;
 
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
@@ -28,8 +29,8 @@ public class GroupLineUnit extends LineUnit {
     }
 
     @Override
-    public ArrayList<Node> getUnitGroup() {
-        ArrayList<Node> unitGroup = super.getUnitGroup();
+    public ArrayList<Node> getGroup() {
+        ArrayList<Node> unitGroup = super.getGroup();
         unitGroup.addAll(Arrays.asList(startGroupLine, endGroupLine, middleGroupLine));
         return unitGroup;
     }
@@ -51,8 +52,8 @@ public class GroupLineUnit extends LineUnit {
     }
 
     @Override
-    public void colour(Paint lineColour) {
-        super.colour(lineColour);
+    public void colourLine(Color lineColour) {
+        super.colourLine(lineColour);
         startGroupLine.setStroke(lineColour);
         endGroupLine.setStroke(lineColour);
         middleGroupLine.setStroke(lineColour);

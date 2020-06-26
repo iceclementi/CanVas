@@ -5,10 +5,11 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
-import seedu.canvas.component.canvas.CanvasComponent;
+import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.DragData;
@@ -17,7 +18,7 @@ import seedu.canvas.component.canvas.TheCanvas;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class LineUnit extends Line implements CanvasComponent {
+public class LineUnit extends Line implements CanvasNode {
 
     protected TheCanvas canvas = TheCanvas.getInstance();
 
@@ -42,7 +43,7 @@ public class LineUnit extends Line implements CanvasComponent {
         this.unitEndX.set(unitEndX);
         this.unitEndY.set(unitEndY);
 
-        canvas.addUnit(this);
+        canvas.addNode(this);
 
         initialiseEvents();
     }
@@ -79,12 +80,12 @@ public class LineUnit extends Line implements CanvasComponent {
         this.unitEndY.set(unitEndY);
     }
 
-    public ArrayList<Node> getUnitGroup() {
+    public ArrayList<Node> getGroup() {
         return new ArrayList<>(Arrays.asList(this, resizeHandleWest, resizeHandleEast, moveHandle));
     }
 
     public void interact() {
-        canvas.interactUnit(this);
+        canvas.interactSingle(this);
 
         toFront();
 
@@ -94,7 +95,7 @@ public class LineUnit extends Line implements CanvasComponent {
     }
 
     public void focus() {
-        canvas.focusUnit(this);
+        canvas.focusSingle(this);
 
         toFront();
 
@@ -174,9 +175,11 @@ public class LineUnit extends Line implements CanvasComponent {
         }
     }
 
-    public void colour(Paint lineColour) {
+    public void colourLine(Color lineColour) {
         setStroke(lineColour);
     }
+
+    public void colourFill(Color fillColour) {}
 
     protected void colour() {
         setStroke(canvas.getLineColour());
@@ -297,7 +300,7 @@ public class LineUnit extends Line implements CanvasComponent {
                 newUnit = new LineUnit(newUnitStartX, newUnitStartY, newUnitEndX, newUnitEndY);
             }
 
-            newUnit.colour(targetUnit.getStroke());
+            newUnit.colourLine((Color) targetUnit.getStroke());
 
             copiedUnits.add(newUnit);
         }
@@ -308,7 +311,7 @@ public class LineUnit extends Line implements CanvasComponent {
 
         if (copiedUnits.size() > 1) {
             copiedUnits.remove(unit);
-            canvas.removeUnit(unit);
+            canvas.removeNode(unit);
         }
 
         if (copiedUnits.size() == 1) {

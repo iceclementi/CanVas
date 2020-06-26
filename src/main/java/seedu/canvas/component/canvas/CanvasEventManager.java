@@ -51,12 +51,13 @@ public class CanvasEventManager {
 
             // Checks if focus is not on model unit
             if (canvas.getCanvasMode() == CanvasMode.POINT) {
-                int mouseUnitX = CanvasGrid.toUnit(mouseEvent.getX());
-                int mouseUnitY = CanvasGrid.toUnit(mouseEvent.getY());
-
-                if (!canvas.isIntersectUnit(mouseUnitX, mouseUnitY)) {
-                    canvas.focusNone();
-                }
+                // int mouseUnitX = CanvasGrid.toUnit(mouseEvent.getX());
+                // int mouseUnitY = CanvasGrid.toUnit(mouseEvent.getY());
+                //
+                // if (!canvas.isIntersectUnit(mouseUnitX, mouseUnitY)) {
+                //     canvas.focusNone();
+                // }
+                canvas.focusNone();
             }
 
             if (canvas.getCanvasMode() != CanvasMode.SHAPE) {
@@ -171,7 +172,7 @@ public class CanvasEventManager {
     private EventHandler<MouseEvent> onMouseReleased = mouseEvent -> {
         if (modelUnit != null) {
             if (modelUnit.getUnitWidth() == 0 || modelUnit.getUnitHeight() == 0) {
-                canvas.removeUnit(modelUnit);
+                canvas.removeNode(modelUnit);
             } else {
                 modelUnit.unfocus();
             }
@@ -180,7 +181,7 @@ public class CanvasEventManager {
         if (lineUnit != null) {
             if ((lineUnit.getUnitStartX() == lineUnit.getUnitEndX())
                     && (lineUnit.getUnitStartY() == lineUnit.getUnitEndY())) {
-                canvas.removeUnit(lineUnit);
+                canvas.removeNode(lineUnit);
             } else {
                 lineUnit.unfocus();
             }

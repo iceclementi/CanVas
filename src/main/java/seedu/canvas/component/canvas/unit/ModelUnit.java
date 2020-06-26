@@ -8,7 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
-import seedu.canvas.component.canvas.CanvasComponent;
+import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.DragData;
@@ -17,7 +17,7 @@ import seedu.canvas.component.canvas.TheCanvas;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ModelUnit extends Rectangle implements CanvasComponent {
+public class ModelUnit extends Rectangle implements CanvasNode {
 
     private TheCanvas canvas = TheCanvas.getInstance();
 
@@ -41,7 +41,7 @@ public class ModelUnit extends Rectangle implements CanvasComponent {
         this.unitWidth.set(unitWidth);
         this.unitHeight.set(unitHeight);
 
-        canvas.addUnit(this);
+        canvas.addNode(this);
 
         initialiseEvents();
     }
@@ -78,12 +78,12 @@ public class ModelUnit extends Rectangle implements CanvasComponent {
         this.unitHeight.set(unitHeight);
     }
 
-    public ArrayList<Node> getUnitGroup() {
+    public ArrayList<Node> getGroup() {
         return new ArrayList<>(Arrays.asList(this, resizeHandleNW, resizeHandleNE, resizeHandleSW, resizeHandleSE));
     }
 
     public void interact() {
-        canvas.interactUnit(this);
+        canvas.interactSingle(this);
 
         toFront();
 
@@ -94,7 +94,7 @@ public class ModelUnit extends Rectangle implements CanvasComponent {
     }
 
     public void focus() {
-        canvas.focusUnit(this);
+        canvas.focusSingle(this);
 
         toFront();
 
@@ -301,7 +301,7 @@ public class ModelUnit extends Rectangle implements CanvasComponent {
 
         if (copiedUnits.size() > 1) {
             copiedUnits.remove(targetUnit);
-            canvas.removeUnit(targetUnit);
+            canvas.removeNode(targetUnit);
         }
 
         if (copiedUnits.size() == 1) {

@@ -29,21 +29,13 @@ public class TheCanvas extends Pane {
     private CanvasMode canvasMode = CanvasMode.POINT;
     private StringProperty canvasModeProperty = new SimpleStringProperty(canvasMode.name());
 
-    private Color lineColour = null;
-    private Color fillColour = null;
-
     /* Unit shapes */
     private UnitShape shape = UnitShape.MODEL;
 
-    private ModelUnit focussedModelUnit = null;
-    private LineUnit focussedLineUnit = null;
+    private CanvasNode focussedNode = null;
 
-    private ArrayList<ModelUnit> modelUnits = new ArrayList<>();
-    // private ArrayList<LineUnit> lineUnits = new ArrayList<>();
-
-    /* Drawing */
-    private Drawing focussedDrawing = null;
-    // private ArrayList<Drawing> drawings = new ArrayList<>();
+    private Color lineColour = null;
+    private Color fillColour = null;
 
     private static TheCanvas canvas = null;
 
@@ -143,24 +135,16 @@ public class TheCanvas extends Pane {
     public void setLineColour(Color lineColour) {
         this.lineColour = lineColour;
 
-        if (focussedModelUnit != null) {
-            focussedModelUnit.colourLine(lineColour);
-        }
-
-        if (focussedLineUnit != null) {
-            focussedLineUnit.colour(lineColour);
-        }
-
-        if (focussedDrawing != null) {
-            focussedDrawing.colour(lineColour);
+        if (focussedNode != null) {
+            focussedNode.colourLine(lineColour);
         }
     }
 
     public void setFillColour(Color fillColour) {
         this.fillColour = fillColour;
 
-        if (focussedModelUnit != null) {
-            focussedModelUnit.colourFill(fillColour);
+        if (focussedNode != null) {
+            focussedNode.colourFill(fillColour);
         }
     }
 
@@ -172,88 +156,29 @@ public class TheCanvas extends Pane {
         this.shape = shape;
     }
 
-    public void interactUnit(ModelUnit unit) {
+    public void interactSingle(CanvasNode canvasNode) {
         focusNone();
-        focussedModelUnit = unit;
+        focussedNode = canvasNode;
     }
 
-    public void interactUnit(LineUnit unit) {
+    public void focusSingle(CanvasNode canvasNode) {
         focusNone();
-        focussedLineUnit = unit;
-    }
-
-    public void interactDrawing(Drawing drawing) {
-        focusNone();
-        focussedDrawing = drawing;
-    }
-
-    public void focusUnit(ModelUnit unit) {
-        focusNone();
-        focussedModelUnit = unit;
-    }
-
-    public void focusUnit(LineUnit unit) {
-        focusNone();
-        focussedLineUnit = unit;
-    }
-
-    public void focusDrawing(Drawing drawing) {
-        focusNone();
-        focussedDrawing = drawing;
+        focussedNode = canvasNode;
     }
 
     public void focusNone() {
-        if (focussedModelUnit != null) {
-            focussedModelUnit.unfocus();
-            focussedModelUnit = null;
-        }
-
-        if (focussedLineUnit != null) {
-            focussedLineUnit.unfocus();
-            focussedLineUnit = null;
-        }
-
-        if (focussedDrawing != null) {
-            focussedDrawing.unfocus();
-            focussedDrawing = null;
+        if (focussedNode != null) {
+            focussedNode.unfocus();
+            focussedNode = null;
         }
     }
 
-    public void addUnit(ModelUnit unit) {
-        modelUnits.add(unit);
-        getChildren().addAll(unit.getUnitGroup());
+    public void addNode(CanvasNode canvasNode) {
+        getChildren().addAll(canvasNode.getGroup());
     }
 
-    public void addUnit(LineUnit unit) {
-        // lineUnits.add(unit);
-        getChildren().addAll(unit.getUnitGroup());
-    }
-
-    public void removeUnit(ModelUnit unit) {
-        modelUnits.remove(unit);
-        getChildren().removeAll(unit.getUnitGroup());
-    }
-
-    public void removeUnit(LineUnit unit) {
-        // lineUnits.remove(unit);
-        getChildren().removeAll(unit.getUnitGroup());
-    }
-
-    public void addDrawing(Drawing drawing) {
-        getChildren().addAll(drawing.getDrawing());
-    }
-
-    public void removeDrawing(Drawing drawing) {
-        getChildren().removeAll(drawing.getDrawing());
-    }
-
-    public boolean isIntersectUnit(int pointX, int pointY) {
-        for (ModelUnit unit : modelUnits) {
-            if (unit.isIntersect(pointX, pointY)) {
-                return true;
-            }
-        }
-        return false;
+    public void removeNode(CanvasNode canvasNode) {
+        getChildren().removeAll(canvasNode.getGroup());
     }
 
     public double toScale(double valueToScale) {
@@ -299,17 +224,9 @@ public class TheCanvas extends Pane {
 
             getScene().setOnKeyPressed(keyEvent -> {
                 if (keyEvent.getCode() == KeyCode.DELETE || keyEvent.getCode() == KeyCode.BACK_SPACE) {
-                    if (focussedModelUnit != null) {
-                        removeUnit(focussedModelUnit);
-                        focussedModelUnit = null;
-                    }
-                    if (focussedLineUnit != null) {
-                        removeUnit(focussedLineUnit);
-                        focussedLineUnit = null;
-                    }
-                    if (focussedDrawing != null) {
-                        removeDrawing(focussedDrawing);
-                        focussedDrawing = null;
+                    if (focussedNode != null) {
+                        removeNode(focussedNode);
+                        focussedNode = null;
                     }
                 }
             });
