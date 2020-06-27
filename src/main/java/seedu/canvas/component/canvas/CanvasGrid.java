@@ -8,9 +8,9 @@ import java.util.ArrayList;
 
 public class CanvasGrid {
 
-    public static final double WIDTH = 600d;
-    public static final double HEIGHT = 600d;
-    public static final double OFFSET = 15d;
+    public static final double WIDTH = 2000d;
+    public static final double HEIGHT = 1000d;
+    public static final double OFFSET = 20d;
     public static final int MIN_X = 0;
     public static final int MAX_X = (int) Math.round(WIDTH / OFFSET);
     public static final int MIN_Y = 0;

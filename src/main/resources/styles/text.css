@@ -1,0 +1,23 @@
+.default {
+    -fx-fill: black;
+}
+
+.bold {
+    -fx-font-weight: bold;
+}
+
+.italic {
+    -fx-font-style: italic;
+}
+
+.underline {
+    -fx-underline: true;
+}
+
+.colour-black {
+    -fx-fill: black;
+}
+
+.colour-red {
+    -fx-fill: red;
+}

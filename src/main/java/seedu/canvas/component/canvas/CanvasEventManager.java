@@ -51,12 +51,6 @@ public class CanvasEventManager {
 
             // Checks if focus is not on model unit
             if (canvas.getCanvasMode() == CanvasMode.POINT) {
-                // int mouseUnitX = CanvasGrid.toUnit(mouseEvent.getX());
-                // int mouseUnitY = CanvasGrid.toUnit(mouseEvent.getY());
-                //
-                // if (!canvas.isIntersectUnit(mouseUnitX, mouseUnitY)) {
-                //     canvas.focusNone();
-                // }
                 canvas.focusNone();
             }
 
@@ -188,7 +182,7 @@ public class CanvasEventManager {
         }
 
         if (textBox != null) {
-            if (textBox.getWidth() == 0 || textBox.getHeight() == 0) {
+            if (textBox.getWidth() < TextBox.MIN_WIDTH || textBox.getHeight() < TextBox.MIN_HEIGHT) {
                 textBox.setDefaultSize();
             }
         }

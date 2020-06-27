@@ -9,15 +9,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import seedu.canvas.component.canvas.draw.Drawing;
 import seedu.canvas.component.canvas.draw.DrawingCanvas;
-import seedu.canvas.component.canvas.unit.LineUnit;
-import seedu.canvas.component.canvas.unit.ModelUnit;
 import seedu.canvas.component.canvas.unit.UnitShape;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
-
-import java.util.ArrayList;
 
 public class TheCanvas extends Pane {
 

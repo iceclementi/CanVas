@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import seedu.canvas.component.canvas.CanvasMode;
 import seedu.canvas.component.canvas.utility.format.ColourButton;
@@ -66,9 +67,7 @@ public class CanvasController implements Initializable {
 
         unitShapeOptionButton.initialisePopup(unitShapePopupBox);
 
-        toolBox.setOnMousePressed(mouseEvent -> {
-            toolBox.requestFocus();
-        });
+        toolBox.setOnMousePressed(mouseEvent -> toolBox.requestFocus());
     }
 
     private void initialiseAccessoryBox() {
@@ -80,9 +79,7 @@ public class CanvasController implements Initializable {
 
         colourButton.initialisePopup(colourPopupBox, colourTargetBox, paletteBox);
 
-        accessoryBox.setOnMousePressed(mouseEvent -> {
-            accessoryBox.requestFocus();
-        });
+        accessoryBox.setOnMousePressed(mouseEvent -> accessoryBox.requestFocus());
     }
 
     private void initialiseCanvas() {

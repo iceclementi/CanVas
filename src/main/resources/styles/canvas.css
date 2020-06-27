@@ -35,10 +35,12 @@
 
 /* Canvas */
 .canvas {
-    -fx-min-width: 600;
-    -fx-min-height: 600;
-    -fx-max-width: 600;
-    -fx-max-height: 600;
+    -fx-min-width: 2000;
+    -fx-min-height: 1000;
+    -fx-pref-width: 2000;
+    -fx-pref-height: 1000;
+    -fx-max-width: 2000;
+    -fx-max-height: 1000;
 
     -fx-background-color: white;
 }

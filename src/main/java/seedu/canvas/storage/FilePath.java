@@ -14,6 +14,7 @@ public class FilePath {
     /* Path to Styles */
     public static final String MENU_STYLE_PATH = "/styles/menu.css";
     public static final String CANVAS_STYLE_PATH = "/styles/canvas.css";
+    public static final String TEXT_STYLE_PATH = "/styles/text.css";
 
 
     /* Path to Button Images */
