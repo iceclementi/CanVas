@@ -1,4 +1,4 @@
-package seedu.canvas.component.canvas.utility.format;
+package seedu.canvas.component.canvas.utility.format.colour;
 
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
@@ -6,7 +6,6 @@ import javafx.scene.layout.VBox;
 public class ShadeGroup extends VBox {
 
     public ShadeGroup(PaletteColour... paletteColours) {
-
         initialiseStyle();
         getChildren().addAll(paletteColours);
     }

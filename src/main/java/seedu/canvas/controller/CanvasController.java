@@ -5,11 +5,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import seedu.canvas.component.canvas.CanvasMode;
-import seedu.canvas.component.canvas.utility.format.ColourButton;
+import seedu.canvas.component.canvas.utility.format.colour.ColourButton;
+import seedu.canvas.component.canvas.utility.format.text.TextFormatBox;
 import seedu.canvas.component.canvas.utility.tool.DrawButton;
+import seedu.canvas.component.canvas.utility.tool.TextButton;
 import seedu.canvas.component.canvas.utility.tool.UnitShapeOptionButton;
 import seedu.canvas.component.canvas.TheCanvas;
 import seedu.canvas.component.canvas.utility.tool.PointButton;
@@ -39,6 +40,9 @@ public class CanvasController implements Initializable {
     private HBox paletteBox;
 
     @FXML
+    private HBox textFormatBox;
+
+    @FXML
     private ScrollPane canvasScrollPane;
 
     private TheCanvas canvas = TheCanvas.getInstance();
@@ -48,6 +52,7 @@ public class CanvasController implements Initializable {
         initialiseTitle();
         initialiseToolBox();
         initialiseAccessoryBox();
+        initialiseTextFormatBox();
         initialiseCanvas();
     }
 
@@ -62,6 +67,7 @@ public class CanvasController implements Initializable {
         toolBox.getChildren().addAll(
             new PointButton(FilePath.CANVAS_POINT_BUTTON_IMAGE_PATH),
             unitShapeOptionButton,
+            new TextButton(FilePath.CANVAS_TEXT_BUTTON_IMAGE_PATH),
             new DrawButton(FilePath.CANVAS_DRAW_BUTTON_IMAGE_PATH)
         );
 
@@ -80,6 +86,10 @@ public class CanvasController implements Initializable {
         colourButton.initialisePopup(colourPopupBox, colourTargetBox, paletteBox);
 
         accessoryBox.setOnMousePressed(mouseEvent -> accessoryBox.requestFocus());
+    }
+
+    private void initialiseTextFormatBox() {
+        new TextFormatBox(textFormatBox).initialise();
     }
 
     private void initialiseCanvas() {

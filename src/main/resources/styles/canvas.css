@@ -33,6 +33,21 @@
     -fx-cursor: default;
 }
 
+
+/* Text Format Button */
+.text-style-button {
+    -fx-pref-width: 35;
+    -fx-pref-height: 35;
+    -fx-border-color: lightgrey;
+
+    -fx-cursor: default;
+}
+
+.text-style-button-group {
+    -fx-effect: dropshadow(three-pass-box, lightgrey, 3, 0, 3, 3);
+}
+
+
 /* Canvas */
 .canvas {
     -fx-min-width: 2000;

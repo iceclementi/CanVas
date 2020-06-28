@@ -1,4 +1,4 @@
-package seedu.canvas.component.canvas.utility.format;
+package seedu.canvas.component.canvas.utility.format.colour;
 
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;

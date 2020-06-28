@@ -2,7 +2,6 @@ package seedu.canvas.component.canvas.text;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.IndexRange;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -16,11 +15,13 @@ import org.fxmisc.richtext.StyleClassedTextArea;
 import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.TheCanvas;
+import seedu.canvas.component.canvas.utility.format.text.TextFormatBox;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.CanvasMath;
 import seedu.canvas.util.ComponentUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 
 public class TextBox extends StyleClassedTextArea implements CanvasNode {
@@ -36,6 +37,7 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
         add("colour-black");
     }};
     private boolean ignore = false;
+    private boolean isPaste = false;
 
     public TextBox(double x, double y) {
         super();
@@ -65,10 +67,14 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
         toFront();
         canvas.focusSingle(this);
         wrapper.focus();
+
+        TextFormatBox.enable(this);
     }
 
     public void unfocus() {
         wrapper.unfocus();
+
+        TextFormatBox.disable();
     }
 
     public void scale(double endX, double endY) {
@@ -123,12 +129,42 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
         // addEventFilter(MouseEvent.MOUSE_DRAGGED, eventManager.getOnMouseDragged());
         addEventFilter(MouseEvent.MOUSE_RELEASED, eventManager.getOnMouseReleased());
 
-        addTextListener();
+        // addTextListener();
+        addBasicTextListener();
         addKeyShortcutEvent();
+        // addFocusListener();
+    }
+
+    private void addBasicTextListener() {
+        textProperty().addListener((observable, oldText, newText) -> {
+
+            if (ignore) {
+                return;
+            }
+
+            if (isPaste) {
+                isPaste = false;
+                return;
+            }
+
+            int caretPosition = getCaretPosition();
+
+            int afterLength = newText.length() - caretPosition;
+
+            int oldBeforeLength = oldText.length() - afterLength;
+            int newBeforeLength = newText.length() - afterLength;
+
+            updateText(oldText.substring(0, oldBeforeLength), newText.substring(0, newBeforeLength));
+        });
     }
 
     private void addTextListener() {
         textProperty().addListener((observable, oldText, newText) -> {
+
+            if (ignore) {
+                return;
+            }
+
             int caretPosition = getCaretPosition();
 
             int afterLength = newText.length() - caretPosition;
@@ -143,20 +179,20 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
     private void addKeyShortcutEvent() {
         setOnKeyPressed(keyEvent -> {
             if (keyEvent.isControlDown()) {
-                IndexRange range = getSelection();
 
                 switch (keyEvent.getCode()) {
                 case B:
-                    updateTextStyles(range.getStart(), range.getEnd(), "bold");
+                    applyTextStyle("bold");
                     break;
                 case I:
-                    updateTextStyles(range.getStart(), range.getEnd(), "italic");
+                    applyTextStyle("italic");
                     break;
                 case U:
-                    updateTextStyles(range.getStart(), range.getEnd(), "underline");
+                    applyTextStyle("underline");
                     break;
                 case V:
-                    reapplyStyle();
+                    // reapplyStyle();
+                    isPaste = true;
                     break;
                 default:
                     break;
@@ -165,11 +201,56 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
         });
     }
 
-    private void updateCharacterStyles(String oldText, String newText) {
-        if (ignore) {
-            return;
+
+    private void updateText(String oldText, String newText) {
+        int index = 0;
+        int end = Math.min(oldText.length(), newText.length());
+
+        for (; index < end; ++index) {
+            if (oldText.charAt(index) != newText.charAt(index)) {
+                break;
+            }
         }
 
+        Collection<String> previousStyle = index == 0 ? defaultStyle : getStyleAtPosition(index + 1);
+
+        for (int i = index; i < newText.length(); ++i) {
+            HashSet<String> styles = new HashSet<>(previousStyle);
+            setStyle(i, i + 1, styles);
+        }
+    }
+
+    public void applyTextStyle(String style) {
+        int startIndex = getSelection().getStart();
+        int endIndex = getSelection().getEnd();
+
+        boolean isStyleAbsent = false;
+
+        for (int i = startIndex; i < endIndex; ++i) {
+            if (!getStyleAtPosition(i+1).contains(style)) {
+                isStyleAbsent = true;
+                break;
+            }
+        }
+
+        if (isStyleAbsent) {
+            for (int i = startIndex; i < endIndex; ++i) {
+                HashSet<String> currentStyles = new HashSet<>(getStyleAtPosition(i+1));
+                currentStyles.add(style);
+                setStyle(i, i + 1, currentStyles);
+            }
+        } else {
+            for (int i = startIndex; i < endIndex; ++i) {
+                HashSet<String> currentStyles = new HashSet<>(getStyleAtPosition(i+1));
+                currentStyles.remove(style);
+                setStyle(i, i + 1, currentStyles);
+            }
+        }
+
+        forceStyleChange(startIndex, endIndex);
+    }
+
+    private void updateCharacterStyles(String oldText, String newText) {
         int index = 0;
 
         if (newText.length() >= oldText.length()) {
@@ -211,6 +292,7 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
         }
     }
 
+
     private void updateTextStyles(int startIndex, int endIndex, String style) {
         boolean isStyleAbsent = false;
 
@@ -227,7 +309,10 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
                 setStyle(i, i + 1, characterStyles.get(i));
                 forceStyleChange(startIndex, endIndex);
 
-                // System.out.println(String.format("Setting character at %s to %s to %s", i, i + 1, characterStyles.get(i)));
+                // for (int j = 1; j <= getText().length(); ++j) {
+                //     System.out.print(String.format("%s ", getStyleAtPosition(j)));
+                // }
+                // System.out.println();
             }
         } else {
             for (int i = startIndex; i < endIndex; ++i) {
@@ -250,5 +335,15 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
         deleteText(getText().length() - 1, getText().length());
         ignore = false;
         selectRange(startIndex, endIndex);
+    }
+
+    private void addFocusListener() {
+        focusedProperty().addListener(observable -> {
+            if (isFocused()) {
+                TextFormatBox.enable(this);
+            } else {
+                TextFormatBox.disable();
+            }
+        });
     }
 }

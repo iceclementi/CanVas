@@ -52,18 +52,19 @@ public class CanvasEventManager {
             // Checks if focus is not on model unit
             if (canvas.getCanvasMode() == CanvasMode.POINT) {
                 canvas.focusNone();
-            }
-
-            if (canvas.getCanvasMode() != CanvasMode.SHAPE) {
                 return;
             }
 
-            if (mouseEvent.isAltDown()) {
+            if (canvas.getCanvasMode() == CanvasMode.TEXT) {
                 double x = mouseEvent.getX();
                 double y = mouseEvent.getY();
 
                 textBox = new TextBox(x, y);
 
+                return;
+            }
+
+            if (canvas.getCanvasMode() != CanvasMode.SHAPE) {
                 return;
             }
 
@@ -116,12 +117,17 @@ public class CanvasEventManager {
     private EventHandler<MouseEvent> onMouseDragged = mouseEvent -> {
 
         if (mouseEvent.isPrimaryButtonDown()) {
-            if (canvas.getCanvasMode() != CanvasMode.SHAPE) {
+
+            if (canvas.getCanvasMode() == CanvasMode.TEXT) {
+                if (textBox == null) {
+                    return;
+                }
+
+                textBox.scale(mouseEvent.getX(), mouseEvent.getY());
                 return;
             }
 
-            if (mouseEvent.isAltDown()) {
-                textBox.scale(mouseEvent.getX(), mouseEvent.getY());
+            if (canvas.getCanvasMode() != CanvasMode.SHAPE) {
                 return;
             }
 
@@ -185,6 +191,9 @@ public class CanvasEventManager {
             if (textBox.getWidth() < TextBox.MIN_WIDTH || textBox.getHeight() < TextBox.MIN_HEIGHT) {
                 textBox.setDefaultSize();
             }
+
+            textBox.focus();
+            canvas.changeMode(CanvasMode.POINT);
         }
 
         modelUnit = null;

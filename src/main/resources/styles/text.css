@@ -2,6 +2,8 @@
     -fx-fill: black;
 }
 
+/* Standard */
+
 .bold {
     -fx-font-weight: bold;
 }
@@ -14,10 +16,203 @@
     -fx-underline: true;
 }
 
-.colour-black {
-    -fx-fill: black;
+.strikethrough {
+    -fx-strikethrough: true;
+}
+
+
+/* Alignment */
+
+.align-left {
+    -fx-text-alignment: left;
+}
+
+.align-centre {
+    -fx-text-alignment: center;
+}
+
+.align-right {
+    -fx-text-alignment: right;
+}
+
+.align-justify {
+    -fx-text-alignment: justify;
+}
+
+
+/* Font Size */
+
+.size-8 {
+    -fx-font-size: 8pt;
+}
+
+.size-9 {
+    -fx-font-size: 9pt;
+}
+
+.size-10 {
+    -fx-font-size: 10pt;
+}
+
+.size-11 {
+    -fx-font-size: 11pt;
+}
+
+.size-12 {
+    -fx-font-size: 12pt;
+}
+
+.size-13 {
+    -fx-font-size: 13pt;
+}
+
+.size-14 {
+    -fx-font-size: 14pt;
+}
+
+.size-15 {
+    -fx-font-size: 15pt;
+}
+
+.size-16 {
+    -fx-font-size: 16pt;
+}
+
+.size-17 {
+    -fx-font-size: 17pt;
+}
+
+.size-18 {
+    -fx-font-size: 18pt;
+}
+
+.size-19 {
+    -fx-font-size: 19pt;
+}
+
+.size-20 {
+    -fx-font-size: 20pt;
+}
+
+.size-21 {
+    -fx-font-size: 21pt;
+}
+
+.size-22 {
+    -fx-font-size: 22pt;
+}
+
+.size-23 {
+    -fx-font-size: 23pt;
+}
+
+.size-24 {
+    -fx-font-size: 24pt;
+}
+
+.size-25 {
+    -fx-font-size: 25pt;
+}
+
+.size-26 {
+    -fx-font-size: 26pt;
+}
+
+.size-27 {
+    -fx-font-size: 27pt;
+}
+
+.size-28 {
+    -fx-font-size: 28pt;
+}
+
+.size-29 {
+    -fx-font-size: 29pt;
+}
+
+.size-30 {
+    -fx-font-size: 30pt;
+}
+
+
+/* Colours */
+
+.colour-pink {
+    -fx-fill: pink;
 }
 
 .colour-red {
     -fx-fill: red;
+}
+
+.colour-dark-red {
+    -fx-fill: darkred;
+}
+
+.colour-gold {
+    -fx-fill: gold;
+}
+
+.colour-orange {
+    -fx-fill: orange;
+}
+
+.colour-indian-red {
+    -fx-fill: indianred;
+}
+
+.colour-dark-sea-green {
+    -fx-fill: darkseagreen;
+}
+
+.colour-forest-green {
+    -fx-fill: forestgreen;
+}
+
+.colour-dark-green {
+    -fx-fill: darkgreen;
+}
+
+.colour-light-steel-blue {
+    -fx-fill: lightsteelblue;
+}
+
+.colour-royal-blue {
+    -fx-fill: royalblue;
+}
+
+.colour-midnight-blue {
+    -fx-fill: midnightblue;
+}
+
+.colour-plum {
+    -fx-fill: plum;
+}
+
+.colour-blue-violet {
+    -fx-fill: blueviolet;
+}
+
+.colour-indigo {
+    -fx-fill: indigo;
+}
+
+.colour-light-gray {
+    -fx-fill: lightgray;
+}
+
+.colour-gray {
+    -fx-fill: gray;
+}
+
+.colour-black {
+    -fx-fill: black;
+}
+
+.colour-white {
+    -fx-fill: white;
+}
+
+.colour-transparent {
+    -fx-fill: transparent;
 }

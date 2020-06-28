@@ -1,4 +1,4 @@
-package seedu.canvas.component.canvas.utility.format;
+package seedu.canvas.component.canvas.utility.format.colour;
 
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.input.MouseEvent;
@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import seedu.canvas.component.canvas.TheCanvas;
+import seedu.canvas.component.canvas.utility.format.AccessoryButton;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
