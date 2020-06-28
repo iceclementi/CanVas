@@ -75,6 +75,10 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
         wrapper.unfocus();
 
         TextFormatBox.disable();
+
+        if (!getSelectedText().isEmpty()) {
+            selectRange(0, 0);
+        }
     }
 
     public void scale(double endX, double endY) {
@@ -108,7 +112,7 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
     }
 
     private void initialiseStyle() {
-        ComponentUtil.setStyleClass(this, FilePath.TEXT_STYLE_PATH, "default");
+        ComponentUtil.setStyleClass(this, FilePath.TEXT_STYLE_PATH, "align-left");
 
         setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(0), new BorderWidths(2))));
         setBackground(null);
@@ -190,6 +194,18 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
                 case U:
                     applyTextStyle("underline");
                     break;
+                case L:
+                    applyTextAlignment("align-left");
+                    break;
+                case E:
+                    applyTextAlignment("align-centre");
+                    break;
+                case R:
+                    applyTextAlignment("align-right");
+                    break;
+                case J:
+                    applyTextAlignment("align-justify");
+                    break;
                 case V:
                     // reapplyStyle();
                     isPaste = true;
@@ -248,6 +264,11 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
         }
 
         forceStyleChange(startIndex, endIndex);
+    }
+
+    public void applyTextAlignment(String alignmentStyle) {
+        getStyleClass().removeIf(style -> style.contains("align"));
+        ComponentUtil.setStyleClass(this, alignmentStyle);
     }
 
     private void updateCharacterStyles(String oldText, String newText) {

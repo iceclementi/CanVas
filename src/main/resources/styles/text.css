@@ -1,7 +1,3 @@
-.default {
-    -fx-fill: black;
-}
-
 /* Standard */
 
 .bold {
@@ -23,19 +19,19 @@
 
 /* Alignment */
 
-.align-left {
+.align-left * {
     -fx-text-alignment: left;
 }
 
-.align-centre {
+.align-centre * {
     -fx-text-alignment: center;
 }
 
-.align-right {
+.align-right * {
     -fx-text-alignment: right;
 }
 
-.align-justify {
+.align-justify * {
     -fx-text-alignment: justify;
 }
 

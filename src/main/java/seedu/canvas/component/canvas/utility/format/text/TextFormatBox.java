@@ -1,6 +1,7 @@
 package seedu.canvas.component.canvas.utility.format.text;
 
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -40,8 +41,12 @@ public class TextFormatBox {
     }
 
     private void initialiseTextStyleBox() {
+        textStyleBox.setAlignment(Pos.CENTER);
+        textStyleBox.setSpacing(10);
+
         textStyleBox.getChildren().addAll(
-                generateTextStandardStyleBox()
+                generateTextStandardStyleBox(),
+                generateTextAlignStyleBox()
         );
     }
 
@@ -60,11 +65,17 @@ public class TextFormatBox {
     }
 
     private HBox generateTextAlignStyleBox() {
-        return null;
-    }
+        HBox textAlignStyleBox = new HBox();
+        ComponentUtil.setStyleClass(textAlignStyleBox, FilePath.CANVAS_STYLE_PATH, "text-style-button-group");
 
-    private void applyHBoxStyle(HBox box) {
+        textAlignStyleBox.getChildren().addAll(
+                new TextStyleButton("align-left", FilePath.CANVAS_LEFT_ALIGN_BUTTON_IMAGE_PATH),
+                new TextStyleButton("align-centre", FilePath.CANVAS_CENTRE_ALIGN_BUTTON_IMAGE_PATH),
+                new TextStyleButton("align-right", FilePath.CANVAS_RIGHT_ALIGN_BUTTON_IMAGE_PATH),
+                new TextStyleButton("align-justify", FilePath.CANVAS_JUSTIFY_BUTTON_IMAGE_PATH, true)
+        );
 
+        return textAlignStyleBox;
     }
 
     private void initialiseEvents() {

@@ -152,12 +152,16 @@ public class TheCanvas extends Pane {
     }
 
     public void interactSingle(CanvasNode canvasNode) {
-        focusNone();
+        if (focussedNode != canvasNode) {
+            focusNone();
+        }
         focussedNode = canvasNode;
     }
 
     public void focusSingle(CanvasNode canvasNode) {
-        focusNone();
+        if (focussedNode != canvasNode) {
+            focusNone();
+        }
         focussedNode = canvasNode;
     }
 

@@ -49,8 +49,11 @@ public class CanvasEventManager {
 
         if (mouseEvent.isPrimaryButtonDown()) {
 
-            // Checks if focus is not on model unit
+            // Checks if focus is on direct canvas
             if (canvas.getCanvasMode() == CanvasMode.POINT) {
+                // if (mouseEvent.getClickCount() == 2) {
+                //     canvas.focusNone();
+                // }
                 canvas.focusNone();
                 return;
             }
@@ -71,7 +74,6 @@ public class CanvasEventManager {
             GridPoint targetPoint = CanvasGrid.getTargetGridPoint();
 
             if (targetPoint == null) {
-                canvas.focusNone();
                 return;
             }
 

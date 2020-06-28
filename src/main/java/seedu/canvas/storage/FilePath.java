@@ -37,6 +37,10 @@ public class FilePath {
     public static final String CANVAS_ITALIC_BUTTON_IMAGE_PATH = "/images/icons/italic_button.png";
     public static final String CANVAS_UNDERLINE_BUTTON_IMAGE_PATH = "/images/icons/underline_button.png";
     public static final String CANVAS_STRIKETHROUGH_BUTTON_IMAGE_PATH = "/images/icons/strikethrough_button.png";
+    public static final String CANVAS_LEFT_ALIGN_BUTTON_IMAGE_PATH = "/images/icons/left_align_button.png";
+    public static final String CANVAS_CENTRE_ALIGN_BUTTON_IMAGE_PATH = "/images/icons/centre_align_button.png";
+    public static final String CANVAS_RIGHT_ALIGN_BUTTON_IMAGE_PATH = "/images/icons/right_align_button.png";
+    public static final String CANVAS_JUSTIFY_BUTTON_IMAGE_PATH = "/images/icons/justify_button.png";
 
 
     public static final String CANVAS_DRAW_BUTTON_IMAGE_PATH = "/images/icons/draw_button.png";

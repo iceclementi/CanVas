@@ -65,7 +65,11 @@ public class TextStyleButton extends Button {
         TextBox textBox = TextFormatBox.getTextBox();
 
         if (textBox != null) {
-            textBox.applyTextStyle(style);
+            if (style.contains("align")) {
+                textBox.applyTextAlignment(style);
+            } else {
+                textBox.applyTextStyle(style);
+            }
         }
     }
 }
