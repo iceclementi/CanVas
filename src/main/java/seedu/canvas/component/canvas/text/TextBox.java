@@ -224,7 +224,6 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         });
     }
 
-
     private void updateText(String oldText, String newText) {
         int index = 0;
         int end = Math.min(oldText.length(), newText.length());
@@ -290,19 +289,30 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         int endIndex = getSelection().getEnd();
 
         String sizeStyle = String.format("%s%dpt;\n", TextStyle.FONT_SIZE, size);
+        applySingularStyle(sizeStyle, TextStyle.FONT_SIZE, startIndex, endIndex);
+    }
 
+    public void applyTextFill(String colour) {
+        int startIndex = getSelection().getStart();
+        int endIndex = getSelection().getEnd();
+
+        String fillStyle = String.format("%s%s;\n", TextStyle.FONT_COLOUR, colour);
+        applySingularStyle(fillStyle, TextStyle.FONT_COLOUR, startIndex, endIndex);
+    }
+
+    private void applySingularStyle(String style, String styleTemplate, int startIndex, int endIndex) {
         for (int i = startIndex; i < endIndex; ++i) {
             String currentStyles = getStyleAtPosition(i + 1);
 
-            if (currentStyles.contains(TextStyle.FONT_SIZE)) {
-                int startIndexToReplace = currentStyles.indexOf(TextStyle.FONT_SIZE);
+            if (currentStyles.contains(styleTemplate)) {
+                int startIndexToReplace = currentStyles.indexOf(styleTemplate);
                 int lastIndexToReplace = currentStyles.indexOf("\n", startIndexToReplace) + 1;
                 String toReplace = currentStyles.substring(startIndexToReplace, lastIndexToReplace);
 
                 currentStyles = currentStyles.replace(toReplace, "");
             }
 
-            currentStyles += sizeStyle;
+            currentStyles += style;
 
             System.out.println(currentStyles);
 

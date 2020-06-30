@@ -21,7 +21,7 @@ public class CanVas extends Application {
     public void start(Stage stage) throws IOException {
         stage.setTitle("Can/Vas");
         stage.getIcons().add(new Image(FilePath.CANVAS_ICON_IMAGE_PATH));
-        stage.setMinWidth(800);
+        stage.setMinWidth(900);
         stage.setMinHeight(600);
 
         stage.setOnCloseRequest(event -> {

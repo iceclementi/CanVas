@@ -24,6 +24,7 @@ public class TextFormatBox {
         initialiseTextStyleBox();
         textFormatBox.getChildren().add(textStyleBox);
         textFormatBox.getChildren().add(new TextSizeSpinner());
+        textFormatBox.getChildren().add(new TextPalette());
 
         initialiseEvents();
     }
