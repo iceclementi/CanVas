@@ -1,21 +1,6 @@
-/* Standard */
-
-.bold {
-    -fx-font-weight: bold;
+.default-font {
+    -fx-font-family: Arial;
 }
-
-.italic {
-    -fx-font-style: italic;
-}
-
-.underline {
-    -fx-underline: true;
-}
-
-.strikethrough {
-    -fx-strikethrough: true;
-}
-
 
 /* Alignment */
 
@@ -33,101 +18,6 @@
 
 .align-justify * {
     -fx-text-alignment: justify;
-}
-
-
-/* Font Size */
-
-.size-8 {
-    -fx-font-size: 8pt;
-}
-
-.size-9 {
-    -fx-font-size: 9pt;
-}
-
-.size-10 {
-    -fx-font-size: 10pt;
-}
-
-.size-11 {
-    -fx-font-size: 11pt;
-}
-
-.size-12 {
-    -fx-font-size: 12pt;
-}
-
-.size-13 {
-    -fx-font-size: 13pt;
-}
-
-.size-14 {
-    -fx-font-size: 14pt;
-}
-
-.size-15 {
-    -fx-font-size: 15pt;
-}
-
-.size-16 {
-    -fx-font-size: 16pt;
-}
-
-.size-17 {
-    -fx-font-size: 17pt;
-}
-
-.size-18 {
-    -fx-font-size: 18pt;
-}
-
-.size-19 {
-    -fx-font-size: 19pt;
-}
-
-.size-20 {
-    -fx-font-size: 20pt;
-}
-
-.size-21 {
-    -fx-font-size: 21pt;
-}
-
-.size-22 {
-    -fx-font-size: 22pt;
-}
-
-.size-23 {
-    -fx-font-size: 23pt;
-}
-
-.size-24 {
-    -fx-font-size: 24pt;
-}
-
-.size-25 {
-    -fx-font-size: 25pt;
-}
-
-.size-26 {
-    -fx-font-size: 26pt;
-}
-
-.size-27 {
-    -fx-font-size: 27pt;
-}
-
-.size-28 {
-    -fx-font-size: 28pt;
-}
-
-.size-29 {
-    -fx-font-size: 29pt;
-}
-
-.size-30 {
-    -fx-font-size: 30pt;
 }
 
 

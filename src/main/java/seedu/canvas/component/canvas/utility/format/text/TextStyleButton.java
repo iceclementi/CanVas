@@ -11,7 +11,7 @@ public class TextStyleButton extends Button {
 
     private String style;
     private String backgroundPath;
-    private boolean isEnd = false;
+    private boolean isEnd;
 
     public TextStyleButton(String style, String backgroundPath, boolean isEnd) {
         super();
@@ -70,6 +70,8 @@ public class TextStyleButton extends Button {
             } else {
                 textBox.applyTextStyle(style);
             }
+
+            textBox.requestFocus();
         }
     }
 }

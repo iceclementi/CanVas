@@ -11,7 +11,7 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
-import org.fxmisc.richtext.StyleClassedTextArea;
+import org.fxmisc.richtext.InlineCssTextArea;
 import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.TheCanvas;
@@ -21,10 +21,9 @@ import seedu.canvas.util.CanvasMath;
 import seedu.canvas.util.ComponentUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 
-public class TextBox extends StyleClassedTextArea implements CanvasNode {
+public class TextBox extends InlineCssTextArea implements CanvasNode {
 
     public static final double MIN_WIDTH = 40d;
     public static final double MIN_HEIGHT = 30d;
@@ -38,6 +37,8 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
     }};
     private boolean ignore = false;
     private boolean isPaste = false;
+
+    private int currentSize = 10;
 
     public TextBox(double x, double y) {
         super();
@@ -112,12 +113,12 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
     }
 
     private void initialiseStyle() {
-        ComponentUtil.setStyleClass(this, FilePath.TEXT_STYLE_PATH, "align-left");
+        ComponentUtil.setStyleClass(this, FilePath.TEXT_STYLE_PATH, "default-font");
+        ComponentUtil.setStyleClass(this, "align-left");
 
         setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(0), new BorderWidths(2))));
         setBackground(null);
         setWrapText(true);
-        setStyle("-fx-font-size: 10pt;");
         setPadding(new Insets(2));
 
         setMinSize(0, 0);
@@ -186,13 +187,13 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
 
                 switch (keyEvent.getCode()) {
                 case B:
-                    applyTextStyle("bold");
+                    applyTextStyle(TextStyle.BOLD);
                     break;
                 case I:
-                    applyTextStyle("italic");
+                    applyTextStyle(TextStyle.ITALIC);
                     break;
                 case U:
-                    applyTextStyle("underline");
+                    applyTextStyle(TextStyle.UNDERLINE);
                     break;
                 case L:
                     applyTextAlignment("align-left");
@@ -206,9 +207,15 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
                 case J:
                     applyTextAlignment("align-justify");
                     break;
-                case V:
-                    // reapplyStyle();
-                    isPaste = true;
+                case COMMA:
+                    if (keyEvent.isShiftDown()) {
+                        applyTextSize(--currentSize);
+                    }
+                    break;
+                case PERIOD:
+                    if (keyEvent.isShiftDown()) {
+                        applyTextSize(++currentSize);
+                    }
                     break;
                 default:
                     break;
@@ -227,12 +234,13 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
                 break;
             }
         }
-
-        Collection<String> previousStyle = index == 0 ? defaultStyle : getStyleAtPosition(index + 1);
+        String previousStyle = index == 0 ? TextStyle.DEFAULT_STYLE : getStyleAtPosition(index + 1);
+        // Collection<String> previousStyle = index == 0 ? defaultStyle : getStyleAtPosition(index + 1);
 
         for (int i = index; i < newText.length(); ++i) {
-            HashSet<String> styles = new HashSet<>(previousStyle);
-            setStyle(i, i + 1, styles);
+            // HashSet<String> styles = new HashSet<>(previousStyle);
+
+            setStyle(i, i + 1, previousStyle);
         }
     }
 
@@ -251,15 +259,21 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
 
         if (isStyleAbsent) {
             for (int i = startIndex; i < endIndex; ++i) {
-                HashSet<String> currentStyles = new HashSet<>(getStyleAtPosition(i+1));
-                currentStyles.add(style);
+                // HashSet<String> currentStyles = new HashSet<>(getStyleAtPosition(i+1));
+                String currentStyles = getStyleAtPosition(i + 1);
+                if (!currentStyles.contains(style)) {
+                    currentStyles += style;
+                }
                 setStyle(i, i + 1, currentStyles);
             }
         } else {
             for (int i = startIndex; i < endIndex; ++i) {
-                HashSet<String> currentStyles = new HashSet<>(getStyleAtPosition(i+1));
-                currentStyles.remove(style);
+                // HashSet<String> currentStyles = new HashSet<>(getStyleAtPosition(i+1));
+                String currentStyles = getStyleAtPosition(i + 1);
+                currentStyles = currentStyles.replace(style, "");
                 setStyle(i, i + 1, currentStyles);
+
+                System.out.println(currentStyles);
             }
         }
 
@@ -269,6 +283,33 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
     public void applyTextAlignment(String alignmentStyle) {
         getStyleClass().removeIf(style -> style.contains("align"));
         ComponentUtil.setStyleClass(this, alignmentStyle);
+    }
+
+    public void applyTextSize(int size) {
+        int startIndex = getSelection().getStart();
+        int endIndex = getSelection().getEnd();
+
+        String sizeStyle = String.format("%s%dpt;\n", TextStyle.FONT_SIZE, size);
+
+        for (int i = startIndex; i < endIndex; ++i) {
+            String currentStyles = getStyleAtPosition(i + 1);
+
+            if (currentStyles.contains(TextStyle.FONT_SIZE)) {
+                int startIndexToReplace = currentStyles.indexOf(TextStyle.FONT_SIZE);
+                int lastIndexToReplace = currentStyles.indexOf("\n", startIndexToReplace) + 1;
+                String toReplace = currentStyles.substring(startIndexToReplace, lastIndexToReplace);
+
+                currentStyles = currentStyles.replace(toReplace, "");
+            }
+
+            currentStyles += sizeStyle;
+
+            System.out.println(currentStyles);
+
+            setStyle(i, i + 1, currentStyles);
+        }
+
+        forceStyleChange(startIndex, endIndex);
     }
 
     private void updateCharacterStyles(String oldText, String newText) {
@@ -310,43 +351,6 @@ public class TextBox extends StyleClassedTextArea implements CanvasNode {
             for (int i = index; i < newText.length(); ++i) {
                 characterStyles.add(i, new HashSet<>(previousStyle));
             }
-        }
-    }
-
-
-    private void updateTextStyles(int startIndex, int endIndex, String style) {
-        boolean isStyleAbsent = false;
-
-        for (int i = startIndex; i < endIndex; ++i) {
-            if (!characterStyles.get(i).contains(style)) {
-                isStyleAbsent = true;
-                break;
-            }
-        }
-
-        if (isStyleAbsent) {
-            for (int i = startIndex; i < endIndex; ++i) {
-                characterStyles.get(i).add(style);
-                setStyle(i, i + 1, characterStyles.get(i));
-                forceStyleChange(startIndex, endIndex);
-
-                // for (int j = 1; j <= getText().length(); ++j) {
-                //     System.out.print(String.format("%s ", getStyleAtPosition(j)));
-                // }
-                // System.out.println();
-            }
-        } else {
-            for (int i = startIndex; i < endIndex; ++i) {
-                characterStyles.get(i).remove(style);
-                setStyle(i, i + 1, characterStyles.get(i));
-                forceStyleChange(startIndex, endIndex);
-            }
-        }
-    }
-
-    private void reapplyStyle() {
-        for (int i = 0; i < getText().length(); ++i) {
-            setStyle(i, i + 1, characterStyles.get(i));
         }
     }
 
