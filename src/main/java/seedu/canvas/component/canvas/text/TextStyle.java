@@ -11,6 +11,11 @@ public class TextStyle {
     public static final String UNDERLINE = "-fx-underline: true;\n";
     public static final String STRIKETHROUGH = "-fx-strikethrough: true;\n";
 
+    public static final String ALIGN_LEFT = "align-left";
+    public static final String ALIGN_CENTRE = "align-centre";
+    public static final String ALIGN_RIGHT = "align-right";
+    public static final String ALIGN_JUSTIFY = "align-justify";
+
     public static final String FONT_SIZE = "-fx-font-size: ";
 
     public static final String FONT_COLOUR = "-fx-fill: ";

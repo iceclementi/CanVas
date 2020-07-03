@@ -33,12 +33,15 @@ public class TextFormatBox {
         return textBox;
     }
 
-    public static void enable(TextBox textBox) {
+    public static void link(TextBox textBox) {
         TextFormatBox.textBox = textBox;
+        TextAlignmentButton.apply(textBox.getStyleClass().toString());
     }
 
-    public static void disable() {
+    public static void unlink() {
         TextFormatBox.textBox = null;
+        TextStyleButton.resetAll();
+        TextAlignmentButton.resetAll();
     }
 
     private void initialiseTextStyleBox() {
@@ -70,10 +73,10 @@ public class TextFormatBox {
         ComponentUtil.setStyleClass(textAlignStyleBox, FilePath.CANVAS_STYLE_PATH, "text-style-button-group");
 
         textAlignStyleBox.getChildren().addAll(
-                new TextStyleButton("align-left", FilePath.CANVAS_LEFT_ALIGN_BUTTON_IMAGE_PATH),
-                new TextStyleButton("align-centre", FilePath.CANVAS_CENTRE_ALIGN_BUTTON_IMAGE_PATH),
-                new TextStyleButton("align-right", FilePath.CANVAS_RIGHT_ALIGN_BUTTON_IMAGE_PATH),
-                new TextStyleButton("align-justify", FilePath.CANVAS_JUSTIFY_BUTTON_IMAGE_PATH, true)
+                new TextAlignmentButton(TextStyle.ALIGN_LEFT, FilePath.CANVAS_LEFT_ALIGN_BUTTON_IMAGE_PATH),
+                new TextAlignmentButton(TextStyle.ALIGN_CENTRE, FilePath.CANVAS_CENTRE_ALIGN_BUTTON_IMAGE_PATH),
+                new TextAlignmentButton(TextStyle.ALIGN_RIGHT, FilePath.CANVAS_RIGHT_ALIGN_BUTTON_IMAGE_PATH),
+                new TextAlignmentButton(TextStyle.ALIGN_JUSTIFY, FilePath.CANVAS_JUSTIFY_BUTTON_IMAGE_PATH, true)
         );
 
         return textAlignStyleBox;

@@ -15,7 +15,9 @@ import org.fxmisc.richtext.InlineCssTextArea;
 import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.TheCanvas;
+import seedu.canvas.component.canvas.utility.format.text.TextAlignmentButton;
 import seedu.canvas.component.canvas.utility.format.text.TextFormatBox;
+import seedu.canvas.component.canvas.utility.format.text.TextStyleButton;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.CanvasMath;
 import seedu.canvas.util.ComponentUtil;
@@ -62,20 +64,20 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         toFront();
         canvas.interactSingle(this);
         wrapper.interact();
+
+        TextFormatBox.link(this);
     }
 
     public void focus() {
         toFront();
         canvas.focusSingle(this);
         wrapper.focus();
-
-        TextFormatBox.enable(this);
     }
 
     public void unfocus() {
         wrapper.unfocus();
 
-        TextFormatBox.disable();
+        TextFormatBox.unlink();
 
         if (!getSelectedText().isEmpty()) {
             selectRange(0, 0);
@@ -137,7 +139,7 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         // addTextListener();
         addBasicTextListener();
         addKeyShortcutEvent();
-        // addFocusListener();
+        addCaretListener();
     }
 
     private void addBasicTextListener() {
@@ -233,14 +235,37 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
                 break;
             }
         }
-        String previousStyle = index == 0 ? TextStyle.DEFAULT_STYLE : getStyleAtPosition(index + 1);
-        // Collection<String> previousStyle = index == 0 ? defaultStyle : getStyleAtPosition(index + 1);
+
+        String previousStyle = generateNextStyle(index + 1);
 
         for (int i = index; i < newText.length(); ++i) {
-            // HashSet<String> styles = new HashSet<>(previousStyle);
-
             setStyle(i, i + 1, previousStyle);
         }
+    }
+
+    private String generateNextStyle(int index) {
+        String previousStyle = index == 1 ? TextStyle.DEFAULT_STYLE : getStyleAtPosition(index);
+
+        String newStyle = previousStyle
+                .replace(TextStyle.BOLD, "")
+                .replace(TextStyle.ITALIC, "")
+                .replace(TextStyle.UNDERLINE, "")
+                .replace(TextStyle.STRIKETHROUGH, "");
+
+        if (TextStyleButton.isApply(TextStyle.BOLD)) {
+            newStyle += TextStyle.BOLD;
+        }
+        if (TextStyleButton.isApply(TextStyle.ITALIC)) {
+            newStyle += TextStyle.ITALIC;
+        }
+        if (TextStyleButton.isApply(TextStyle.UNDERLINE)) {
+            newStyle += TextStyle.UNDERLINE;
+        }
+        if (TextStyleButton.isApply(TextStyle.STRIKETHROUGH)) {
+            newStyle += TextStyle.STRIKETHROUGH;
+        }
+
+        return newStyle;
     }
 
     public void applyTextStyle(String style) {
@@ -258,7 +283,6 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
 
         if (isStyleAbsent) {
             for (int i = startIndex; i < endIndex; ++i) {
-                // HashSet<String> currentStyles = new HashSet<>(getStyleAtPosition(i+1));
                 String currentStyles = getStyleAtPosition(i + 1);
                 if (!currentStyles.contains(style)) {
                     currentStyles += style;
@@ -267,12 +291,9 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
             }
         } else {
             for (int i = startIndex; i < endIndex; ++i) {
-                // HashSet<String> currentStyles = new HashSet<>(getStyleAtPosition(i+1));
                 String currentStyles = getStyleAtPosition(i + 1);
                 currentStyles = currentStyles.replace(style, "");
                 setStyle(i, i + 1, currentStyles);
-
-                System.out.println(currentStyles);
             }
         }
 
@@ -282,6 +303,8 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
     public void applyTextAlignment(String alignmentStyle) {
         getStyleClass().removeIf(style -> style.contains("align"));
         ComponentUtil.setStyleClass(this, alignmentStyle);
+
+        TextAlignmentButton.apply(alignmentStyle);
     }
 
     public void applyTextSize(int size) {
@@ -372,13 +395,51 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         selectRange(startIndex, endIndex);
     }
 
-    private void addFocusListener() {
-        focusedProperty().addListener(observable -> {
-            if (isFocused()) {
-                TextFormatBox.enable(this);
-            } else {
-                TextFormatBox.disable();
+    private void addCaretListener() {
+        caretPositionProperty().addListener(observable -> {
+            if (!ignore) {
+                synchroniseTextFormatButtons();
             }
         });
+
+        selectedTextProperty().addListener(observable -> {
+            if (!ignore) {
+                synchroniseTextFormatButtons();
+            }
+        });
+    }
+
+    private void synchroniseTextFormatButtons() {
+        if (getSelectedText().isEmpty()) {
+            int index = getCaretPosition();
+            TextStyleButton.apply(
+                    containsStyle(TextStyle.BOLD, index),
+                    containsStyle(TextStyle.ITALIC, index),
+                    containsStyle(TextStyle.UNDERLINE, index),
+                    containsStyle(TextStyle.STRIKETHROUGH, index)
+            );
+        } else {
+            int startIndex = getSelection().getStart() + 1;
+            int endIndex = getSelection().getEnd() + 1;
+            TextStyleButton.apply(
+                    containsStyle(TextStyle.BOLD, startIndex, endIndex),
+                    containsStyle(TextStyle.ITALIC, startIndex, endIndex),
+                    containsStyle(TextStyle.UNDERLINE, startIndex, endIndex),
+                    containsStyle(TextStyle.STRIKETHROUGH, startIndex, endIndex)
+            );
+        }
+    }
+
+    private boolean containsStyle(String style, int index) {
+        return getStyleAtPosition(index).contains(style);
+    }
+
+    private boolean containsStyle(String style, int startIndex, int endIndex) {
+        for (int i = startIndex; i < endIndex; ++i) {
+            if (!getStyleAtPosition(i).contains(style)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

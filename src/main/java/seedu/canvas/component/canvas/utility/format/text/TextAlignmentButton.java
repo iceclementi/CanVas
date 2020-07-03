@@ -10,74 +10,56 @@ import seedu.canvas.util.ComponentUtil;
 
 import java.util.ArrayList;
 
-public class TextStyleButton extends Button {
+public class TextAlignmentButton extends Button {
 
-    private static ArrayList<TextStyleButton> textStyleButtons = new ArrayList<>();
+    private static ArrayList<TextAlignmentButton> textAlignmentButtons = new ArrayList<>();
+    private static TextAlignmentButton appliedAlignment = null;
     private boolean isApply = false;
 
     private String style;
     private String backgroundPath;
     private boolean isEnd;
 
-    public TextStyleButton(String style, String backgroundPath, boolean isEnd) {
+    public TextAlignmentButton(String style, String backgroundPath, boolean isEnd) {
         super();
 
         this.style = style;
         this.backgroundPath = backgroundPath;
         this.isEnd = isEnd;
 
-        textStyleButtons.add(this);
+        textAlignmentButtons.add(this);
 
         initialiseStyle();
         initialiseEvents();
     }
 
-    public TextStyleButton(String style, String backgroundPath) {
+    public TextAlignmentButton(String style, String backgroundPath) {
         this(style, backgroundPath, false);
     }
 
-    public static boolean isApply(String style) {
-        for (TextStyleButton styleButton : textStyleButtons) {
-            if (styleButton.style.equals(style)) {
-                return styleButton.isApply;
-            }
-        }
-        return false;
-    }
-
-    public static void apply(boolean isBold, boolean isItalic, boolean isUnderline, boolean isStrikethrough) {
-        for (TextStyleButton styleButton : textStyleButtons) {
-            switch (styleButton.style) {
-            case TextStyle.BOLD:
-                styleButton.apply(isBold);
-                break;
-            case TextStyle.ITALIC:
-                styleButton.apply(isItalic);
-                break;
-            case TextStyle.UNDERLINE:
-                styleButton.apply(isUnderline);
-                break;
-            case TextStyle.STRIKETHROUGH:
-                styleButton.apply(isStrikethrough);
-                break;
-            default:
-                break;
+    public static void apply(String style) {
+        for (TextAlignmentButton alignmentButton : textAlignmentButtons) {
+            if (style.contains(alignmentButton.style)) {
+                alignmentButton.apply();
+                return;
             }
         }
     }
 
     public static void resetAll() {
-        textStyleButtons.forEach(TextStyleButton::reset);
+        textAlignmentButtons.forEach(TextAlignmentButton::reset);
     }
 
-    private void apply(boolean isApply) {
-        this.isApply = isApply;
-
-        if (isApply) {
-            setEffect(new ColorAdjust(0, 0, -0.15, 0));
-        } else {
-            reset();
+    private void apply() {
+        if (appliedAlignment != null) {
+            appliedAlignment.isApply = false;
+            appliedAlignment.setEffect(null);
         }
+
+        appliedAlignment = this;
+        isApply = true;
+
+        setEffect(new ColorAdjust(0, 0, -0.15, 0));
     }
 
     private void initialiseStyle() {
@@ -116,18 +98,12 @@ public class TextStyleButton extends Button {
     }
 
     private void onRelease(MouseEvent mouseEvent) {
-        isApply = !isApply;
-
-        if (isApply) {
-            setEffect(new ColorAdjust(0, 0, -0.15, 0));
-        } else {
-            setEffect(new ColorAdjust(0, 0, -0.05, 0));
-        }
+        apply();
 
         TextBox textBox = TextFormatBox.getTextBox();
 
         if (textBox != null) {
-            textBox.applyTextStyle(style);
+            textBox.applyTextAlignment(style);
             textBox.requestFocus();
         }
     }
