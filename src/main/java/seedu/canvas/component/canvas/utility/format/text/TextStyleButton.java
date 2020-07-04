@@ -66,8 +66,13 @@ public class TextStyleButton extends Button {
         }
     }
 
-    public static void resetAll() {
+    public static void enable() {
+        textStyleButtons.forEach(styleButton -> styleButton.setDisable(false));
+    }
+
+    public static void disable() {
         textStyleButtons.forEach(TextStyleButton::reset);
+        textStyleButtons.forEach(styleButton -> styleButton.setDisable(true));
     }
 
     private void apply(boolean isApply) {
@@ -89,6 +94,8 @@ public class TextStyleButton extends Button {
         } else {
             setStyle("-fx-border-width: 0 1px 0 0");
         }
+
+        setDisable(true);
     }
 
     private void initialiseEvents() {

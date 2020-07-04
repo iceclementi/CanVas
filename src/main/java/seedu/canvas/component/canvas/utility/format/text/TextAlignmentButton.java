@@ -4,7 +4,6 @@ import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.input.MouseEvent;
 import seedu.canvas.component.canvas.text.TextBox;
-import seedu.canvas.component.canvas.text.TextStyle;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
@@ -46,14 +45,20 @@ public class TextAlignmentButton extends Button {
         }
     }
 
-    public static void resetAll() {
+    public static void enable() {
+        textAlignmentButtons.forEach(alignmentButton -> alignmentButton.setDisable(false));
+        apply(TextFormatBox.getTextBox().getStyleClass().toString());
+    }
+
+    public static void disable() {
         textAlignmentButtons.forEach(TextAlignmentButton::reset);
+        textAlignmentButtons.forEach(alignmentButton -> alignmentButton.setDisable(true));
     }
 
     private void apply() {
         if (appliedAlignment != null) {
             appliedAlignment.isApply = false;
-            appliedAlignment.setEffect(null);
+            appliedAlignment.reset();
         }
 
         appliedAlignment = this;
@@ -71,6 +76,8 @@ public class TextAlignmentButton extends Button {
         } else {
             setStyle("-fx-border-width: 0 1px 0 0");
         }
+
+        setDisable(true);
     }
 
     private void initialiseEvents() {

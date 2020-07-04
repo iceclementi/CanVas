@@ -10,7 +10,9 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import seedu.canvas.component.canvas.draw.DrawingCanvas;
+import seedu.canvas.component.canvas.text.TextBox;
 import seedu.canvas.component.canvas.unit.UnitShape;
+import seedu.canvas.component.canvas.utility.format.text.TextFormatBox;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
@@ -154,15 +156,15 @@ public class TheCanvas extends Pane {
     public void interactSingle(CanvasNode canvasNode) {
         if (focussedNode != canvasNode) {
             focusNone();
+            focussedNode = canvasNode;
         }
-        focussedNode = canvasNode;
     }
 
     public void focusSingle(CanvasNode canvasNode) {
         if (focussedNode != canvasNode) {
             focusNone();
+            focussedNode = canvasNode;
         }
-        focussedNode = canvasNode;
     }
 
     public void focusNone() {
@@ -224,6 +226,11 @@ public class TheCanvas extends Pane {
             getScene().setOnKeyPressed(keyEvent -> {
                 if (keyEvent.getCode() == KeyCode.DELETE || keyEvent.getCode() == KeyCode.BACK_SPACE) {
                     if (focussedNode != null) {
+
+                        if (focussedNode instanceof TextBox) {
+                            TextFormatBox.unlink();
+                        }
+
                         removeNode(focussedNode);
                         focussedNode = null;
                     }

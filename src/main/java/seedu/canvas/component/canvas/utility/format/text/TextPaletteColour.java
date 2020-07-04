@@ -28,9 +28,22 @@ public class TextPaletteColour extends Circle {
         initialiseEvents();
     }
 
-    public static void pick(Color colour) {
+    public static String getFillColour() {
+        return pickedColour.getColourCode();
+    }
+
+    public static void enable() {
+        paletteColours.forEach(paletteColour -> paletteColour.setDisable(false));
+    }
+
+    public static void disable() {
+        paletteColours.forEach(TextPaletteColour::reset);
+        paletteColours.forEach(paletteColour -> paletteColour.setDisable(true));
+    }
+
+    public static void pick(String style) {
         for (TextPaletteColour paletteColour : paletteColours) {
-            if (paletteColour.colour == colour) {
+            if (style.contains(paletteColour.getColourCode())) {
                 paletteColour.pick();
                 return;
             }
@@ -44,14 +57,9 @@ public class TextPaletteColour extends Circle {
         }
 
         pickedColour = this;
-
         isPicked = true;
 
-        TextBox textBox = TextFormatBox.getTextBox();
-
-        if (textBox != null) {
-            textBox.applyTextFill(getColourCode());
-        }
+        setEffect(new DropShadow(BlurType.TWO_PASS_BOX, Color.GOLD, 3, 2, 0, 0));
     }
 
     private String getColourCode() {
@@ -59,7 +67,9 @@ public class TextPaletteColour extends Circle {
     }
 
     private void initialiseStyle() {
-        if (colour == Color.WHITE) {
+        if (colour == Color.MIDNIGHTBLUE) {
+            pickedColour = this;
+        } else if (colour == Color.WHITE) {
             setStroke(Color.LIGHTGRAY);
         } else if (colour == Color.TRANSPARENT) {
             setStroke(Color.LIGHTGRAY);
@@ -75,6 +85,8 @@ public class TextPaletteColour extends Circle {
         } else {
             setFill(colour);
         }
+
+        setDisable(true);
     }
 
     private void initialiseEvents() {
@@ -97,7 +109,12 @@ public class TextPaletteColour extends Circle {
 
     private void onRelease(MouseEvent mouseEvent) {
         pick();
-        setEffect(new DropShadow(BlurType.TWO_PASS_BOX, Color.GOLD, 3, 2, 0, 0));
+
+        TextBox textBox = TextFormatBox.getTextBox();
+
+        if (textBox != null) {
+            textBox.applyTextFill(getColourCode());
+        }
     }
 
     private void reset() {

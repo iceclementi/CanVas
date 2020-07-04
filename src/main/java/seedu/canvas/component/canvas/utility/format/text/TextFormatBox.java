@@ -35,13 +35,18 @@ public class TextFormatBox {
 
     public static void link(TextBox textBox) {
         TextFormatBox.textBox = textBox;
-        TextAlignmentButton.apply(textBox.getStyleClass().toString());
+        TextStyleButton.enable();
+        TextAlignmentButton.enable();
+        TextSizeSpinner.enable();
+        TextPaletteColour.enable();
     }
 
     public static void unlink() {
         TextFormatBox.textBox = null;
-        TextStyleButton.resetAll();
-        TextAlignmentButton.resetAll();
+        TextStyleButton.disable();
+        TextAlignmentButton.disable();
+        TextSizeSpinner.disable();
+        TextPaletteColour.disable();
     }
 
     private void initialiseTextStyleBox() {

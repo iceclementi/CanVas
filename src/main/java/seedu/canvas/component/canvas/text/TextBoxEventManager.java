@@ -45,6 +45,7 @@ public class TextBoxEventManager {
 
             textBox = (TextBox) mouseEvent.getSource();
             textBox.interact();
+            textBox.synchroniseTextFormatButtons();
 
             previousAnchorPoint = new Point2D(textBox.getLayoutX(), textBox.getLayoutY());
             previousMouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
