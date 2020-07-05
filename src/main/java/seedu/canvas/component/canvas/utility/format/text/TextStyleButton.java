@@ -66,6 +66,10 @@ public class TextStyleButton extends Button {
         }
     }
 
+    public static void resetToDefault() {
+        apply(false, false, false, false);
+    }
+
     public static void enable() {
         textStyleButtons.forEach(styleButton -> styleButton.setDisable(false));
     }

@@ -8,11 +8,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Polygon;
 import seedu.canvas.component.canvas.text.TextBox;
 import seedu.canvas.component.canvas.text.TextStyle;
+import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.CanvasMath;
+import seedu.canvas.util.ComponentUtil;
 
 public class TextSizeSpinner extends VBox {
 
-    private static int currentSize = 10;
+    private static int currentSize = 12;
     private static final int[] sizes =
         {8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 54, 60, 66, 72, 80, 88, 96};
 
@@ -42,6 +44,8 @@ public class TextSizeSpinner extends VBox {
             }
             updateTextSize();
         }
+
+        updateTextSize();
     }
 
     public static void decrement() {
@@ -58,24 +62,21 @@ public class TextSizeSpinner extends VBox {
             currentSize = previousSize;
             updateTextSize();
         }
+
+        updateTextSize();
     }
 
-    public static void applySize(String sizeStyle) {
-        String sizeString = sizeStyle.replace(TextStyle.FONT_SIZE, "");
-        int endIndex = sizeString.indexOf("pt;");
+    public static void applySize(String sizeText, int size) {
+        spinnerText.setText(sizeText);
+        currentSize = size;
+    }
 
-        if (endIndex < 0) {
-            return;
-        }
-
-        String size = sizeString.substring(0, endIndex);
-
-        spinnerText.setText(size);
-        currentSize = Integer.parseInt(size);
+    public static void resetToDefault() {
+        spinnerText.setText("12");
+        currentSize = 12;
     }
 
     public static void enable() {
-        spinnerText.setText("10");
         spinnerText.setDisable(false);
         incrementButton.setDisable(false);
         decrementButton.setDisable(false);
@@ -101,9 +102,14 @@ public class TextSizeSpinner extends VBox {
 
     private void initialiseSpinnerText() {
         spinnerText = new TextField();
-        spinnerText.setPrefSize(40, 30);
+        ComponentUtil.setStyleClass(spinnerText, FilePath.CANVAS_STYLE_PATH, "text-size-spinner-text");
 
-        spinnerText.setText(String.valueOf(currentSize));
+        spinnerText.setText("");
+        spinnerText.textProperty().addListener(observable -> {
+            if (spinnerText.getText().length() > 4) {
+                spinnerText.setText(spinnerText.getText(0, 4));
+            }
+        });
 
         spinnerText.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {

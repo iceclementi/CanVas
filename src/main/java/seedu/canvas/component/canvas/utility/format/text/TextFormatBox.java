@@ -25,8 +25,6 @@ public class TextFormatBox {
         textFormatBox.getChildren().add(textStyleBox);
         textFormatBox.getChildren().add(new TextSizeSpinner());
         textFormatBox.getChildren().add(new TextPalette());
-
-        initialiseEvents();
     }
 
     public static TextBox getTextBox() {
@@ -39,6 +37,12 @@ public class TextFormatBox {
         TextAlignmentButton.enable();
         TextSizeSpinner.enable();
         TextPaletteColour.enable();
+
+        if (textBox.getText().isEmpty()) {
+            TextStyleButton.resetToDefault();
+            TextSizeSpinner.resetToDefault();
+            TextPaletteColour.resetToDefault();
+        }
     }
 
     public static void unlink() {
@@ -85,9 +89,5 @@ public class TextFormatBox {
         );
 
         return textAlignStyleBox;
-    }
-
-    private void initialiseEvents() {
-
     }
 }

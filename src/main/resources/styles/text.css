@@ -1,5 +1,25 @@
+@font-face {
+    font-family: Barlow;
+    src: url("Barlow-Regular.ttf");
+}
+
+@font-face {
+    font-family: Barlow;
+    src: url("Barlow-Bold.ttf");
+}
+
+@font-face {
+    font-family: Barlow;
+    src: url("Barlow-Italic.ttf");
+}
+
+@font-face {
+    font-family: Barlow;
+    src: url("Barlow-BoldItalic.ttf");
+}
+
 .default-font {
-    -fx-font-family: Arial;
+    -fx-font-family: Barlow;
 }
 
 /* Alignment */

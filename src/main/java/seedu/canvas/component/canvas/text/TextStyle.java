@@ -3,7 +3,7 @@ package seedu.canvas.component.canvas.text;
 public class TextStyle {
 
     public static final String DEFAULT_STYLE =
-            "-fx-font-size: 10pt;\n"
+            "-fx-font-size: 12pt;\n"
             + "-fx-fill: #191970ff;\n";
 
     public static final String BOLD = "-fx-font-weight: bold;\n";

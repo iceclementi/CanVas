@@ -21,7 +21,6 @@ import seedu.canvas.util.CanvasMath;
 import seedu.canvas.util.ComponentUtil;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class TextBox extends InlineCssTextArea implements CanvasNode {
 
@@ -31,12 +30,7 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
     private TheCanvas canvas = TheCanvas.getInstance();
     private TextBoxWrapper wrapper = new TextBoxWrapper(this);
 
-    private ArrayList<HashSet<String>> characterStyles = new ArrayList<>();
-    private final HashSet<String> defaultStyle = new HashSet<>() {{
-        add("colour-black");
-    }};
     private boolean ignore = false;
-    private boolean isPaste = false;
 
     public TextBox(double x, double y) {
         super();
@@ -102,10 +96,6 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         setBackground(new Background(new BackgroundFill(colour, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
-    public void colourText(Color textColour) {
-        
-    }
-
     public void setDefaultSize() {
         setPrefSize(CanvasGrid.OFFSET * 4, CanvasGrid.OFFSET * 2);
     }
@@ -132,31 +122,15 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         // addEventFilter(MouseEvent.MOUSE_DRAGGED, eventManager.getOnMouseDragged());
         addEventFilter(MouseEvent.MOUSE_RELEASED, eventManager.getOnMouseReleased());
 
-        // addTextListener();
         addBasicTextListener();
         addKeyShortcutEvent();
         addResponsiveTextStyleListener();
-        // addFocusListener();
-    }
-
-    private void addFocusListener() {
-        focusedProperty().addListener(observable -> {
-            if (!isFocused()) {
-                TextStyleButton.disable();
-                TextPaletteColour.disable();
-            }
-        });
     }
 
     private void addBasicTextListener() {
         textProperty().addListener((observable, oldText, newText) -> {
 
             if (ignore) {
-                return;
-            }
-
-            if (isPaste) {
-                isPaste = false;
                 return;
             }
 
@@ -168,24 +142,6 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
             int newBeforeLength = newText.length() - afterLength;
 
             updateText(oldText.substring(0, oldBeforeLength), newText.substring(0, newBeforeLength));
-        });
-    }
-
-    private void addTextListener() {
-        textProperty().addListener((observable, oldText, newText) -> {
-
-            if (ignore) {
-                return;
-            }
-
-            int caretPosition = getCaretPosition();
-
-            int afterLength = newText.length() - caretPosition;
-
-            int oldBeforeLength = oldText.length() - afterLength;
-            int newBeforeLength = newText.length() - afterLength;
-
-            updateCharacterStyles(oldText.substring(0, oldBeforeLength), newText.substring(0, newBeforeLength));
         });
     }
 
@@ -242,10 +198,10 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
             }
         }
 
-        String previousStyle = generateNextStyle(index + 1);
+        String nextStyle = generateNextStyle(index + 1);
 
         for (int i = index; i < newText.length(); ++i) {
-            setStyle(i, i + 1, previousStyle);
+            setStyle(i, i + 1, nextStyle);
         }
     }
 
@@ -310,6 +266,7 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         }
 
         forceStyleChange(startIndex, endIndex);
+        synchroniseTextFormatButtons();
     }
 
     public void applyTextAlignment(String alignmentStyle) {
@@ -344,7 +301,7 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
 
             currentStyles += style;
 
-            System.out.println(currentStyles);
+            // System.out.println(currentStyles);
 
             setStyle(i, i + 1, currentStyles);
         }
@@ -352,47 +309,6 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         forceStyleChange(startIndex, endIndex);
     }
 
-    private void updateCharacterStyles(String oldText, String newText) {
-        int index = 0;
-
-        if (newText.length() >= oldText.length()) {
-            for (; index < oldText.length(); ++index) {
-                if (oldText.charAt(index) != newText.charAt(index)) {
-                    break;
-                }
-            }
-
-            HashSet<String> previousStyle = index == 0 ? defaultStyle : characterStyles.get(index - 1);
-
-            // System.out.println(String.format("Change from %s", index));
-
-            if (oldText.length() > index) {
-                characterStyles.subList(index, oldText.length()).clear();
-            }
-
-            for (int i = index; i < newText.length(); ++i) {
-                characterStyles.add(i, new HashSet<>(previousStyle));
-            }
-
-            // System.out.println(String.format("Array Length is %s", characterStyles.size()));
-        } else {
-            for (; index < newText.length(); ++index) {
-                if (oldText.charAt(index) != newText.charAt(index)) {
-                    break;
-                }
-            }
-
-            HashSet<String> previousStyle = index == 0 ? defaultStyle : characterStyles.get(index - 1);
-
-            if (oldText.length() > index) {
-                characterStyles.subList(index, oldText.length()).clear();
-            }
-
-            for (int i = index; i < newText.length(); ++i) {
-                characterStyles.add(i, new HashSet<>(previousStyle));
-            }
-        }
-    }
 
     private void forceStyleChange(int startIndex, int endIndex) {
         ignore = true;
@@ -426,7 +342,7 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
                     containsStyle(TextStyle.STRIKETHROUGH, index)
             );
             TextPaletteColour.pick(retrieveSingularStyle(TextStyle.FONT_COLOUR, index));
-            TextSizeSpinner.applySize(retrieveSingularStyle(TextStyle.FONT_SIZE, index));
+            updateTextSizeSpinner(index, index + 1);
         } else {
             int startIndex = getSelection().getStart() + 1;
             int endIndex = getSelection().getEnd() + 1;
@@ -443,11 +359,7 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
                 TextPaletteColour.disable();
             }
 
-            if (containsSingularStyle(TextStyle.FONT_SIZE, startIndex, endIndex)) {
-                TextSizeSpinner.applySize(retrieveSingularStyle(TextStyle.FONT_SIZE, startIndex));
-            } else {
-                TextSizeSpinner.disable();
-            }
+            updateTextSizeSpinner(startIndex, endIndex);
         }
     }
 
@@ -473,6 +385,32 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
             }
         }
         return true;
+    }
+
+    private void updateTextSizeSpinner(int startIndex, int endIndex) {
+        String firstSizeStyle = retrieveSingularStyle(TextStyle.FONT_SIZE, startIndex);
+        if (firstSizeStyle.isEmpty()) {
+            return;
+        }
+
+        int minSize = Integer.parseInt(firstSizeStyle.replace(TextStyle.FONT_SIZE, "").replace("pt;\n", ""));
+        boolean isSame = true;
+
+        for (int i = startIndex + 1; i < endIndex; ++i) {
+            String sizeStyle = retrieveSingularStyle(TextStyle.FONT_SIZE, i);
+            int size = Integer.parseInt(sizeStyle.replace(TextStyle.FONT_SIZE, "").replace("pt;\n", ""));
+
+            if (size != minSize) {
+                isSame = false;
+                minSize = Math.min(minSize, size);
+            }
+        }
+
+        if (isSame) {
+            TextSizeSpinner.applySize(String.valueOf(minSize), minSize);
+        } else {
+            TextSizeSpinner.applySize(String.format("%d+", minSize), minSize);
+        }
     }
 
     private String retrieveSingularStyle(String styleTemplate, int index) {

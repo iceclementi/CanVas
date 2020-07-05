@@ -2,6 +2,26 @@
     src: url("Rustling-Trees.otf");
 }
 
+@font-face {
+    font-family: Barlow;
+    src: url("Barlow-Regular.ttf");
+}
+
+@font-face {
+    font-family: Barlow;
+    src: url("Barlow-Bold.ttf");
+}
+
+@font-face {
+    font-family: Barlow;
+    src: url("Barlow-Italic.ttf");
+}
+
+@font-face {
+    font-family: Barlow;
+    src: url("Barlow-BoldItalic.ttf");
+}
+
 /* Title */
 .title {
     -fx-font-family: "Rustling Trees Regular";
@@ -45,6 +65,23 @@
 
 .text-style-button-group {
     -fx-effect: dropshadow(three-pass-box, lightgrey, 3, 0, 3, 3);
+}
+
+.text-size-spinner-text {
+    -fx-pref-width: 40px;
+    -fx-pref-height: 30px;
+    -fx-padding: 2px;
+    -fx-alignment: center;
+
+    -fx-font-family: Barlow;
+    -fx-font-size: 10pt;
+    -fx-font-weight: bold;
+    -fx-fill: midnightblue;
+
+    -fx-background-color: white;
+    -fx-border-width: 1px;
+    -fx-border-color: lightgrey;
+    -fx-border-radius: 0;
 }
 
 

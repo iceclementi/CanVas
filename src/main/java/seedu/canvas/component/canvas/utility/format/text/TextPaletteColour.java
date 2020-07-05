@@ -32,18 +32,34 @@ public class TextPaletteColour extends Circle {
         return pickedColour.getColourCode();
     }
 
+    public static void resetToDefault() {
+        pick(Color.MIDNIGHTBLUE);
+    }
+
     public static void enable() {
         paletteColours.forEach(paletteColour -> paletteColour.setDisable(false));
+        paletteColours.forEach(paletteColour -> paletteColour.setDisableEffect(false));
+        paletteColours.forEach(TextPaletteColour::reset);
     }
 
     public static void disable() {
         paletteColours.forEach(TextPaletteColour::reset);
         paletteColours.forEach(paletteColour -> paletteColour.setDisable(true));
+        paletteColours.forEach(paletteColour -> paletteColour.setDisableEffect(true));
     }
 
     public static void pick(String style) {
         for (TextPaletteColour paletteColour : paletteColours) {
             if (style.contains(paletteColour.getColourCode())) {
+                paletteColour.pick();
+                return;
+            }
+        }
+    }
+
+    private static void pick(Color colour) {
+        for (TextPaletteColour paletteColour : paletteColours) {
+            if (paletteColour.colour == colour) {
                 paletteColour.pick();
                 return;
             }
@@ -59,7 +75,7 @@ public class TextPaletteColour extends Circle {
         pickedColour = this;
         isPicked = true;
 
-        setEffect(new DropShadow(BlurType.TWO_PASS_BOX, Color.GOLD, 3, 2, 0, 0));
+        setEffect(new DropShadow(BlurType.TWO_PASS_BOX, Color.GOLD, 4, 2, 0, 0));
     }
 
     private String getColourCode() {
@@ -87,6 +103,7 @@ public class TextPaletteColour extends Circle {
         }
 
         setDisable(true);
+        setOpacity(0.4);
     }
 
     private void initialiseEvents() {
@@ -119,6 +136,14 @@ public class TextPaletteColour extends Circle {
 
     private void reset() {
         setEffect(null);
+    }
+
+    private void setDisableEffect(boolean isDisable) {
+        if (isDisable) {
+            setOpacity(0.4);
+        } else {
+            setOpacity(1);
+        }
     }
 }
 
