@@ -78,6 +78,9 @@ public class LineUnitEventManager {
                 unitDragData.getCopiedUnits().add(lineUnit);
                 gesture = Gesture.COPY;
             }
+
+            lineUnit.requestFocus();
+            mouseEvent.consume();
         }
     };
 

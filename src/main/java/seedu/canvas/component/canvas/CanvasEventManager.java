@@ -49,15 +49,6 @@ public class CanvasEventManager {
 
         if (mouseEvent.isPrimaryButtonDown()) {
 
-            // Checks if focus is on direct canvas
-            if (canvas.getCanvasMode() == CanvasMode.POINT) {
-                // if (mouseEvent.getClickCount() == 2) {
-                //     canvas.focusNone();
-                // }
-                canvas.focusNone();
-                return;
-            }
-
             if (canvas.getCanvasMode() == CanvasMode.TEXT) {
                 double x = mouseEvent.getX();
                 double y = mouseEvent.getY();

@@ -48,6 +48,20 @@ public class LineResizeHandle extends CanvasHandle {
             }
         });
 
+        addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+            if (mouseEvent.isPrimaryButtonDown()) {
+                mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+                previousHandleLocation = findPreviousHandleLocation();
+                isInteracting = true;
+
+                unit.interact();
+                CanvasGrid.showGridPoints();
+
+                unit.requestFocus();
+                mouseEvent.consume();
+            }
+        });
+
         setOnMousePressed(mouseEvent -> {
             mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             previousHandleLocation = findPreviousHandleLocation();

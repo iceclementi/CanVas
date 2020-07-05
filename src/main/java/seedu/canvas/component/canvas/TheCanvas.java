@@ -214,6 +214,16 @@ public class TheCanvas extends Pane {
         addEventFilter(MouseEvent.MOUSE_RELEASED, canvasEventManager.getOnMouseReleased());
         addEventFilter(ScrollEvent.ANY, canvasEventManager.getOnScroll());
 
+        setOnMousePressed(mouseEvent -> {
+            if (mouseEvent.isPrimaryButtonDown()) {
+                // Checks if focus is on direct canvas
+                if (canvas.getCanvasMode() == CanvasMode.POINT) {
+                    System.out.println("canvas hit!");
+                    canvas.focusNone();
+                }
+            }
+        });
+
         addDeleteUnitEvent();
     }
 

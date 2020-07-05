@@ -77,6 +77,9 @@ public class ModelUnitEventManager {
                 unitDragData.getCopiedUnits().add(modelUnit);
                 gesture = Gesture.COPY;
             }
+
+            modelUnit.requestFocus();
+            mouseEvent.consume();
         }
     };
 

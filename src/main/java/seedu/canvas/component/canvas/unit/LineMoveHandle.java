@@ -2,6 +2,7 @@ package seedu.canvas.component.canvas.unit;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
+import javafx.scene.input.MouseEvent;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.Gesture;
@@ -33,17 +34,22 @@ public class LineMoveHandle extends CanvasHandle {
     }
 
     private void initialiseEvents() {
-        setOnMousePressed(mouseEvent -> {
-            mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-            previousHandleLocation = new UnitPoint(unit.getUnitStartX(), unit.getUnitStartY());
+        addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+            if (mouseEvent.isPrimaryButtonDown()) {
+                mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+                previousHandleLocation = new UnitPoint(unit.getUnitStartX(), unit.getUnitStartY());
 
-            if (mouseEvent.isControlDown()) {
-                unitDragData.getCopiedUnits().add(unit);
-                gesture = Gesture.COPY;
+                if (mouseEvent.isControlDown()) {
+                    unitDragData.getCopiedUnits().add(unit);
+                    gesture = Gesture.COPY;
+                }
+
+                unit.interact();
+                CanvasGrid.showGridPoints();
+
+                unit.requestFocus();
+                mouseEvent.consume();
             }
-
-            unit.interact();
-            CanvasGrid.showGridPoints();
         });
 
         setOnMouseReleased(mouseEvent -> {

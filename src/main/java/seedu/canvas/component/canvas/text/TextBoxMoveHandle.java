@@ -2,8 +2,12 @@ package seedu.canvas.component.canvas.text;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
+import javafx.scene.input.MouseEvent;
+import seedu.canvas.component.canvas.CanvasGrid;
+import seedu.canvas.component.canvas.Gesture;
 import seedu.canvas.component.canvas.TheCanvas;
 import seedu.canvas.component.canvas.unit.CanvasHandle;
+import seedu.canvas.component.canvas.unit.UnitPoint;
 
 public class TextBoxMoveHandle extends CanvasHandle {
 
@@ -29,10 +33,15 @@ public class TextBoxMoveHandle extends CanvasHandle {
     }
 
     private void initialiseEvents() {
-        setOnMousePressed(mouseEvent -> {
-            mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-            previousAnchorPoint = new Point2D(wrapper.getX(), wrapper.getY());
-            wrapper.getTextBox().interact();
+        addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+            if (mouseEvent.isPrimaryButtonDown()) {
+                mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+                previousAnchorPoint = new Point2D(wrapper.getX(), wrapper.getY());
+                wrapper.getTextBox().interact();
+
+                wrapper.getTextBox().requestFocus();
+                mouseEvent.consume();
+            }
         });
 
         setOnMouseReleased(mouseEvent -> {
