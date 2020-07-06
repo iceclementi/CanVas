@@ -78,6 +78,22 @@ public class ModelUnit extends Rectangle implements CanvasNode {
         this.unitHeight.set(unitHeight);
     }
 
+    public double getCanvasStartX() {
+        return CanvasGrid.toActual(getUnitX());
+    }
+
+    public double getCanvasStartY() {
+        return CanvasGrid.toActual(getUnitY());
+    }
+
+    public double getCanvasEndX() {
+        return CanvasGrid.toActual(getUnitX() + getUnitWidth());
+    }
+
+    public double getCanvasEndY() {
+        return CanvasGrid.toActual(getUnitY() + getUnitHeight());
+    }
+
     public ArrayList<Node> getGroup() {
         return new ArrayList<>(Arrays.asList(this, resizeHandleNW, resizeHandleNE, resizeHandleSW, resizeHandleSE));
     }

@@ -48,6 +48,10 @@ public class TextPaletteColour extends Circle {
         paletteColours.forEach(paletteColour -> paletteColour.setDisableEffect(true));
     }
 
+    public static void resetAll() {
+        paletteColours.forEach(TextPaletteColour::reset);
+    }
+
     public static void pick(String style) {
         for (TextPaletteColour paletteColour : paletteColours) {
             if (style.contains(paletteColour.getColourCode())) {
@@ -107,12 +111,12 @@ public class TextPaletteColour extends Circle {
     }
 
     private void initialiseEvents() {
-        setOnMouseEntered(this::onHover);
+        setOnMouseEntered(mouseEvent -> onHover());
         setOnMouseExited(this::onUnhover);
         setOnMouseReleased(this::onRelease);
     }
 
-    private void onHover(MouseEvent mouseEvent) {
+    private void onHover() {
         if (!isPicked) {
             setEffect(new DropShadow(BlurType.TWO_PASS_BOX, Color.GOLD, 2, 1, 0, 0));
         }

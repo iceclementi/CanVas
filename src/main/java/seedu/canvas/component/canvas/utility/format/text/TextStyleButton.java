@@ -45,29 +45,8 @@ public class TextStyleButton extends Button {
         return false;
     }
 
-    public static void apply(boolean isBold, boolean isItalic, boolean isUnderline, boolean isStrikethrough) {
-        for (TextStyleButton styleButton : textStyleButtons) {
-            switch (styleButton.style) {
-            case TextStyle.BOLD:
-                styleButton.apply(isBold);
-                break;
-            case TextStyle.ITALIC:
-                styleButton.apply(isItalic);
-                break;
-            case TextStyle.UNDERLINE:
-                styleButton.apply(isUnderline);
-                break;
-            case TextStyle.STRIKETHROUGH:
-                styleButton.apply(isStrikethrough);
-                break;
-            default:
-                break;
-            }
-        }
-    }
-
     public static void resetToDefault() {
-        apply(false, false, false, false);
+        applyTextStyle(false, false, false, false);
     }
 
     public static void enable() {
@@ -79,7 +58,37 @@ public class TextStyleButton extends Button {
         textStyleButtons.forEach(styleButton -> styleButton.setDisable(true));
     }
 
-    private void apply(boolean isApply) {
+    public static void applyTextStyle(String textStyle) {
+        for (TextStyleButton styleButton : textStyleButtons) {
+            if (styleButton.style.equals(textStyle)) {
+                styleButton.toggleStyle();
+                return;
+            }
+        }
+    }
+
+    public static void applyTextStyle(boolean isBold, boolean isItalic, boolean isUnderline, boolean isStrikethrough) {
+        for (TextStyleButton styleButton : textStyleButtons) {
+            switch (styleButton.style) {
+            case TextStyle.BOLD:
+                styleButton.applyTextStyle(isBold);
+                break;
+            case TextStyle.ITALIC:
+                styleButton.applyTextStyle(isItalic);
+                break;
+            case TextStyle.UNDERLINE:
+                styleButton.applyTextStyle(isUnderline);
+                break;
+            case TextStyle.STRIKETHROUGH:
+                styleButton.applyTextStyle(isStrikethrough);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    private void applyTextStyle(boolean isApply) {
         this.isApply = isApply;
 
         if (isApply) {
@@ -127,23 +136,34 @@ public class TextStyleButton extends Button {
     }
 
     private void onRelease(MouseEvent mouseEvent) {
+        toggleStyle();
+        if (!isApply) {
+            setEffect(new ColorAdjust(0, 0, -0.05, 0));
+        }
+    }
+
+    private void reset() {
+        setEffect(null);
+    }
+
+    private void toggleStyle() {
         isApply = !isApply;
 
         if (isApply) {
             setEffect(new ColorAdjust(0, 0, -0.15, 0));
         } else {
-            setEffect(new ColorAdjust(0, 0, -0.05, 0));
+            reset();
         }
 
+        updateTextStyle();
+    }
+
+    private void updateTextStyle() {
         TextBox textBox = TextFormatBox.getTextBox();
 
         if (textBox != null) {
             textBox.applyTextStyle(style);
             textBox.requestFocus();
         }
-    }
-
-    private void reset() {
-        setEffect(null);
     }
 }

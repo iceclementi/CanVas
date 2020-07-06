@@ -24,12 +24,12 @@ public class TextBoxMoveHandle extends CanvasHandle {
     }
 
     private void initialiseStyle() {
-        unfocus();
-
         centerXProperty().bind(wrapper.xProperty().add(wrapper.widthProperty().divide(2)));
         centerYProperty().bind(wrapper.yProperty().add(wrapper.heightProperty().divide(2)));
 
         setCursor(Cursor.MOVE);
+
+        unfocus();
     }
 
     private void initialiseEvents() {
@@ -61,6 +61,4 @@ public class TextBoxMoveHandle extends CanvasHandle {
             mouseEvent.consume();
         });
     }
-
-
 }

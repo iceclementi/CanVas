@@ -138,9 +138,6 @@ public class TextSizeSpinner extends VBox {
         decrementButton.setOnMouseReleased(mouseEvent -> decrement());
     }
 
-    private void initialiseEvents() {
-    }
-
     private void initialiseButtonStyle(Button button) {
         button.setPrefSize(40, 10);
         button.setMaxSize(40, 10);
@@ -155,9 +152,9 @@ public class TextSizeSpinner extends VBox {
         try {
             int inputSize = Integer.parseInt(input);
             int restrictedSize = CanvasMath.clamp(inputSize, 8, 96);
-                spinnerText.setText(String.valueOf(restrictedSize));
-                currentSize = restrictedSize;
-                updateTextSize();
+            spinnerText.setText(String.valueOf(restrictedSize));
+            currentSize = restrictedSize;
+            updateTextSize();
         } catch (NumberFormatException e) {
             spinnerText.setText(String.valueOf(currentSize));
         }

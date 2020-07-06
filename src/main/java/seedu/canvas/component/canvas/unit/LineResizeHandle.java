@@ -42,17 +42,10 @@ public class LineResizeHandle extends CanvasHandle {
     private void initialiseEvents() {
         setOnMouseEntered(mouseEvent -> updateCursor());
 
-        setOnMouseExited(mouseEvent -> {
-            if (!isInteracting) {
-                setCursor(Cursor.DEFAULT);
-            }
-        });
-
         addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             if (mouseEvent.isPrimaryButtonDown()) {
                 mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
                 previousHandleLocation = findPreviousHandleLocation();
-                isInteracting = true;
 
                 unit.interact();
                 CanvasGrid.showGridPoints();
@@ -62,19 +55,9 @@ public class LineResizeHandle extends CanvasHandle {
             }
         });
 
-        setOnMousePressed(mouseEvent -> {
-            mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-            previousHandleLocation = findPreviousHandleLocation();
-            isInteracting = true;
-
-            unit.interact();
-            CanvasGrid.showGridPoints();
-        });
-
         setOnMouseReleased(mouseEvent -> {
             mouseLocation = null;
             previousHandleLocation = null;
-            isInteracting = false;
 
             unit.focus();
             CanvasGrid.hideGridPoints();
@@ -112,10 +95,8 @@ public class LineResizeHandle extends CanvasHandle {
 
         updateCursor();
 
-        double scale = TheCanvas.getInstance().getCanvasScale();
-
-        int deltaX = CanvasGrid.toUnit((mouseEvent.getSceneX() - mouseLocation.getX()) / scale);
-        int deltaY = CanvasGrid.toUnit((mouseEvent.getSceneY() - mouseLocation.getY()) / scale);
+        int deltaX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - mouseLocation.getX()));
+        int deltaY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - mouseLocation.getY()));
 
         updateEast(deltaX, deltaY);
     }

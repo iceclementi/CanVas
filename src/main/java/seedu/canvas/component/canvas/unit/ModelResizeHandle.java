@@ -28,18 +28,22 @@ public class ModelResizeHandle extends CanvasHandle {
         case NORTHWEST:
             centerXProperty().bind(unit.xProperty());
             centerYProperty().bind(unit.yProperty());
+            setCursor(Cursor.NW_RESIZE);
             break;
         case NORTHEAST:
             centerXProperty().bind(unit.xProperty().add(unit.widthProperty()));
             centerYProperty().bind(unit.yProperty());
+            setCursor(Cursor.NE_RESIZE);
             break;
         case SOUTHWEST:
             centerXProperty().bind(unit.xProperty());
             centerYProperty().bind(unit.yProperty().add(unit.heightProperty()));
+            setCursor(Cursor.SW_RESIZE);
             break;
         case SOUTHEAST:
             centerXProperty().bind(unit.xProperty().add(unit.widthProperty()));
             centerYProperty().bind(unit.yProperty().add(unit.heightProperty()));
+            setCursor(Cursor.SE_RESIZE);
             break;
         default:
             System.out.println("ModelResizeHandle: Invalid location!");
@@ -48,33 +52,6 @@ public class ModelResizeHandle extends CanvasHandle {
     }
 
     private void initialiseEvents() {
-
-        setOnMouseEntered(mouseEvent -> {
-            switch (location) {
-            case NORTHWEST:
-                setCursor(Cursor.NW_RESIZE);
-                break;
-            case NORTHEAST:
-                setCursor(Cursor.NE_RESIZE);
-                break;
-            case SOUTHWEST:
-                setCursor(Cursor.SW_RESIZE);
-                break;
-            case SOUTHEAST:
-                setCursor(Cursor.SE_RESIZE);
-                break;
-            default:
-                setCursor(Cursor.DEFAULT);
-                break;
-            }
-        });
-
-        setOnMouseExited(mouseEvent -> {
-            if (!isInteracting) {
-                setCursor(Cursor.DEFAULT);
-            }
-        });
-
         addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             if (mouseEvent.isPrimaryButtonDown()) {
                 unit.interact();
@@ -82,7 +59,6 @@ public class ModelResizeHandle extends CanvasHandle {
 
                 mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
                 previousHandleLocation = findPreviousHandleLocation();
-                isInteracting = true;
 
                 unit.requestFocus();
                 mouseEvent.consume();
@@ -95,7 +71,6 @@ public class ModelResizeHandle extends CanvasHandle {
 
             mouseLocation = null;
             previousHandleLocation = null;
-            isInteracting = false;
         });
 
         switch (location) {

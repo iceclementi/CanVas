@@ -35,18 +35,22 @@ public class TextBoxResizeHandle extends CanvasHandle {
         case NORTHWEST:
             centerXProperty().bind(wrapper.xProperty());
             centerYProperty().bind(wrapper.yProperty());
+            setCursor(Cursor.NW_RESIZE);
             break;
         case NORTHEAST:
             centerXProperty().bind(wrapper.xProperty().add(wrapper.widthProperty()));
             centerYProperty().bind(wrapper.yProperty());
+            setCursor(Cursor.NE_RESIZE);
             break;
         case SOUTHWEST:
             centerXProperty().bind(wrapper.xProperty());
             centerYProperty().bind(wrapper.yProperty().add(wrapper.heightProperty()));
+            setCursor(Cursor.SW_RESIZE);
             break;
         case SOUTHEAST:
             centerXProperty().bind(wrapper.xProperty().add(wrapper.widthProperty()));
             centerYProperty().bind(wrapper.yProperty().add(wrapper.heightProperty()));
+            setCursor(Cursor.SE_RESIZE);
             break;
         default:
             System.out.println("TextBoxResizeHandle: Invalid location!");
@@ -55,38 +59,11 @@ public class TextBoxResizeHandle extends CanvasHandle {
     }
 
     private void initialiseEvents() {
-        setOnMouseEntered(mouseEvent -> {
-            switch (location) {
-            case NORTHWEST:
-                setCursor(Cursor.NW_RESIZE);
-                break;
-            case NORTHEAST:
-                setCursor(Cursor.NE_RESIZE);
-                break;
-            case SOUTHWEST:
-                setCursor(Cursor.SW_RESIZE);
-                break;
-            case SOUTHEAST:
-                setCursor(Cursor.SE_RESIZE);
-                break;
-            default:
-                setCursor(Cursor.DEFAULT);
-                break;
-            }
-        });
-
-        setOnMouseExited(mouseEvent -> {
-            if (!isInteracting) {
-                setCursor(Cursor.DEFAULT);
-            }
-        });
-
         addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             if (mouseEvent.isPrimaryButtonDown()) {
                 mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
                 previousAnchorPoint = new Point2D(getCenterX(), getCenterY());
                 oppositeAnchorPoint = findOppositeAnchorPoint();
-                isInteracting = true;
 
                 wrapper.getTextBox().interact();
 
@@ -100,7 +77,6 @@ public class TextBoxResizeHandle extends CanvasHandle {
 
             mouseLocation = null;
             previousAnchorPoint = null;
-            isInteracting = false;
 
             oppositeAnchorPoint = null;
         });

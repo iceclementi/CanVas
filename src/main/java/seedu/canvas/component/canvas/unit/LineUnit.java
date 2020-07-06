@@ -80,6 +80,22 @@ public class LineUnit extends Line implements CanvasNode {
         this.unitEndY.set(unitEndY);
     }
 
+    public double getCanvasStartX() {
+        return CanvasGrid.toActual(Math.min(getUnitStartX(), getUnitEndX()));
+    }
+
+    public double getCanvasStartY() {
+        return CanvasGrid.toActual(Math.min(getUnitStartY(), getUnitEndY()));
+    }
+
+    public double getCanvasEndX() {
+        return CanvasGrid.toActual(Math.max(getUnitStartX(), getUnitEndX()));
+    }
+
+    public double getCanvasEndY() {
+        return CanvasGrid.toActual(Math.max(getUnitStartY(), getUnitEndY()));
+    }
+
     public ArrayList<Node> getGroup() {
         return new ArrayList<>(Arrays.asList(this, resizeHandleWest, resizeHandleEast, moveHandle));
     }
@@ -179,7 +195,8 @@ public class LineUnit extends Line implements CanvasNode {
         setStroke(lineColour);
     }
 
-    public void colourFill(Color fillColour) {}
+    public void colourFill(Color fillColour) {
+    }
 
     protected void colour() {
         setStroke(canvas.getLineColour());

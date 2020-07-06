@@ -59,6 +59,22 @@ public class Drawing implements CanvasNode {
         return endY;
     }
 
+    public double getCanvasStartX() {
+        return getStartX();
+    }
+
+    public double getCanvasStartY() {
+        return getStartY();
+    }
+
+    public double getCanvasEndX() {
+        return getEndX();
+    }
+
+    public double getCanvasEndY() {
+        return getEndY();
+    }
+
     public ArrayList<Node> getGroup() {
         ArrayList<Node> drawingUnit = new ArrayList<>(drawing);
         drawingUnit.addAll(selectionBox.getGroup());
@@ -118,7 +134,8 @@ public class Drawing implements CanvasNode {
         drawing.forEach(stroke -> stroke.colour(colour));
     }
 
-    public void colourFill(Color colour) {}
+    public void colourFill(Color colour) {
+    }
 
     private void updateBounds(double strokeStartX, double strokeStartY, double strokeEndX, double strokeEndY) {
         double newStartX = Math.min(strokeStartX, strokeEndX);

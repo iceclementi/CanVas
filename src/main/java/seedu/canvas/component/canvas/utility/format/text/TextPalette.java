@@ -21,7 +21,7 @@ public class TextPalette extends HBox {
 
     private void initialisePalette() {
         getChildren().addAll(
-                generateShadeGroup(Color.RED, Color.RED, Color.DARKRED),
+                generateShadeGroup(Color.PINK, Color.RED, Color.DARKRED),
                 generateShadeGroup(Color.GOLD, Color.ORANGE, Color.INDIANRED),
                 generateShadeGroup(Color.DARKSEAGREEN, Color.FORESTGREEN, Color.DARKGREEN),
                 generateShadeGroup(Color.LIGHTSTEELBLUE, Color.ROYALBLUE, Color.MIDNIGHTBLUE),

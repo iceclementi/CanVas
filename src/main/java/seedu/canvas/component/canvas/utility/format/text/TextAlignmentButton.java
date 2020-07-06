@@ -36,15 +36,6 @@ public class TextAlignmentButton extends Button {
         this(style, backgroundPath, false);
     }
 
-    public static void apply(String style) {
-        for (TextAlignmentButton alignmentButton : textAlignmentButtons) {
-            if (style.contains(alignmentButton.style)) {
-                alignmentButton.apply();
-                return;
-            }
-        }
-    }
-
     public static void enable() {
         textAlignmentButtons.forEach(alignmentButton -> alignmentButton.setDisable(false));
         apply(TextFormatBox.getTextBox().getStyleClass().toString());
@@ -53,6 +44,15 @@ public class TextAlignmentButton extends Button {
     public static void disable() {
         textAlignmentButtons.forEach(TextAlignmentButton::reset);
         textAlignmentButtons.forEach(alignmentButton -> alignmentButton.setDisable(true));
+    }
+
+    public static void apply(String style) {
+        for (TextAlignmentButton alignmentButton : textAlignmentButtons) {
+            if (style.contains(alignmentButton.style)) {
+                alignmentButton.apply();
+                return;
+            }
+        }
     }
 
     private void apply() {

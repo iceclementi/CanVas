@@ -9,6 +9,14 @@ public interface CanvasNode {
 
     ArrayList<Node> getGroup();
 
+    double getCanvasStartX();
+
+    double getCanvasStartY();
+
+    double getCanvasEndX();
+
+    double getCanvasEndY();
+
     void interact();
 
     void focus();

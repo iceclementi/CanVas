@@ -15,7 +15,11 @@ import org.fxmisc.richtext.InlineCssTextArea;
 import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.TheCanvas;
-import seedu.canvas.component.canvas.utility.format.text.*;
+import seedu.canvas.component.canvas.utility.format.text.TextAlignmentButton;
+import seedu.canvas.component.canvas.utility.format.text.TextFormatBox;
+import seedu.canvas.component.canvas.utility.format.text.TextPaletteColour;
+import seedu.canvas.component.canvas.utility.format.text.TextSizeSpinner;
+import seedu.canvas.component.canvas.utility.format.text.TextStyleButton;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.CanvasMath;
 import seedu.canvas.util.ComponentUtil;
@@ -40,6 +44,22 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
 
         canvas.addNode(this);
         relocate(x, y);
+    }
+
+    public double getCanvasStartX() {
+        return getLayoutX();
+    }
+
+    public double getCanvasStartY() {
+        return getLayoutY();
+    }
+
+    public double getCanvasEndX() {
+        return getLayoutX() + getWidth();
+    }
+
+    public double getCanvasEndY() {
+        return getLayoutY() + getHeight();
     }
 
     public ArrayList<Node> getGroup() {
@@ -67,11 +87,11 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
     public void unfocus() {
         wrapper.unfocus();
 
-        TextFormatBox.unlink();
-
         if (!getSelectedText().isEmpty()) {
             selectRange(0, 0);
         }
+
+        TextFormatBox.unlink();
     }
 
     public void scale(double endX, double endY) {
@@ -89,7 +109,8 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
     }
 
     public void colourLine(Color lineColour) {
-        setBorder(new Border(new BorderStroke(lineColour, BorderStrokeStyle.SOLID, new CornerRadii(0), new BorderWidths(2))));
+        setBorder(new Border(
+                new BorderStroke(lineColour, BorderStrokeStyle.SOLID, new CornerRadii(0), new BorderWidths(2))));
     }
 
     public void colourFill(Color colour) {
@@ -104,7 +125,8 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         ComponentUtil.setStyleClass(this, FilePath.TEXT_STYLE_PATH, "default-font");
         ComponentUtil.setStyleClass(this, "align-left");
 
-        setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(0), new BorderWidths(2))));
+        setBorder(new Border(
+                new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(0), new BorderWidths(2))));
         setBackground(null);
         setWrapText(true);
         setPadding(new Insets(2));
@@ -151,13 +173,13 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
 
                 switch (keyEvent.getCode()) {
                 case B:
-                    applyTextStyle(TextStyle.BOLD);
+                    TextStyleButton.applyTextStyle(TextStyle.BOLD);
                     break;
                 case I:
-                    applyTextStyle(TextStyle.ITALIC);
+                    TextStyleButton.applyTextStyle(TextStyle.ITALIC);
                     break;
                 case U:
-                    applyTextStyle(TextStyle.UNDERLINE);
+                    TextStyleButton.applyTextStyle(TextStyle.UNDERLINE);
                     break;
                 case L:
                     applyTextAlignment("align-left");
@@ -237,13 +259,17 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
     }
 
     public void applyTextStyle(String style) {
+        if (getSelectedText().isEmpty()) {
+            return;
+        }
+
         int startIndex = getSelection().getStart();
         int endIndex = getSelection().getEnd();
 
         boolean isStyleAbsent = false;
 
         for (int i = startIndex; i < endIndex; ++i) {
-            if (!getStyleAtPosition(i+1).contains(style)) {
+            if (!getStyleAtPosition(i + 1).contains(style)) {
                 isStyleAbsent = true;
                 break;
             }
@@ -335,7 +361,7 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
     public void synchroniseTextFormatButtons() {
         if (getSelectedText().isEmpty()) {
             int index = getCaretPosition();
-            TextStyleButton.apply(
+            TextStyleButton.applyTextStyle(
                     containsStyle(TextStyle.BOLD, index),
                     containsStyle(TextStyle.ITALIC, index),
                     containsStyle(TextStyle.UNDERLINE, index),
@@ -346,7 +372,7 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         } else {
             int startIndex = getSelection().getStart() + 1;
             int endIndex = getSelection().getEnd() + 1;
-            TextStyleButton.apply(
+            TextStyleButton.applyTextStyle(
                     containsStyle(TextStyle.BOLD, startIndex, endIndex),
                     containsStyle(TextStyle.ITALIC, startIndex, endIndex),
                     containsStyle(TextStyle.UNDERLINE, startIndex, endIndex),
@@ -356,7 +382,7 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
             if (containsSingularStyle(TextStyle.FONT_COLOUR, startIndex, endIndex)) {
                 TextPaletteColour.pick(retrieveSingularStyle(TextStyle.FONT_COLOUR, startIndex));
             } else {
-                TextPaletteColour.disable();
+                TextPaletteColour.resetAll();
             }
 
             updateTextSizeSpinner(startIndex, endIndex);

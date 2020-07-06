@@ -10,11 +10,14 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import seedu.canvas.component.canvas.draw.DrawingCanvas;
+import seedu.canvas.component.canvas.selection.SelectionWrapper;
 import seedu.canvas.component.canvas.text.TextBox;
 import seedu.canvas.component.canvas.unit.UnitShape;
 import seedu.canvas.component.canvas.utility.format.text.TextFormatBox;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
+
+import java.util.ArrayList;
 
 public class TheCanvas extends Pane {
 
@@ -25,10 +28,9 @@ public class TheCanvas extends Pane {
 
     private CanvasMode canvasMode = CanvasMode.POINT;
     private StringProperty canvasModeProperty = new SimpleStringProperty(canvasMode.name());
-
-    /* Unit shapes */
     private UnitShape shape = UnitShape.MODEL;
 
+    private ArrayList<CanvasNode> canvasNodes = new ArrayList<>();
     private CanvasNode focussedNode = null;
 
     private Color lineColour = null;
@@ -174,12 +176,27 @@ public class TheCanvas extends Pane {
         }
     }
 
+    public ArrayList<CanvasNode> getMultiSelectedCanvasNodes(double startX, double startY, double endX, double endY) {
+        ArrayList<CanvasNode> selectedCanvasNodes = new ArrayList<>();
+
+        for (CanvasNode canvasNode : canvasNodes) {
+            if (canvasNode.getCanvasStartX() >= startX && canvasNode.getCanvasStartY() >= startY
+                && canvasNode.getCanvasEndX() <= endX && canvasNode.getCanvasEndY() <= endY) {
+                selectedCanvasNodes.add(canvasNode);
+            }
+        }
+
+        return selectedCanvasNodes;
+    }
+
     public void addNode(CanvasNode canvasNode) {
         getChildren().addAll(canvasNode.getGroup());
+        canvasNodes.add(canvasNode);
     }
 
     public void removeNode(CanvasNode canvasNode) {
         getChildren().removeAll(canvasNode.getGroup());
+        canvasNodes.remove(canvasNode);
     }
 
     public double toScale(double valueToScale) {

@@ -105,6 +105,10 @@ public class CanvasGrid {
         return (int) Math.round(value / OFFSET);
     }
 
+    public static double toActual(int unitValue) {
+        return unitValue * OFFSET;
+    }
+
     public static int clamp(int value, int minimum, int maximum) {
         return Math.min(Math.max(value, minimum), maximum);
     }
