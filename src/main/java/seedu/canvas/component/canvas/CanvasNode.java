@@ -17,11 +17,15 @@ public interface CanvasNode {
 
     double getCanvasEndY();
 
-    void interact();
+    void interactSingle();
 
-    void focus();
+    void focusSingle();
 
     void unfocus();
+
+    void interactMultiple();
+
+    void focusMultiple();
 
     void colourLine(Color lineColour);
 

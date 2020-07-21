@@ -1,5 +1,6 @@
 package seedu.canvas.component.canvas.utility.format.text;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -131,17 +132,22 @@ public class TextSizeSpinner extends VBox {
         incrementButton = new Button();
         decrementButton = new Button();
 
-        initialiseButtonStyle(incrementButton);
-        initialiseButtonStyle(decrementButton);
+        initialiseButtonStyle(incrementButton, true);
+        initialiseButtonStyle(decrementButton, false);
 
         incrementButton.setOnMouseReleased(mouseEvent -> increment());
         decrementButton.setOnMouseReleased(mouseEvent -> decrement());
     }
 
-    private void initialiseButtonStyle(Button button) {
+    private void initialiseButtonStyle(Button button, boolean isIncrement) {
         button.setPrefSize(40, 10);
         button.setMaxSize(40, 10);
-        button.setGraphic(new Polygon(0, 0, 5, 0, 0, 5));
+        button.setPadding(new Insets(2));
+        if (isIncrement) {
+            button.setGraphic(new Polygon(4, 0, 0, 6, 8, 6));
+        } else {
+            button.setGraphic(new Polygon(0, 0, 8, 0, 4, 6));
+        }
     }
 
     private void initialiseStyle() {

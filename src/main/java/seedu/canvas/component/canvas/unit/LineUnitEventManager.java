@@ -68,7 +68,7 @@ public class LineUnitEventManager {
             }
 
             lineUnit = (LineUnit) mouseEvent.getSource();
-            lineUnit.interact();
+            lineUnit.interactSingle();
 
             mouseAnchorLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
 
@@ -122,7 +122,7 @@ public class LineUnitEventManager {
         gesture = Gesture.MOVE;
 
         if (lineUnit != null) {
-            lineUnit.focus();
+            lineUnit.focusSingle();
         }
 
         lineUnit = null;

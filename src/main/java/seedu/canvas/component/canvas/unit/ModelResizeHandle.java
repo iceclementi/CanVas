@@ -22,8 +22,6 @@ public class ModelResizeHandle extends CanvasHandle {
     }
 
     private void initialiseStyle() {
-        focus();
-
         switch (location) {
         case NORTHWEST:
             centerXProperty().bind(unit.xProperty());
@@ -54,7 +52,7 @@ public class ModelResizeHandle extends CanvasHandle {
     private void initialiseEvents() {
         addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             if (mouseEvent.isPrimaryButtonDown()) {
-                unit.interact();
+                unit.interactSingle();
                 CanvasGrid.showGridPoints();
 
                 mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
@@ -66,7 +64,7 @@ public class ModelResizeHandle extends CanvasHandle {
         });
 
         setOnMouseReleased(mouseEvent -> {
-            unit.focus();
+            unit.focusSingle();
             CanvasGrid.hideGridPoints();
 
             mouseLocation = null;

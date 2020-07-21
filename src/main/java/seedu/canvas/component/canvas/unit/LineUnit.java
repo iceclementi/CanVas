@@ -6,7 +6,6 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
 import seedu.canvas.component.canvas.CanvasNode;
@@ -100,30 +99,30 @@ public class LineUnit extends Line implements CanvasNode {
         return new ArrayList<>(Arrays.asList(this, resizeHandleWest, resizeHandleEast, moveHandle));
     }
 
-    public void interact() {
+    public void interactSingle() {
         canvas.interactSingle(this);
-
         toFront();
-
-        resizeHandleWest.interact();
-        resizeHandleEast.interact();
-        moveHandle.interact();
+        getHandles().forEach(CanvasHandle::interact);
     }
 
-    public void focus() {
-        canvas.focusSingle(this);
-
+    public void focusSingle() {
+        canvas.interactSingle(this);
         toFront();
+        getHandles().forEach(CanvasHandle::focus);
+    }
 
-        resizeHandleWest.focus();
-        resizeHandleEast.focus();
-        moveHandle.focus();
+    public void interactMultiple() {
+        toFront();
+        // getHandles().forEach(CanvasHandle::interact);
+    }
+
+    public void focusMultiple() {
+        toFront();
+        // getHandles().forEach(CanvasHandle::focus);
     }
 
     public void unfocus() {
-        resizeHandleWest.unfocus();
-        resizeHandleEast.unfocus();
-        moveHandle.unfocus();
+        getHandles().forEach(CanvasHandle::unfocus);
     }
 
     public void scale(int newUnitEndX, int newUnitEndY) {
@@ -203,6 +202,10 @@ public class LineUnit extends Line implements CanvasNode {
     }
 
     protected void initialiseOther() {
+    }
+
+    private ArrayList<CanvasHandle> getHandles() {
+        return new ArrayList<>(Arrays.asList(moveHandle, resizeHandleWest, resizeHandleEast));
     }
 
     private void initialiseStyle() {

@@ -39,7 +39,7 @@ public class TextBoxWrapper extends Rectangle {
     public ArrayList<Node> getGroup() {
         ArrayList<Node> group = new ArrayList<>();
         group.add(this);
-        group.addAll(Arrays.asList(getHandles()));
+        group.addAll(getHandles());
 
         return group;
     }
@@ -47,18 +47,18 @@ public class TextBoxWrapper extends Rectangle {
     public void interact() {
         toFront();
         setVisible(true);
-        Arrays.stream(getHandles()).forEach(CanvasHandle::interact);
+        getHandles().forEach(CanvasHandle::interact);
     }
 
     public void focus() {
         toFront();
         setVisible(true);
-        Arrays.stream(getHandles()).forEach(CanvasHandle::focus);
+        getHandles().forEach(CanvasHandle::focus);
     }
 
     public void unfocus() {
         setVisible(false);
-        Arrays.stream(getHandles()).forEach(CanvasHandle::unfocus);
+        getHandles().forEach(CanvasHandle::unfocus);
     }
 
     private void initialiseStyle() {
@@ -72,7 +72,8 @@ public class TextBoxWrapper extends Rectangle {
         heightProperty().bind(textBox.heightProperty());
     }
 
-    private CanvasHandle[] getHandles() {
-        return new CanvasHandle[]{moveHandle, resizeHandleNW, resizeHandleNE, resizeHandleSW, resizeHandleSE};
+    private ArrayList<CanvasHandle> getHandles() {
+        return new ArrayList<>(
+                Arrays.asList(moveHandle, resizeHandleNW, resizeHandleNE, resizeHandleSW, resizeHandleSE));
     }
 }

@@ -33,17 +33,17 @@ public class AnchorLineUnit extends LineUnit {
     }
 
     @Override
-    public void interact() {
+    public void interactSingle() {
         startAnchorLine.toFront();
         endAnchorLine.toFront();
-        super.interact();
+        super.interactSingle();
     }
 
     @Override
-    public void focus() {
+    public void focusSingle() {
         startAnchorLine.toFront();
         endAnchorLine.toFront();
-        super.focus();
+        super.focusSingle();
     }
 
     @Override

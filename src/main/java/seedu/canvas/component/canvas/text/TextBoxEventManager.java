@@ -44,7 +44,7 @@ public class TextBoxEventManager {
             }
 
             textBox = (TextBox) mouseEvent.getSource();
-            textBox.interact();
+            textBox.interactSingle();
             textBox.synchroniseTextFormatButtons();
 
             previousAnchorPoint = new Point2D(textBox.getLayoutX(), textBox.getLayoutY());
@@ -81,7 +81,7 @@ public class TextBoxEventManager {
         gesture = Gesture.MOVE;
 
         if (textBox != null) {
-            textBox.focus();
+            textBox.focusSingle();
         }
 
         textBox = null;

@@ -98,33 +98,30 @@ public class ModelUnit extends Rectangle implements CanvasNode {
         return new ArrayList<>(Arrays.asList(this, resizeHandleNW, resizeHandleNE, resizeHandleSW, resizeHandleSE));
     }
 
-    public void interact() {
+    public void interactSingle() {
         canvas.interactSingle(this);
-
         toFront();
-
-        resizeHandleNW.interact();
-        resizeHandleNE.interact();
-        resizeHandleSW.interact();
-        resizeHandleSE.interact();
+        getHandles().forEach(CanvasHandle::interact);
     }
 
-    public void focus() {
-        canvas.focusSingle(this);
-
+    public void focusSingle() {
+        canvas.interactSingle(this);
         toFront();
+        getHandles().forEach(CanvasHandle::focus);
+    }
 
-        resizeHandleNW.focus();
-        resizeHandleNE.focus();
-        resizeHandleSW.focus();
-        resizeHandleSE.focus();
+    public void interactMultiple() {
+        toFront();
+        // getHandles().forEach(CanvasHandle::interact);
+    }
+
+    public void focusMultiple() {
+        toFront();
+        // getHandles().forEach(CanvasHandle::focus);
     }
 
     public void unfocus() {
-        resizeHandleNW.unfocus();
-        resizeHandleNE.unfocus();
-        resizeHandleSW.unfocus();
-        resizeHandleSE.unfocus();
+        getHandles().forEach(CanvasHandle::unfocus);
     }
 
     public void scale(int newUnitWidth, int newUnitHeight) {
@@ -219,6 +216,10 @@ public class ModelUnit extends Rectangle implements CanvasNode {
     private void colour(Paint lineColour, Paint fillColor) {
         setStroke(lineColour);
         setFill(fillColor);
+    }
+
+    private ArrayList<CanvasHandle> getHandles() {
+        return new ArrayList<>(Arrays.asList(resizeHandleNW, resizeHandleNE, resizeHandleSW, resizeHandleSE));
     }
 
     private void initialiseEvents() {

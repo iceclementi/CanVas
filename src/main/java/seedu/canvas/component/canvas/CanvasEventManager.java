@@ -74,22 +74,22 @@ public class CanvasEventManager {
             switch (canvas.getUnitShape()) {
             case MODEL:
                 modelUnit = new ModelUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y), 0, 0);
-                modelUnit.interact();
+                modelUnit.interactSingle();
                 break;
             case LINE:
                 lineUnit = new LineUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y),
                         CanvasGrid.toUnit(x), CanvasGrid.toUnit(y));
-                lineUnit.interact();
+                lineUnit.interactSingle();
                 break;
             case ANCHOR_LINE:
                 lineUnit = new AnchorLineUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y),
                         CanvasGrid.toUnit(x), CanvasGrid.toUnit(y));
-                lineUnit.interact();
+                lineUnit.interactSingle();
                 break;
             case GROUP_LINE:
                 lineUnit = new GroupLineUnit(CanvasGrid.toUnit(x), CanvasGrid.toUnit(y),
                         CanvasGrid.toUnit(x), CanvasGrid.toUnit(y));
-                lineUnit.interact();
+                lineUnit.interactSingle();
                 break;
             default:
                 return;
@@ -167,7 +167,7 @@ public class CanvasEventManager {
             if (modelUnit.getUnitWidth() == 0 || modelUnit.getUnitHeight() == 0) {
                 canvas.removeNode(modelUnit);
             } else {
-                modelUnit.unfocus();
+                modelUnit.focusSingle();
             }
         }
 
@@ -176,7 +176,7 @@ public class CanvasEventManager {
                     && (lineUnit.getUnitStartY() == lineUnit.getUnitEndY())) {
                 canvas.removeNode(lineUnit);
             } else {
-                lineUnit.unfocus();
+                lineUnit.focusSingle();
             }
         }
 
@@ -185,7 +185,7 @@ public class CanvasEventManager {
                 textBox.setDefaultSize();
             }
 
-            textBox.focus();
+            textBox.focusSingle();
             canvas.changeMode(CanvasMode.POINT);
         }
 

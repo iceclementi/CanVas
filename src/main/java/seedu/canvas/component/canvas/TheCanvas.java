@@ -36,6 +36,8 @@ public class TheCanvas extends Pane {
     private Color lineColour = null;
     private Color fillColour = null;
 
+    private SelectionWrapper selectionBox = null;
+
     private static TheCanvas canvas = null;
 
     private TheCanvas() {
@@ -162,13 +164,6 @@ public class TheCanvas extends Pane {
         }
     }
 
-    public void focusSingle(CanvasNode canvasNode) {
-        if (focussedNode != canvasNode) {
-            focusNone();
-            focussedNode = canvasNode;
-        }
-    }
-
     public void focusNone() {
         if (focussedNode != null) {
             focussedNode.unfocus();
@@ -191,12 +186,21 @@ public class TheCanvas extends Pane {
 
     public void addNode(CanvasNode canvasNode) {
         getChildren().addAll(canvasNode.getGroup());
+
+        if (canvasNode instanceof SelectionWrapper) {
+            return;
+        }
+
         canvasNodes.add(canvasNode);
     }
 
     public void removeNode(CanvasNode canvasNode) {
         getChildren().removeAll(canvasNode.getGroup());
         canvasNodes.remove(canvasNode);
+
+        if (canvasNode instanceof SelectionWrapper) {
+            selectionBox = null;
+        }
     }
 
     public double toScale(double valueToScale) {
@@ -231,17 +235,44 @@ public class TheCanvas extends Pane {
         addEventFilter(MouseEvent.MOUSE_RELEASED, canvasEventManager.getOnMouseReleased());
         addEventFilter(ScrollEvent.ANY, canvasEventManager.getOnScroll());
 
-        setOnMousePressed(mouseEvent -> {
-            if (mouseEvent.isPrimaryButtonDown()) {
-                // Checks if focus is on direct canvas
-                if (canvas.getCanvasMode() == CanvasMode.POINT) {
-                    System.out.println("canvas hit!");
-                    canvas.focusNone();
-                }
-            }
-        });
+        setOnMousePressed(this::createSelectionBox);
+        setOnMouseDragged(this::scaleSelectionBox);
+        setOnMouseReleased(this::completeSelectionBox);
 
         addDeleteUnitEvent();
+    }
+
+    private void createSelectionBox(MouseEvent mouseEvent) {
+        requestFocus();
+        if (mouseEvent.isPrimaryButtonDown()) {
+            // Checks if focus is on direct canvas
+            if (canvas.getCanvasMode() == CanvasMode.POINT) {
+                System.out.println("canvas hit!");
+                canvas.focusNone();
+
+                selectionBox = new SelectionWrapper(mouseEvent.getX(), mouseEvent.getY());
+
+                mouseEvent.consume();
+            }
+        }
+    }
+
+    private void scaleSelectionBox(MouseEvent mouseEvent) {
+        if (mouseEvent.isPrimaryButtonDown()) {
+            if (canvas.getCanvasMode() == CanvasMode.POINT) {
+                if (selectionBox != null) {
+                    selectionBox.scale(mouseEvent.getX(), mouseEvent.getY());
+                }
+                mouseEvent.consume();
+            }
+        }
+    }
+
+    private void completeSelectionBox(MouseEvent mouseEvent) {
+        if (selectionBox != null) {
+            selectionBox.compact();
+            mouseEvent.consume();
+        }
     }
 
     private void addDeleteUnitEvent() {
@@ -256,6 +287,11 @@ public class TheCanvas extends Pane {
 
                         if (focussedNode instanceof TextBox) {
                             TextFormatBox.unlink();
+                        }
+
+                        if (focussedNode instanceof SelectionWrapper) {
+                            ((SelectionWrapper) focussedNode).deleteSelection();
+                            selectionBox = null;
                         }
 
                         removeNode(focussedNode);

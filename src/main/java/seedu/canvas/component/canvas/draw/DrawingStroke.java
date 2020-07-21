@@ -30,6 +30,6 @@ public class DrawingStroke extends Line {
     }
 
     private void initialiseEvents() {
-        setOnMouseClicked(mouseEvent ->  drawing.focus());
+        setOnMouseClicked(mouseEvent ->  drawing.focusSingle());
     }
 }

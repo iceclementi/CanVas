@@ -2,7 +2,6 @@ package seedu.canvas.component.canvas.unit;
 
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
 import seedu.canvas.component.canvas.CanvasGrid;
@@ -36,19 +35,19 @@ public class GroupLineUnit extends LineUnit {
     }
 
     @Override
-    public void interact() {
+    public void interactSingle() {
         startGroupLine.toFront();
         endGroupLine.toFront();
         middleGroupLine.toFront();
-        super.interact();
+        super.interactSingle();
     }
 
     @Override
-    public void focus() {
+    public void focusSingle() {
         startGroupLine.toFront();
         endGroupLine.toFront();
         middleGroupLine.toFront();
-        super.focus();
+        super.focusSingle();
     }
 
     @Override

@@ -29,12 +29,12 @@ public class DrawingMoveHandle extends CanvasHandle {
         setOnMousePressed(mouseEvent -> {
             mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             previousAnchorPoint = new Point2D(getCenterX(), getCenterY());
-            selectionBox.getDrawing().interact();
+            selectionBox.getDrawing().interactSingle();
         });
 
         setOnMouseReleased(mouseEvent -> {
             mouseLocation = null;
-            selectionBox.getDrawing().focus();
+            selectionBox.getDrawing().focusSingle();
         });
 
         setOnMouseDragged(mouseEvent -> {

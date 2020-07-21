@@ -44,7 +44,7 @@ public class LineMoveHandle extends CanvasHandle {
                     gesture = Gesture.COPY;
                 }
 
-                unit.interact();
+                unit.interactSingle();
                 CanvasGrid.showGridPoints();
 
                 unit.requestFocus();
@@ -58,7 +58,7 @@ public class LineMoveHandle extends CanvasHandle {
             unitDragData.reset();
             gesture = Gesture.MOVE;
 
-            unit.focus();
+            unit.focusSingle();
             CanvasGrid.hideGridPoints();
         });
 

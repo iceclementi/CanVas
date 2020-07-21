@@ -102,16 +102,26 @@ public class Drawing implements CanvasNode {
         unfocus();
     }
 
-    public void interact() {
+    public void interactSingle() {
         canvas.interactSingle(this);
         toFront();
         selectionBox.interact();
     }
 
-    public void focus() {
-        canvas.focusSingle(this);
+    public void focusSingle() {
+        canvas.interactSingle(this);
         toFront();
         selectionBox.focus();
+    }
+
+    public void interactMultiple() {
+        toFront();
+        // selectionBox.interact();
+    }
+
+    public void focusMultiple() {
+        toFront();
+        // selectionBox.focus();
     }
 
     public void unfocus() {

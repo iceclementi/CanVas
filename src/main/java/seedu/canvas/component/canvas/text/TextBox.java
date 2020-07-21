@@ -15,6 +15,7 @@ import org.fxmisc.richtext.InlineCssTextArea;
 import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.TheCanvas;
+import seedu.canvas.component.canvas.unit.CanvasHandle;
 import seedu.canvas.component.canvas.utility.format.text.TextAlignmentButton;
 import seedu.canvas.component.canvas.utility.format.text.TextFormatBox;
 import seedu.canvas.component.canvas.utility.format.text.TextPaletteColour;
@@ -70,18 +71,28 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         return group;
     }
 
-    public void interact() {
-        toFront();
+    public void interactSingle() {
         canvas.interactSingle(this);
+        toFront();
         wrapper.interact();
 
         TextFormatBox.link(this);
     }
 
-    public void focus() {
+    public void focusSingle() {
+        canvas.interactSingle(this);
         toFront();
-        canvas.focusSingle(this);
         wrapper.focus();
+    }
+
+    public void interactMultiple() {
+        toFront();
+        // wrapper.interact();
+    }
+
+    public void focusMultiple() {
+        toFront();
+        // wrapper.focus();
     }
 
     public void unfocus() {

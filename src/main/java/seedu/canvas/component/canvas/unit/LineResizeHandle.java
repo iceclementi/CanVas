@@ -47,7 +47,7 @@ public class LineResizeHandle extends CanvasHandle {
                 mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
                 previousHandleLocation = findPreviousHandleLocation();
 
-                unit.interact();
+                unit.interactSingle();
                 CanvasGrid.showGridPoints();
 
                 unit.requestFocus();
@@ -59,7 +59,7 @@ public class LineResizeHandle extends CanvasHandle {
             mouseLocation = null;
             previousHandleLocation = null;
 
-            unit.focus();
+            unit.focusSingle();
             CanvasGrid.hideGridPoints();
         });
 

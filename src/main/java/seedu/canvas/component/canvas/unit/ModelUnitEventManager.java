@@ -55,9 +55,11 @@ public class ModelUnitEventManager {
     private EventHandler<MouseEvent> onMousePressed = mouseEvent -> {
 
         if (mouseEvent.isPrimaryButtonDown()) {
+
             if (canvas.getCanvasMode() == CanvasMode.SHAPE) {
                 modelUnit = (ModelUnit) mouseEvent.getSource();
                 canvas.changeMode(CanvasMode.POINT);
+                mouseEvent.consume();
                 return;
             }
 
@@ -66,7 +68,7 @@ public class ModelUnitEventManager {
             }
 
             modelUnit = (ModelUnit) mouseEvent.getSource();
-            modelUnit.interact();
+            modelUnit.interactSingle();
 
             unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
             unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
@@ -121,7 +123,7 @@ public class ModelUnitEventManager {
         gesture = Gesture.MOVE;
 
         if (modelUnit != null) {
-            modelUnit.focus();
+            modelUnit.focusSingle();
         }
 
         modelUnit = null;

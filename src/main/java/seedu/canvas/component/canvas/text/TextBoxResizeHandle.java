@@ -65,15 +65,16 @@ public class TextBoxResizeHandle extends CanvasHandle {
                 previousAnchorPoint = new Point2D(getCenterX(), getCenterY());
                 oppositeAnchorPoint = findOppositeAnchorPoint();
 
-                wrapper.getTextBox().interact();
+                wrapper.getTextBox().interactSingle();
 
-                wrapper.getTextBox().requestFocus();
+                // wrapper.getTextBox().requestFocus();
+                requestFocus();
                 mouseEvent.consume();
             }
         });
 
         setOnMouseReleased(mouseEvent -> {
-            wrapper.getTextBox().focus();
+            wrapper.getTextBox().focusSingle();
 
             mouseLocation = null;
             previousAnchorPoint = null;
