@@ -1,5 +1,7 @@
 package seedu.canvas.component.canvas.draw;
 
+import javafx.scene.Cursor;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
@@ -30,6 +32,11 @@ public class DrawingStroke extends Line {
     }
 
     private void initialiseEvents() {
-        setOnMouseClicked(mouseEvent ->  drawing.focusSingle());
+        addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
+            if (mouseEvent.isPrimaryButtonDown()) {
+                drawing.focusSingle();
+                mouseEvent.consume();
+            }
+        });
     }
 }

@@ -191,6 +191,7 @@ public class TheCanvas extends Pane {
             return;
         }
 
+        System.out.println("yo");
         canvasNodes.add(canvasNode);
     }
 
@@ -269,9 +270,11 @@ public class TheCanvas extends Pane {
     }
 
     private void completeSelectionBox(MouseEvent mouseEvent) {
-        if (selectionBox != null) {
-            selectionBox.compact();
-            mouseEvent.consume();
+        if (canvas.getCanvasMode() == CanvasMode.POINT) {
+            if (selectionBox != null) {
+                selectionBox.compact();
+                mouseEvent.consume();
+            }
         }
     }
 

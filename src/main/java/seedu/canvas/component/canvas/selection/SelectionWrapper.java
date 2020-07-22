@@ -73,17 +73,15 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
     public void interactSingle() {
         toFront();
         canvas.interactSingle(this);
-        getHandles().forEach(CanvasHandle::interact);
-
         interactMultiple();
+        getHandles().forEach(CanvasHandle::interact);
     }
 
     public void focusSingle() {
         toFront();
         canvas.interactSingle(this);
-        getHandles().forEach(CanvasHandle::focus);
-
         focusMultiple();
+        getHandles().forEach(CanvasHandle::focus);
     }
 
     public void unfocus() {
@@ -92,9 +90,11 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
     }
 
     public void colourLine(Color lineColour) {
+        selectedCanvasNodes.forEach(selectedCanvasNode -> selectedCanvasNode.colourLine(lineColour));
     }
 
     public void colourFill(Color fillColour) {
+        selectedCanvasNodes.forEach(selectedCanvasNode -> selectedCanvasNode.colourFill(fillColour));
     }
 
     public void unfocusMultiple() {
@@ -138,6 +138,10 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
         }
     }
 
+    public void move(double newX, double newY) {
+
+    }
+
     public void deleteSelection() {
         selectedCanvasNodes.forEach(selectedCanvasNode -> canvas.removeNode(selectedCanvasNode));
     }
@@ -153,7 +157,6 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
     }
 
     private void initialiseEvents() {
-
     }
 
     private ArrayList<CanvasHandle> getHandles() {

@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.TheCanvas;
+import seedu.canvas.util.CanvasMath;
 
 import java.util.ArrayList;
 
@@ -17,7 +18,7 @@ public class Drawing implements CanvasNode {
 
     private ArrayList<DrawingStroke> drawing = new ArrayList<>();
 
-    private DrawingSelectionBox selectionBox = null;
+    private DrawingWrapper selectionBox = null;
 
     private DoubleProperty startX = new SimpleDoubleProperty(Double.MAX_VALUE);
     private DoubleProperty startY = new SimpleDoubleProperty(Double.MAX_VALUE);
@@ -59,6 +60,14 @@ public class Drawing implements CanvasNode {
         return endY;
     }
 
+    public double getWidth() {
+        return getEndX() - getStartX();
+    }
+
+    public double getHeight() {
+        return getEndY() - getStartY();
+    }
+
     public double getCanvasStartX() {
         return getStartX();
     }
@@ -94,7 +103,7 @@ public class Drawing implements CanvasNode {
     }
 
     public void finishDrawing() {
-        selectionBox = new DrawingSelectionBox(this);
+        selectionBox = new DrawingWrapper(this);
         drawingCanvas.reset();
         canvas.addNode(this);
 
@@ -128,17 +137,35 @@ public class Drawing implements CanvasNode {
         selectionBox.unfocus();
     }
 
-    public void move(double deltaX, double deltaY) {
+    public void move(double newX, double newY) {
+        double finalNewX = CanvasMath.clamp(newX, 0, CanvasGrid.WIDTH - getWidth());
+        double finalNewY = CanvasMath.clamp(newY, 0, CanvasGrid.HEIGHT - getHeight());
+
+        double deltaX = finalNewX - getStartX();
+        double deltaY = finalNewY - getStartY();
 
         for (DrawingStroke stroke : drawing) {
             shift(stroke, deltaX, deltaY);
         }
 
-        startX.set(startX.get() + deltaX);
-        startY.set(startY.get() + deltaY);
+        startX.set(finalNewX);
+        startY.set(finalNewY);
         endX.set(endX.get() + deltaX);
         endY.set(endY.get() + deltaY);
     }
+
+
+    // public void move(double deltaX, double deltaY, int x) {
+    //
+    //     for (DrawingStroke stroke : drawing) {
+    //         shift(stroke, deltaX, deltaY);
+    //     }
+    //
+    //     startX.set(startX.get() + deltaX);
+    //     startY.set(startY.get() + deltaY);
+    //     endX.set(endX.get() + deltaX);
+    //     endY.set(endY.get() + deltaY);
+    // }
 
     public void colourLine(Color colour) {
         drawing.forEach(stroke -> stroke.colour(colour));

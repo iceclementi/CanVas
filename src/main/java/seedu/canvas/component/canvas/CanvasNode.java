@@ -30,4 +30,6 @@ public interface CanvasNode {
     void colourLine(Color lineColour);
 
     void colourFill(Color fillColour);
+
+    void move(double newX, double newY);
 }

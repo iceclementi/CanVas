@@ -8,13 +8,13 @@ import seedu.canvas.component.canvas.CanvasGrid;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class DrawingSelectionBox extends Rectangle {
+public class DrawingWrapper extends Rectangle {
 
     private DrawingMoveHandle moveHandle;
 
     private Drawing drawing;
 
-    public DrawingSelectionBox(Drawing drawing) {
+    public DrawingWrapper(Drawing drawing) {
         super();
         this.drawing = drawing;
 
@@ -49,25 +49,12 @@ public class DrawingSelectionBox extends Rectangle {
         moveHandle.unfocus();
     }
 
-    public void move(double newX, double newY) {
-        double widthOffset = getWidth() / 2;
-        double heightOffset = getHeight() / 2;
-
-        double finalNewX = clamp(newX, widthOffset, CanvasGrid.WIDTH - widthOffset);
-        double finalNewY = clamp(newY, heightOffset, CanvasGrid.HEIGHT - heightOffset);
-
-        double deltaX = finalNewX - (getX() + widthOffset);
-        double deltaY = finalNewY - (getY() + heightOffset);
-
-        drawing.move(deltaX, deltaY);
-    }
-
     private void initialiseStyle() {
         setStroke(Color.MIDNIGHTBLUE);
         setStrokeWidth(1);
         getStrokeDashArray().addAll(6d, 4d);
 
-        setFill(Color.TRANSPARENT);
+        setFill(null);
 
         xProperty().bind(drawing.startXProperty());
         yProperty().bind(drawing.startYProperty());

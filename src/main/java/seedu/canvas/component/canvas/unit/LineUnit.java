@@ -130,7 +130,9 @@ public class LineUnit extends Line implements CanvasNode {
         unitEndY.set(clamp(newUnitEndY, CanvasGrid.MIN_Y, CanvasGrid.MAX_Y));
     }
 
-    public void move(int newUnitStartX, int newUnitStartY) {
+    public void move(double newStartX, double newStartY) {
+        int newUnitStartX = (int) newStartX;
+        int newUnitStartY = (int) newStartY;
 
         int width = unitEndX.get() - unitStartX.get();
 

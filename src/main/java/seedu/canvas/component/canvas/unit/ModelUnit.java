@@ -129,7 +129,10 @@ public class ModelUnit extends Rectangle implements CanvasNode {
         unitHeight.set(clamp(newUnitHeight, 0, CanvasGrid.MAX_Y - unitY.get()));
     }
 
-    public void move(int newUnitX, int newUnitY) {
+    public void move(double newX, double newY) {
+        int newUnitX = (int) newX;
+        int newUnitY = (int) newY;
+
         unitX.set(clamp(newUnitX, 0, CanvasGrid.MAX_X - unitWidth.get()));
         unitY.set(clamp(newUnitY, 0, CanvasGrid.MAX_Y - unitHeight.get()));
     }
