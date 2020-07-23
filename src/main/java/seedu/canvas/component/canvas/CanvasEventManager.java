@@ -1,6 +1,7 @@
 package seedu.canvas.component.canvas;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import seedu.canvas.component.canvas.text.TextBox;
@@ -92,11 +93,8 @@ public class CanvasEventManager {
                 lineUnit.interactSingle();
                 break;
             default:
-                return;
+                break;
             }
-
-            unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
-            unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
 
         } else if (mouseEvent.isSecondaryButtonDown()) {
             canvasDragData.setMouseAnchorX(mouseEvent.getSceneX());
@@ -130,12 +128,10 @@ public class CanvasEventManager {
 
             switch (canvas.getUnitShape()) {
             case MODEL:
-                int newUnitWidth =
-                        CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()));
-                int newUnitHeight =
-                        CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()));
+                int unitEndX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getX()));
+                int unitEndY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getY()));
 
-                modelUnit.scale(newUnitWidth, newUnitHeight);
+                modelUnit.scale(unitEndX, unitEndY);
                 break;
             case LINE:
             case ANCHOR_LINE:

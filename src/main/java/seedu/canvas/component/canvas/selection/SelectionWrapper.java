@@ -1,5 +1,6 @@
 package seedu.canvas.component.canvas.selection;
 
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -18,10 +19,12 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
 
     private TheCanvas canvas = TheCanvas.getInstance();
 
-    private double startX = CanvasGrid.WIDTH;
-    private double startY = CanvasGrid.HEIGHT;
-    private double endX = 0;
-    private double endY = 0;
+    private Point2D pivotPoint;
+
+    private double contentStartX = CanvasGrid.WIDTH;
+    private double contentStartY = CanvasGrid.HEIGHT;
+    private double contentEndX = 0;
+    private double contentEndY = 0;
 
     private double combinedDeltaX = 0;
     private double combinedDeltaY = 0;
@@ -37,6 +40,8 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
     public SelectionWrapper(double x, double y) {
         setX(x);
         setY(y);
+
+        pivotPoint = new Point2D(x, y);
 
         moveHandle = new SelectionMoveHandle(this);
         resizeHandleNW = new SelectionResizeHandle(this, Direction.NORTHWEST);
@@ -75,19 +80,19 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
     }
 
     public double getMinX() {
-        return getCanvasStartX() - startX;
+        return getCanvasStartX() - contentStartX;
     }
 
     public double getMinY() {
-        return getCanvasStartY() - startY;
+        return getCanvasStartY() - contentStartY;
     }
 
     public double getMaxX() {
-        return CanvasGrid.WIDTH - getWidth() + getCanvasEndX() - endX;
+        return CanvasGrid.WIDTH - getWidth() + getCanvasEndX() - contentEndX;
     }
 
     public double getMaxY() {
-        return CanvasGrid.HEIGHT - getHeight() + getCanvasEndY() - endY;
+        return CanvasGrid.HEIGHT - getHeight() + getCanvasEndY() - contentEndY;
     }
 
     public void interactSingle() {
@@ -132,11 +137,16 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
     }
 
     public void scale(double endX, double endY) {
-        double newWidth = CanvasMath.clamp(endX - getX(), 0, CanvasGrid.WIDTH - getX());
-        double newHeight = CanvasMath.clamp(endY - getY(), 0, CanvasGrid.HEIGHT - getY());
-
-        setWidth(newWidth);
-        setHeight(newHeight);
+        if (pivotPoint.getX() <= endX) {
+            scaleEast(endX);
+        } else {
+            scaleWest(endX);
+        }
+        if (pivotPoint.getY() <= endY) {
+            scaleSouth(endY);
+        } else {
+            scaleNorth(endY);
+        }
     }
 
     public void compact() {
@@ -151,10 +161,10 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
         }
 
         for (CanvasNode selectedCanvasNode : selectedCanvasNodes) {
-            startX = Math.min(startX, selectedCanvasNode.getCanvasStartX());
-            startY = Math.min(startY, selectedCanvasNode.getCanvasStartY());
-            endX = Math.max(endX, selectedCanvasNode.getCanvasEndX());
-            endY = Math.max(endY, selectedCanvasNode.getCanvasEndY());
+            contentStartX = Math.min(contentStartX, selectedCanvasNode.getCanvasStartX());
+            contentStartY = Math.min(contentStartY, selectedCanvasNode.getCanvasStartY());
+            contentEndX = Math.max(contentEndX, selectedCanvasNode.getCanvasEndX());
+            contentEndY = Math.max(contentEndY, selectedCanvasNode.getCanvasEndY());
         }
     }
 
@@ -170,10 +180,10 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
         setX(newFinalX);
         setY(newFinalY);
 
-        startX += deltaX;
-        endX += deltaX;
-        startY += deltaY;
-        endY += deltaY;
+        contentStartX += deltaX;
+        contentEndX += deltaX;
+        contentStartY += deltaY;
+        contentEndY += deltaY;
 
         combinedDeltaX += deltaX;
         combinedDeltaY += deltaY;
@@ -214,6 +224,35 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
     }
 
     private void initialiseEvents() {
+    }
+
+
+    private void scaleEast(double endX) {
+        double newWidth = CanvasMath.clamp(endX - pivotPoint.getX(), 0, CanvasGrid.WIDTH - pivotPoint.getX());
+
+        setWidth(newWidth);
+    }
+
+    private void scaleSouth(double endY) {
+        double newHeight = CanvasMath.clamp(endY - pivotPoint.getY(), 0, CanvasGrid.HEIGHT - pivotPoint.getY());
+
+        setHeight(newHeight);
+    }
+
+    private void scaleWest(double endX) {
+        double newX = CanvasMath.clamp(endX, 0, pivotPoint.getX());
+        double newWidth = CanvasMath.clamp(pivotPoint.getX() - newX, 0, pivotPoint.getX());
+
+        setX(newX);
+        setWidth(newWidth);
+    }
+
+    private void scaleNorth(double endY) {
+        double newY = CanvasMath.clamp(endY, 0, pivotPoint.getY());
+        double newHeight = CanvasMath.clamp(pivotPoint.getY() - newY, 0, pivotPoint.getY());
+
+        setY(newY);
+        setHeight(newHeight);
     }
 
     private ArrayList<CanvasHandle> getHandles() {

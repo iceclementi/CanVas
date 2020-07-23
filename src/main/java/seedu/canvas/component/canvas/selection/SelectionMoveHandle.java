@@ -3,16 +3,13 @@ package seedu.canvas.component.canvas.selection;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
-import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.TheCanvas;
 import seedu.canvas.component.canvas.unit.CanvasHandle;
-import seedu.canvas.component.canvas.unit.UnitPoint;
 
 public class SelectionMoveHandle extends CanvasHandle {
 
     private TheCanvas canvas = TheCanvas.getInstance();
     private Point2D previousAnchorPoint = null;
-    private UnitPoint unitOffset = new UnitPoint();
 
     private SelectionWrapper wrapper;
 
@@ -51,9 +48,6 @@ public class SelectionMoveHandle extends CanvasHandle {
         setOnMouseDragged(mouseEvent -> {
             double deltaX = canvas.toScale(mouseEvent.getSceneX() - mouseLocation.getX());
             double deltaY = canvas.toScale(mouseEvent.getSceneY() - mouseLocation.getY());
-
-            int unitDeltaX = CanvasGrid.toUnit(deltaX);
-            int unitDeltaY = CanvasGrid.toUnit(deltaY);
 
             double newX = previousAnchorPoint.getX() + deltaX;
             double newY = previousAnchorPoint.getY() + deltaY;

@@ -3,10 +3,7 @@ package seedu.canvas.component.canvas.unit;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
-import seedu.canvas.component.canvas.CanvasGrid;
-import seedu.canvas.component.canvas.DragData;
-import seedu.canvas.component.canvas.Gesture;
-import seedu.canvas.component.canvas.TheCanvas;
+import seedu.canvas.component.canvas.*;
 
 public class LineMoveHandle extends CanvasHandle {
 
@@ -15,6 +12,7 @@ public class LineMoveHandle extends CanvasHandle {
     private LineUnit unit;
     private Gesture gesture = Gesture.MOVE;
     private DragData unitDragData = new DragData();
+    private Point2D moveHandleLocation = null;
 
     public LineMoveHandle(LineUnit unit) {
         super(null);
@@ -36,8 +34,13 @@ public class LineMoveHandle extends CanvasHandle {
     private void initialiseEvents() {
         addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             if (mouseEvent.isPrimaryButtonDown()) {
+
+                if (canvas.getCanvasMode() == CanvasMode.SHAPE) {
+                    canvas.changeMode(CanvasMode.POINT);
+                }
+
                 mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-                previousHandleLocation = new UnitPoint(unit.getUnitStartX(), unit.getUnitStartY());
+                moveHandleLocation = new Point2D(unit.getStartX(), unit.getStartY());
 
                 if (mouseEvent.isControlDown()) {
                     unitDragData.getCopiedUnits().add(unit);
@@ -64,13 +67,13 @@ public class LineMoveHandle extends CanvasHandle {
 
         setOnMouseDragged(mouseEvent -> {
             if (gesture == Gesture.MOVE) {
-                int deltaX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - mouseLocation.getX()));
-                int deltaY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - mouseLocation.getY()));
+                double deltaX = canvas.toScale(mouseEvent.getSceneX() - mouseLocation.getX());
+                double deltaY = canvas.toScale(mouseEvent.getSceneY() - mouseLocation.getY());
 
-                int newUnitStartX = previousHandleLocation.getUnitX() + deltaX;
-                int newUnitStartY = previousHandleLocation.getUnitY() + deltaY;
+                double newStartX = moveHandleLocation.getX() + deltaX;
+                double newStartY = moveHandleLocation.getY() + deltaY;
 
-                unit.move(newUnitStartX, newUnitStartY);
+                unit.move(newStartX, newStartY);
             }
 
             if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {

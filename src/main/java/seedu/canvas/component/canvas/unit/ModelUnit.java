@@ -13,6 +13,7 @@ import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.TheCanvas;
+import seedu.canvas.util.CanvasMath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +21,8 @@ import java.util.Arrays;
 public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
 
     private TheCanvas canvas = TheCanvas.getInstance();
+
+    private UnitPoint pivotPoint;
 
     private IntegerProperty unitX = new SimpleIntegerProperty();
     private IntegerProperty unitY = new SimpleIntegerProperty();
@@ -40,6 +43,8 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
         this.unitY.set(unitY);
         this.unitWidth.set(unitWidth);
         this.unitHeight.set(unitHeight);
+
+        pivotPoint = new UnitPoint(unitX, unitY);
 
         canvas.addNode(this);
 
@@ -124,9 +129,17 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
         getHandles().forEach(CanvasHandle::unfocus);
     }
 
-    public void scale(int newUnitWidth, int newUnitHeight) {
-        unitWidth.set(clamp(newUnitWidth, 0, CanvasGrid.MAX_X - unitX.get()));
-        unitHeight.set(clamp(newUnitHeight, 0, CanvasGrid.MAX_Y - unitY.get()));
+    public void scale(int unitEndX, int unitEndY) {
+        if (pivotPoint.getUnitX() <= unitEndX) {
+            scaleEast(unitEndX);
+        } else {
+            scaleWest(unitEndX);
+        }
+        if (pivotPoint.getUnitY() <= unitEndY) {
+            scaleSouth(unitEndY);
+        } else {
+            scaleNorth(unitEndY);
+        }
     }
 
     public void move(double newX, double newY) {
@@ -209,6 +222,47 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
         unfocus();
 
         setCursor(Cursor.HAND);
+    }
+
+    // public void scale(int newUnitWidth, int newUnitHeight) {
+    //     unitWidth.set(clamp(newUnitWidth, 0, CanvasGrid.MAX_X - unitX.get()));
+    //     unitHeight.set(clamp(newUnitHeight, 0, CanvasGrid.MAX_Y - unitY.get()));
+    // }
+
+    private void scaleEast(int endUnitX) {
+        int newUnitWidth = CanvasMath.clamp(endUnitX - pivotPoint.getUnitX(), 0, CanvasGrid.MAX_X - pivotPoint.getUnitX());
+
+        if (newUnitWidth == 0) {
+            unitX.set(pivotPoint.getUnitX());
+        }
+
+        unitWidth.set(newUnitWidth);
+    }
+
+    private void scaleSouth(int endUnitY) {
+        int newUnitHeight = CanvasMath.clamp(endUnitY - pivotPoint.getUnitY(), 0, CanvasGrid.MAX_Y - pivotPoint.getUnitY());
+
+        if (newUnitHeight == 0) {
+            unitY.set(pivotPoint.getUnitY());
+        }
+
+        unitHeight.set(newUnitHeight);
+    }
+
+    private void scaleWest(int endUnitX) {
+        int newX = CanvasMath.clamp(endUnitX, 0, pivotPoint.getUnitX());
+        int newUnitWidth = CanvasMath.clamp(pivotPoint.getUnitX() - newX, 0, pivotPoint.getUnitX());
+
+        unitX.set(newX);
+        unitWidth.set(newUnitWidth);
+    }
+
+    private void scaleNorth(int endUnitY) {
+        int newY = CanvasMath.clamp(endUnitY, 0, pivotPoint.getUnitY());
+        int newUnitHeight = CanvasMath.clamp(pivotPoint.getUnitY() - newY, 0, pivotPoint.getUnitY());
+
+        unitY.set(newY);
+        unitHeight.set(newUnitHeight);
     }
 
     private void colour() {

@@ -1,6 +1,7 @@
 package seedu.canvas.component.canvas.text;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -15,7 +16,6 @@ import org.fxmisc.richtext.InlineCssTextArea;
 import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.TheCanvas;
-import seedu.canvas.component.canvas.unit.CanvasHandle;
 import seedu.canvas.component.canvas.utility.format.text.TextAlignmentButton;
 import seedu.canvas.component.canvas.utility.format.text.TextFormatBox;
 import seedu.canvas.component.canvas.utility.format.text.TextPaletteColour;
@@ -35,10 +35,14 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
     private TheCanvas canvas = TheCanvas.getInstance();
     private TextBoxWrapper wrapper = new TextBoxWrapper(this);
 
+    private Point2D pivotPoint;
+
     private boolean ignore = false;
 
     public TextBox(double x, double y) {
         super();
+
+        pivotPoint = new Point2D(x, y);
 
         initialiseStyle();
         initialiseEvents();
@@ -106,10 +110,16 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
     }
 
     public void scale(double endX, double endY) {
-        double newWidth = CanvasMath.clamp(endX - getLayoutX(), 0, CanvasGrid.WIDTH - getLayoutX());
-        double newHeight = CanvasMath.clamp(endY - getLayoutY(), 0, CanvasGrid.HEIGHT - getLayoutY());
-
-        setPrefSize(newWidth, newHeight);
+        if (pivotPoint.getX() <= endX) {
+            scaleEast(endX);
+        } else {
+            scaleWest(endX);
+        }
+        if (pivotPoint.getY() <= endY) {
+            scaleSouth(endY);
+        } else {
+            scaleNorth(endY);
+        }
     }
 
     public void move(double newX, double newY) {
@@ -130,6 +140,34 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
 
     public void setDefaultSize() {
         setPrefSize(CanvasGrid.OFFSET * 4, CanvasGrid.OFFSET * 2);
+    }
+
+    private void scaleEast(double endX) {
+        double newWidth = CanvasMath.clamp(endX - pivotPoint.getX(), 0, CanvasGrid.WIDTH - pivotPoint.getX());
+
+        setPrefWidth(newWidth);
+    }
+
+    private void scaleSouth(double endY) {
+        double newHeight = CanvasMath.clamp(endY - pivotPoint.getY(), 0, CanvasGrid.HEIGHT - pivotPoint.getY());
+
+        setPrefHeight(newHeight);
+    }
+
+    private void scaleWest(double endX) {
+        double newX = CanvasMath.clamp(endX, 0, pivotPoint.getX());
+        double newWidth = CanvasMath.clamp(pivotPoint.getX() - newX, 0, pivotPoint.getX());
+
+        setLayoutX(newX);
+        setPrefWidth(newWidth);
+    }
+
+    private void scaleNorth(double endY) {
+        double newY = CanvasMath.clamp(endY, 0, pivotPoint.getY());
+        double newHeight = CanvasMath.clamp(pivotPoint.getY() - newY, 0, pivotPoint.getY());
+
+        setLayoutY(newY);
+        setPrefHeight(newHeight);
     }
 
     private void initialiseStyle() {

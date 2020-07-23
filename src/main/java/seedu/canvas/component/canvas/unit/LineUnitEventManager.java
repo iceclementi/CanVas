@@ -12,10 +12,10 @@ import seedu.canvas.component.canvas.TheCanvas;
 public class LineUnitEventManager {
 
     private TheCanvas canvas = TheCanvas.getInstance();
-    private Point2D mouseAnchorLocation = null;
     private DragData unitDragData = new DragData();
     private LineUnit lineUnit = null;
-    private UnitPoint previousPivotLocation = null;
+    private Point2D mouseAnchorLocation = null;
+    private Point2D previousPivotLocation = null;
     private Gesture gesture = Gesture.MOVE;
 
     /**
@@ -71,7 +71,7 @@ public class LineUnitEventManager {
 
             mouseAnchorLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
 
-            previousPivotLocation = new UnitPoint(lineUnit.getUnitStartX(), lineUnit.getUnitStartY());
+            previousPivotLocation = new Point2D(lineUnit.getStartX(), lineUnit.getStartY());
 
             if (mouseEvent.isControlDown()) {
                 unitDragData.getCopiedUnits().add(lineUnit);
@@ -97,13 +97,13 @@ public class LineUnitEventManager {
         lineUnit = (LineUnit) mouseEvent.getSource();
 
         if (gesture == Gesture.MOVE) {
-            int deltaX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - mouseAnchorLocation.getX()));
-            int deltaY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - mouseAnchorLocation.getY()));
+            double deltaX = canvas.toScale(mouseEvent.getSceneX() - mouseAnchorLocation.getX());
+            double deltaY = canvas.toScale(mouseEvent.getSceneY() - mouseAnchorLocation.getY());
 
-            int newUnitStartX = previousPivotLocation.getUnitX() + deltaX;
-            int newUnitStartY = previousPivotLocation.getUnitY() + deltaY;
+            double newStartX = previousPivotLocation.getX() + deltaX;
+            double newStartY = previousPivotLocation.getY() + deltaY;
 
-            lineUnit.move(newUnitStartX, newUnitStartY);
+            lineUnit.move(newStartX, newStartY);
         }
 
         if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {

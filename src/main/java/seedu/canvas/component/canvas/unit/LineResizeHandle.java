@@ -4,6 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import seedu.canvas.component.canvas.CanvasGrid;
+import seedu.canvas.component.canvas.CanvasMode;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.TheCanvas;
 
@@ -44,6 +45,11 @@ public class LineResizeHandle extends CanvasHandle {
 
         addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             if (mouseEvent.isPrimaryButtonDown()) {
+
+                if (canvas.getCanvasMode() == CanvasMode.SHAPE) {
+                    canvas.changeMode(CanvasMode.POINT);
+                }
+
                 mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
                 previousHandleLocation = findPreviousHandleLocation();
 
