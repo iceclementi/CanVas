@@ -1,6 +1,7 @@
 package seedu.canvas.component.canvas.unit;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.CanvasMode;
@@ -13,7 +14,8 @@ public class ModelUnitEventManager {
     private TheCanvas canvas = TheCanvas.getInstance();
     private DragData unitDragData = new DragData();
     private ModelUnit modelUnit = null;
-    private UnitPoint previousPivotLocation = null;
+    private Point2D mouseAnchorLocation = null;
+    private Point2D previousPivotLocation = null;
     private Gesture gesture = Gesture.MOVE;
 
     /**
@@ -59,8 +61,6 @@ public class ModelUnitEventManager {
             if (canvas.getCanvasMode() == CanvasMode.SHAPE) {
                 modelUnit = (ModelUnit) mouseEvent.getSource();
                 canvas.changeMode(CanvasMode.POINT);
-                mouseEvent.consume();
-                return;
             }
 
             if (canvas.getCanvasMode() != CanvasMode.POINT) {
@@ -70,10 +70,9 @@ public class ModelUnitEventManager {
             modelUnit = (ModelUnit) mouseEvent.getSource();
             modelUnit.interactSingle();
 
-            unitDragData.setMouseAnchorX(mouseEvent.getSceneX());
-            unitDragData.setMouseAnchorY(mouseEvent.getSceneY());
+            mouseAnchorLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
 
-            previousPivotLocation = new UnitPoint(modelUnit.getUnitX(), modelUnit.getUnitY());
+            previousPivotLocation = new Point2D(modelUnit.getX(), modelUnit.getY());
 
             if (mouseEvent.isControlDown()) {
                 unitDragData.getCopiedUnits().add(modelUnit);
@@ -99,11 +98,11 @@ public class ModelUnitEventManager {
         modelUnit = (ModelUnit) mouseEvent.getSource();
 
         if (gesture == Gesture.MOVE) {
-            int deltaX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneX() - unitDragData.getMouseAnchorX()));
-            int deltaY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getSceneY() - unitDragData.getMouseAnchorY()));
+            double deltaX = canvas.toScale(mouseEvent.getSceneX() - mouseAnchorLocation.getX());
+            double deltaY = canvas.toScale(mouseEvent.getSceneY() - mouseAnchorLocation.getY());
 
-            int newUnitX = previousPivotLocation.getUnitX() + deltaX;
-            int newUnitY = previousPivotLocation.getUnitY() + deltaY;
+            double newUnitX = previousPivotLocation.getX() + deltaX;
+            double newUnitY = previousPivotLocation.getY() + deltaY;
 
             modelUnit.move(newUnitX, newUnitY);
         }

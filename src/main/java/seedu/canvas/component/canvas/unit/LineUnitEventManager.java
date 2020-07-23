@@ -60,7 +60,6 @@ public class LineUnitEventManager {
             if (canvas.getCanvasMode() == CanvasMode.SHAPE) {
                 lineUnit = (LineUnit) mouseEvent.getSource();
                 canvas.changeMode(CanvasMode.POINT);
-                return;
             }
 
             if (canvas.getCanvasMode() != CanvasMode.POINT) {

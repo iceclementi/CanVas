@@ -8,6 +8,7 @@ import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.TheCanvas;
 import seedu.canvas.component.canvas.unit.CanvasHandle;
+import seedu.canvas.component.canvas.unit.CanvasUnit;
 import seedu.canvas.util.CanvasMath;
 
 import java.util.ArrayList;
@@ -21,6 +22,9 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
     private double startY = CanvasGrid.HEIGHT;
     private double endX = 0;
     private double endY = 0;
+
+    private double combinedDeltaX = 0;
+    private double combinedDeltaY = 0;
 
     private SelectionMoveHandle moveHandle;
     private SelectionResizeHandle resizeHandleNW;
@@ -68,6 +72,22 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
 
     public double getCanvasEndY() {
         return getY() + getHeight();
+    }
+
+    public double getMinX() {
+        return getCanvasStartX() - startX;
+    }
+
+    public double getMinY() {
+        return getCanvasStartY() - startY;
+    }
+
+    public double getMaxX() {
+        return CanvasGrid.WIDTH - getWidth() + getCanvasEndX() - endX;
+    }
+
+    public double getMaxY() {
+        return CanvasGrid.HEIGHT - getHeight() + getCanvasEndY() - endY;
     }
 
     public void interactSingle() {
@@ -133,13 +153,50 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
         for (CanvasNode selectedCanvasNode : selectedCanvasNodes) {
             startX = Math.min(startX, selectedCanvasNode.getCanvasStartX());
             startY = Math.min(startY, selectedCanvasNode.getCanvasStartY());
-            endX = Math.min(endX, selectedCanvasNode.getCanvasEndX());
-            endY = Math.min(endY, selectedCanvasNode.getCanvasEndY());
+            endX = Math.max(endX, selectedCanvasNode.getCanvasEndX());
+            endY = Math.max(endY, selectedCanvasNode.getCanvasEndY());
         }
     }
 
     public void move(double newX, double newY) {
+        // System.out.println(String.format("%s %s %s %s", getMinX(), getMaxX(), getMinY(), getMaxY()));
 
+        double newFinalX = CanvasMath.clamp(newX, getMinX(), getMaxX());
+        double newFinalY = CanvasMath.clamp(newY, getMinY(), getMaxY());
+
+        double deltaX = newFinalX - getX();
+        double deltaY = newFinalY - getY();
+
+        setX(newFinalX);
+        setY(newFinalY);
+
+        startX += deltaX;
+        endX += deltaX;
+        startY += deltaY;
+        endY += deltaY;
+
+        combinedDeltaX += deltaX;
+        combinedDeltaY += deltaY;
+
+        int unitDeltaX = CanvasGrid.toUnit(combinedDeltaX) - CanvasGrid.toUnit(combinedDeltaX - deltaX);
+        int unitDeltaY = CanvasGrid.toUnit(combinedDeltaY) - CanvasGrid.toUnit(combinedDeltaY - deltaY);
+
+        for (CanvasNode selectedCanvasNode : selectedCanvasNodes) {
+            if (selectedCanvasNode instanceof CanvasUnit) {
+                double newNodeX = selectedCanvasNode.getCanvasStartX() + CanvasGrid.toActual(unitDeltaX);
+                double newNodeY = selectedCanvasNode.getCanvasStartY() + CanvasGrid.toActual(unitDeltaY);
+                selectedCanvasNode.move(newNodeX, newNodeY);
+            } else {
+                double newNodeX = selectedCanvasNode.getCanvasStartX() + deltaX;
+                double newNodeY = selectedCanvasNode.getCanvasStartY() + deltaY;
+                selectedCanvasNode.move(newNodeX, newNodeY);
+            }
+        }
+    }
+
+    public void reset() {
+        combinedDeltaX = 0;
+        combinedDeltaY = 0;
     }
 
     public void deleteSelection() {

@@ -10,19 +10,21 @@ public class UnitPoint {
         this.unitY = unitY;
     }
 
-    public int getUnitX() {
-        return unitX;
+    public UnitPoint() {
+        this(0, 0);
     }
 
-    public void setUnitX(int unitX) {
-        this.unitX = unitX;
+    public int getUnitX() {
+        return unitX;
     }
 
     public int getUnitY() {
         return unitY;
     }
 
-    public void setUnitY(int unitY) {
+    public void setPoint(int unitX, int unitY) {
+        this.unitX = unitX;
         this.unitY = unitY;
     }
+
 }

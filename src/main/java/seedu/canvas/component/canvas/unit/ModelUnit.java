@@ -17,7 +17,7 @@ import seedu.canvas.component.canvas.TheCanvas;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ModelUnit extends Rectangle implements CanvasNode {
+public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
 
     private TheCanvas canvas = TheCanvas.getInstance();
 
@@ -130,8 +130,8 @@ public class ModelUnit extends Rectangle implements CanvasNode {
     }
 
     public void move(double newX, double newY) {
-        int newUnitX = (int) newX;
-        int newUnitY = (int) newY;
+        int newUnitX = CanvasGrid.toUnit(newX);
+        int newUnitY = CanvasGrid.toUnit(newY);
 
         unitX.set(clamp(newUnitX, 0, CanvasGrid.MAX_X - unitWidth.get()));
         unitY.set(clamp(newUnitY, 0, CanvasGrid.MAX_Y - unitHeight.get()));

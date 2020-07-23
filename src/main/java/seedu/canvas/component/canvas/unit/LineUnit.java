@@ -17,7 +17,7 @@ import seedu.canvas.component.canvas.TheCanvas;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class LineUnit extends Line implements CanvasNode {
+public class LineUnit extends Line implements CanvasNode, CanvasUnit {
 
     protected TheCanvas canvas = TheCanvas.getInstance();
 
