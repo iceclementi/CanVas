@@ -169,9 +169,7 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
      *  The drag data of the rectangle unit
      */
     public void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData) {
-        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
-
-        if (copiedUnits.isEmpty()) {
+        if (dragData.getCopiedCanvasNodes().isEmpty()) {
             return;
         }
 
@@ -290,7 +288,7 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
     private void dragCopyWest(double mouseLocationX, double mouseLocationY, DragData dragData) {
         ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
-        ModelUnit targetUnit = (ModelUnit) copiedUnits.get(copiedUnits.size() - 1);
+        ModelUnit targetUnit = (ModelUnit) dragData.getRecentCanvasNode();
         Direction currentCopyDirection = computeDirection(targetUnit, mouseLocationX, mouseLocationY);
 
         if (currentCopyDirection == Direction.WEST) {
@@ -307,7 +305,7 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
     private void dragCopyEast(double mouseLocationX, double mouseLocationY, DragData dragData) {
         ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
-        ModelUnit targetUnit = (ModelUnit) copiedUnits.get(copiedUnits.size() - 1);
+        ModelUnit targetUnit = (ModelUnit) dragData.getRecentCanvasNode();
         Direction currentCopyDirection = computeDirection(targetUnit, mouseLocationX, mouseLocationY);
 
         if (currentCopyDirection == Direction.EAST) {
@@ -324,7 +322,7 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
     private void dragCopyNorth(double mouseLocationX, double mouseLocationY, DragData dragData) {
         ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
-        ModelUnit targetUnit = (ModelUnit) copiedUnits.get(copiedUnits.size() - 1);
+        ModelUnit targetUnit = (ModelUnit) dragData.getRecentCanvasNode();
         Direction currentCopyDirection = computeDirection(targetUnit, mouseLocationX, mouseLocationY);
 
         if (currentCopyDirection == Direction.NORTH) {
@@ -341,7 +339,7 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
     private void dragCopySouth(double mouseLocationX, double mouseLocationY, DragData dragData) {
         ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
-        ModelUnit targetUnit = (ModelUnit) copiedUnits.get(copiedUnits.size() - 1);
+        ModelUnit targetUnit = (ModelUnit) dragData.getRecentCanvasNode();
         Direction currentCopyDirection = computeDirection(targetUnit, mouseLocationX, mouseLocationY);
 
         if (currentCopyDirection == Direction.SOUTH) {
@@ -357,7 +355,7 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
 
     private void addUnit(ArrayList<CanvasNode> copiedUnits, ModelUnit targetUnit,
             int newUnitX, int newUnitY, int newUnitWidth, int newUnitHeight) {
-        if (isUnitWithinCanvas(newUnitX, newUnitY, newUnitWidth, newUnitHeight)) {
+        if (canvas.isWithinCanvas(newUnitX, newUnitY, newUnitX + newUnitWidth, newUnitY + newUnitHeight)) {
             ModelUnit newUnit = new ModelUnit(
                     newUnitX,
                     newUnitY,
@@ -383,7 +381,7 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
             dragData.setCopyDirection(null);
         }
 
-        copiedUnits.get(copiedUnits.size() - 1).interactSingle();
+        dragData.getRecentCanvasNode().interactSingle();
     }
 
     private static Direction computeDirection(ModelUnit unit, double mouseLocationX, double mouseLocationY) {
@@ -399,10 +397,5 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
             // Within the unit
             return null;
         }
-    }
-
-    private static boolean isUnitWithinCanvas(int unitX, int unitY, int unitWidth, int unitHeight) {
-        return (unitX >= 0) && (unitX + unitWidth <= CanvasGrid.MAX_X)
-                && (unitY >= 0) && (unitY + unitHeight <= CanvasGrid.MAX_Y);
     }
 }

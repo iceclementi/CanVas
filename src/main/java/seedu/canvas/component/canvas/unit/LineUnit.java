@@ -157,9 +157,7 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
     }
 
     public void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData) {
-        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
-
-        if (copiedUnits.isEmpty()) {
+        if (dragData.getCopiedCanvasNodes().isEmpty()) {
             return;
         }
 
@@ -245,7 +243,7 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
     private void dragCopyWest(double mouseLocationX, double mouseLocationY, DragData dragData) {
         ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
-        LineUnit targetUnit = (LineUnit) copiedUnits.get(copiedUnits.size() - 1);
+        LineUnit targetUnit = (LineUnit) dragData.getRecentCanvasNode();
         Direction currentCopyDirection = computeDirection(targetUnit, mouseLocationX, mouseLocationY);
 
         int unitWidth = Math.max(targetUnit.getUnitWidth(), 1);
@@ -264,7 +262,7 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
     private void dragCopyEast(double mouseLocationX, double mouseLocationY, DragData dragData) {
         ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
-        LineUnit targetUnit = (LineUnit) copiedUnits.get(copiedUnits.size() - 1);
+        LineUnit targetUnit = (LineUnit) dragData.getRecentCanvasNode();
         Direction currentCopyDirection = computeDirection(targetUnit, mouseLocationX, mouseLocationY);
 
         int unitWidth = Math.max(targetUnit.getUnitWidth(), 1);
@@ -283,7 +281,7 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
     private void dragCopyNorth(double mouseLocationX, double mouseLocationY, DragData dragData) {
         ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
-        LineUnit targetUnit = (LineUnit) copiedUnits.get(copiedUnits.size() - 1);
+        LineUnit targetUnit = (LineUnit) dragData.getRecentCanvasNode();
         Direction currentCopyDirection = computeDirection(targetUnit, mouseLocationX, mouseLocationY);
 
         int unitHeight = Math.max(targetUnit.getUnitHeight(), 1);
@@ -302,7 +300,7 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
     private void dragCopySouth(double mouseLocationX, double mouseLocationY, DragData dragData) {
         ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
-        LineUnit targetUnit = (LineUnit) copiedUnits.get(copiedUnits.size() - 1);
+        LineUnit targetUnit = (LineUnit) dragData.getRecentCanvasNode();
         Direction currentCopyDirection = computeDirection(targetUnit, mouseLocationX, mouseLocationY);
 
         int unitHeight = Math.max(targetUnit.getUnitHeight(), 1);
@@ -320,7 +318,7 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
 
     private void addUnit(ArrayList<CanvasNode> copiedUnits, LineUnit targetUnit,
              int newUnitStartX, int newUnitStartY, int newUnitEndX, int newUnitEndY) {
-        if (isUnitWithinCanvas(newUnitStartX, newUnitStartY, newUnitEndX, newUnitEndY)) {
+        if (canvas.isWithinCanvas(newUnitStartX, newUnitStartY, newUnitEndX, newUnitEndY)) {
             LineUnit newUnit;
 
             if (targetUnit instanceof AnchorLineUnit) {
@@ -350,7 +348,7 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
             dragData.setCopyDirection(null);
         }
 
-        copiedUnits.get(copiedUnits.size() - 1).interactSingle();
+        dragData.getRecentCanvasNode().interactSingle();
     }
 
     private static Direction computeDirection(LineUnit unit, double mouseLocationX, double mouseLocationY) {
@@ -366,12 +364,5 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
             // Within the unit
             return null;
         }
-    }
-
-    private static boolean isUnitWithinCanvas(int unitStartX, int unitStartY, int unitEndX, int unitEndY) {
-        return (unitStartX >= 0) && (unitStartX <= CanvasGrid.MAX_X)
-                && (unitStartY >= 0) && (unitStartY <= CanvasGrid.MAX_Y)
-                && (unitEndX >= 0) && (unitEndX <= CanvasGrid.MAX_X)
-                && (unitEndY >= 0) && (unitEndY <= CanvasGrid.MAX_Y);
     }
 }

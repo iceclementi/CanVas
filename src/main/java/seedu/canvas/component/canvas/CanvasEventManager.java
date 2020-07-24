@@ -53,7 +53,7 @@ public class CanvasEventManager {
                 double x = mouseEvent.getX();
                 double y = mouseEvent.getY();
 
-                textBox = new TextBox(x, y);
+                textBox = new TextBox(x, y, 0, 0);
                 textBox.interactSingle();
 
                 return;

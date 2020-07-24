@@ -95,7 +95,7 @@ public class Drawing implements CanvasNode {
     }
 
     public void addStroke(DrawingStroke stroke) {
-        if (!isWithinCanvas(stroke.getStartX(), stroke.getStartY(), stroke.getEndX(), stroke.getEndY())) {
+        if (!canvas.isWithinCanvas(stroke.getStartX(), stroke.getStartY(), stroke.getEndX(), stroke.getEndY())) {
             return;
         }
 
@@ -166,9 +166,7 @@ public class Drawing implements CanvasNode {
     }
 
     public void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData) {
-        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
-
-        if (copiedUnits.isEmpty()) {
+        if (dragData.getCopiedCanvasNodes().isEmpty()) {
             return;
         }
 
@@ -232,7 +230,7 @@ public class Drawing implements CanvasNode {
     private void dragCopyWest(double mouseLocationX, double mouseLocationY, DragData dragData) {
         ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
-        Drawing targetDrawing = (Drawing) copiedUnits.get(copiedUnits.size() - 1);
+        Drawing targetDrawing = (Drawing) dragData.getRecentCanvasNode();
         Direction currentCopyDirection = computeDirection(targetDrawing, mouseLocationX, mouseLocationY);
 
         double widthOffset = Math.max(targetDrawing.getWidth(), CanvasGrid.OFFSET);
@@ -247,7 +245,7 @@ public class Drawing implements CanvasNode {
     private void dragCopyEast(double mouseLocationX, double mouseLocationY, DragData dragData) {
         ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
-        Drawing targetDrawing = (Drawing) copiedUnits.get(copiedUnits.size() - 1);
+        Drawing targetDrawing = (Drawing) dragData.getRecentCanvasNode();
         Direction currentCopyDirection = computeDirection(targetDrawing, mouseLocationX, mouseLocationY);
 
         double widthOffset = Math.max(targetDrawing.getWidth(), CanvasGrid.OFFSET);
@@ -262,7 +260,7 @@ public class Drawing implements CanvasNode {
     private void dragCopyNorth(double mouseLocationX, double mouseLocationY, DragData dragData) {
         ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
-        Drawing targetDrawing = (Drawing) copiedUnits.get(copiedUnits.size() - 1);
+        Drawing targetDrawing = (Drawing) dragData.getRecentCanvasNode();
         Direction currentCopyDirection = computeDirection(targetDrawing, mouseLocationX, mouseLocationY);
 
         double heightOffset = Math.max(targetDrawing.getHeight(), CanvasGrid.OFFSET);
@@ -277,7 +275,7 @@ public class Drawing implements CanvasNode {
     private void dragCopySouth(double mouseLocationX, double mouseLocationY, DragData dragData) {
         ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
-        Drawing targetDrawing = (Drawing) copiedUnits.get(copiedUnits.size() - 1);
+        Drawing targetDrawing = (Drawing) dragData.getRecentCanvasNode();
         Direction currentCopyDirection = computeDirection(targetDrawing, mouseLocationX, mouseLocationY);
 
         double heightOffset = Math.max(targetDrawing.getHeight(), CanvasGrid.OFFSET);
@@ -305,7 +303,7 @@ public class Drawing implements CanvasNode {
     }
 
     private void addDrawing(ArrayList<CanvasNode> copiedDrawings, Drawing targetDrawing, double deltaX, double deltaY) {
-        if (isWithinCanvas(targetDrawing.getStartX() + deltaX, targetDrawing.getStartY() + deltaY,
+        if (canvas.isWithinCanvas(targetDrawing.getStartX() + deltaX, targetDrawing.getStartY() + deltaY,
                 targetDrawing.getEndX() + deltaX, targetDrawing.getEndY() + deltaY)) {
 
             Drawing newDrawing = new Drawing();
@@ -342,11 +340,6 @@ public class Drawing implements CanvasNode {
             dragData.setCopyDirection(null);
         }
 
-        copiedDrawings.get(copiedDrawings.size() - 1).interactSingle();
-    }
-
-    private boolean isWithinCanvas(double startX, double startY, double endX, double endY) {
-        return (startX >= 0 && endX <= CanvasGrid.WIDTH)
-                && (startY >= 0 && endY <= CanvasGrid.HEIGHT);
+        dragData.getRecentCanvasNode().interactSingle();
     }
 }

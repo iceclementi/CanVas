@@ -13,8 +13,10 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import org.fxmisc.richtext.InlineCssTextArea;
-import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
+import seedu.canvas.component.canvas.CanvasNode;
+import seedu.canvas.component.canvas.Direction;
+import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.TheCanvas;
 import seedu.canvas.component.canvas.utility.format.text.TextAlignmentButton;
 import seedu.canvas.component.canvas.utility.format.text.TextFormatBox;
@@ -37,10 +39,16 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
 
     private Point2D pivotPoint;
 
+    private Color lineColour = Color.MIDNIGHTBLUE;
+    private Color fillColour = Color.TRANSPARENT;
+
     private boolean ignore = false;
 
-    public TextBox(double x, double y) {
+    public TextBox(double x, double y, double width, double height) {
         super();
+
+        setPrefSize(width, height);
+        relocate(x, y);
 
         pivotPoint = new Point2D(x, y);
 
@@ -48,7 +56,6 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         initialiseEvents();
 
         canvas.addNode(this);
-        relocate(x, y);
     }
 
     public double getCanvasStartX() {
@@ -128,14 +135,78 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
     public void colourLine(Color lineColour) {
         setBorder(new Border(
                 new BorderStroke(lineColour, BorderStrokeStyle.SOLID, new CornerRadii(0), new BorderWidths(2))));
+        this.lineColour = lineColour;
     }
 
-    public void colourFill(Color colour) {
-        setBackground(new Background(new BackgroundFill(colour, CornerRadii.EMPTY, Insets.EMPTY)));
+    public void colourFill(Color fillColour) {
+        setBackground(new Background(new BackgroundFill(fillColour, CornerRadii.EMPTY, Insets.EMPTY)));
+        this.fillColour = fillColour;
+    }
+
+    public void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        if (dragData.getCopiedCanvasNodes().isEmpty()) {
+            return;
+        }
+
+        if (dragData.getCopyDirection() == null) {
+            dragData.setCopyDirection(computeDirection(this, mouseLocationX, mouseLocationY));
+
+            // Mouse is still within unit
+            if (dragData.getCopyDirection() == null) {
+                return;
+            }
+        }
+
+        switch (dragData.getCopyDirection()) {
+        case WEST:
+            dragCopyWest(mouseLocationX, mouseLocationY, dragData);
+            break;
+        case EAST:
+            dragCopyEast(mouseLocationX, mouseLocationY, dragData);
+            break;
+        case NORTH:
+            dragCopyNorth(mouseLocationX, mouseLocationY, dragData);
+            break;
+        case SOUTH:
+            dragCopySouth(mouseLocationX, mouseLocationY, dragData);
+            break;
+        default:
+            break;
+        }
     }
 
     public void setDefaultSize() {
         setPrefSize(CanvasGrid.OFFSET * 4, CanvasGrid.OFFSET * 2);
+    }
+
+    private void initialiseStyle() {
+        ComponentUtil.setStyleClass(this, FilePath.TEXT_STYLE_PATH, "default-font");
+        ComponentUtil.setStyleClass(this, "align-left");
+
+        colourLine(Color.BLACK);
+        colourFill(Color.TRANSPARENT);
+        setWrapText(true);
+        setPadding(new Insets(2));
+
+        // setMinSize(0, 0);
+        // setPrefSize(0, 0);
+    }
+
+    private void initialiseEvents() {
+        TextBoxEventManager eventManager = new TextBoxEventManager();
+
+        addEventFilter(MouseEvent.MOUSE_PRESSED, eventManager.getOnMousePressed());
+        // addEventFilter(MouseEvent.MOUSE_DRAGGED, eventManager.getOnMouseDragged());
+        addEventFilter(MouseEvent.MOUSE_RELEASED, eventManager.getOnMouseReleased());
+
+        addBasicTextListener();
+        addKeyShortcutEvent();
+        addResponsiveTextStyleListener();
+    }
+
+    private void colour(Color lineColour, Color fillColor) {
+        colourLine(lineColour);
+        colourFill(fillColor);
     }
 
     private void scaleEast(double endX) {
@@ -166,32 +237,115 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
         setPrefHeight(newHeight);
     }
 
-    private void initialiseStyle() {
-        ComponentUtil.setStyleClass(this, FilePath.TEXT_STYLE_PATH, "default-font");
-        ComponentUtil.setStyleClass(this, "align-left");
+    private void dragCopyWest(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedTextBoxes = dragData.getCopiedCanvasNodes();
 
-        setBorder(new Border(
-                new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(0), new BorderWidths(2))));
-        setBackground(null);
-        setWrapText(true);
-        setPadding(new Insets(2));
+        TextBox targetTextBox = (TextBox) dragData.getRecentCanvasNode();
+        Direction currentCopyDirection = computeDirection(targetTextBox, mouseLocationX, mouseLocationY);
 
-        setMinSize(0, 0);
-        setPrefSize(0, 0);
-
-        unfocus();
+        if (currentCopyDirection == Direction.WEST) {
+            addTextBox(copiedTextBoxes, targetTextBox,
+                    targetTextBox.getCanvasStartX() - targetTextBox.getWidth(),
+                    targetTextBox.getCanvasStartY(),
+                    targetTextBox.getWidth(), targetTextBox.getHeight());
+        } else if (currentCopyDirection == Direction.EAST) {
+            removeTextBox(targetTextBox, dragData);
+        }
     }
 
-    private void initialiseEvents() {
-        TextBoxEventManager eventManager = new TextBoxEventManager();
+    private void dragCopyEast(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedTextBoxes = dragData.getCopiedCanvasNodes();
 
-        addEventFilter(MouseEvent.MOUSE_PRESSED, eventManager.getOnMousePressed());
-        // addEventFilter(MouseEvent.MOUSE_DRAGGED, eventManager.getOnMouseDragged());
-        addEventFilter(MouseEvent.MOUSE_RELEASED, eventManager.getOnMouseReleased());
+        TextBox targetTextBox = (TextBox) dragData.getRecentCanvasNode();
+        Direction currentCopyDirection = computeDirection(targetTextBox, mouseLocationX, mouseLocationY);
 
-        addBasicTextListener();
-        addKeyShortcutEvent();
-        addResponsiveTextStyleListener();
+        if (currentCopyDirection == Direction.EAST) {
+            addTextBox(copiedTextBoxes, targetTextBox,
+                    targetTextBox.getCanvasEndX(),
+                    targetTextBox.getCanvasStartY(),
+                    targetTextBox.getWidth(), targetTextBox.getHeight());
+        } else if (currentCopyDirection == Direction.WEST) {
+            removeTextBox(targetTextBox, dragData);
+        }
+    }
+
+    private void dragCopyNorth(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedTextBoxes = dragData.getCopiedCanvasNodes();
+
+        TextBox targetTextBox = (TextBox) dragData.getRecentCanvasNode();
+        Direction currentCopyDirection = computeDirection(targetTextBox, mouseLocationX, mouseLocationY);
+
+        if (currentCopyDirection == Direction.NORTH) {
+            addTextBox(copiedTextBoxes, targetTextBox,
+                    targetTextBox.getCanvasStartX(),
+                    targetTextBox.getCanvasStartY() - targetTextBox.getHeight(),
+                    targetTextBox.getWidth(), targetTextBox.getHeight());
+        } else if (currentCopyDirection == Direction.SOUTH) {
+            removeTextBox(targetTextBox, dragData);
+        }
+    }
+
+    private void dragCopySouth(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedTextBoxes = dragData.getCopiedCanvasNodes();
+
+        TextBox targetTextBox = (TextBox) dragData.getRecentCanvasNode();
+        Direction currentCopyDirection = computeDirection(targetTextBox, mouseLocationX, mouseLocationY);
+
+        if (currentCopyDirection == Direction.SOUTH) {
+            addTextBox(copiedTextBoxes, targetTextBox,
+                    targetTextBox.getCanvasStartX(),
+                    targetTextBox.getCanvasStartY() + targetTextBox.getHeight(),
+                    targetTextBox.getWidth(), targetTextBox.getHeight());
+        } else if (currentCopyDirection == Direction.NORTH) {
+            removeTextBox(targetTextBox, dragData);
+        }
+    }
+
+    private void addTextBox(ArrayList<CanvasNode> copiedTextBoxes, TextBox targetTextBox,
+            double newX, double newY, double newWidth, double newHeight) {
+
+        if (canvas.isWithinCanvas(newX, newY, newX + newWidth, newY + newHeight)) {
+
+            TextBox newTextBox = new TextBox(newX, newY, newWidth, newHeight);
+
+            newTextBox.appendText(targetTextBox.getText());
+
+            newTextBox.colour(targetTextBox.lineColour, targetTextBox.fillColour);
+            newTextBox.interactSingle();
+            canvas.requestFocus();
+
+            copiedTextBoxes.add(newTextBox);
+        }
+    }
+
+    private void removeTextBox(TextBox targetTextBox, DragData dragData) {
+        ArrayList<CanvasNode> copiedDrawings = dragData.getCopiedCanvasNodes();
+
+        if (copiedDrawings.size() > 1) {
+            copiedDrawings.remove(targetTextBox);
+            canvas.removeNode(targetTextBox);
+        }
+
+        if (copiedDrawings.size() == 1) {
+            dragData.setCopyDirection(null);
+        }
+
+        dragData.getRecentCanvasNode().interactSingle();
+    }
+
+    private static Direction computeDirection(TextBox textBox, double mouseLocationX, double mouseLocationY) {
+        if (CanvasGrid.toUnit(mouseLocationX - textBox.getCanvasStartX()) < 0) {
+            return Direction.WEST;
+        } else if (CanvasGrid.toUnit(mouseLocationX - textBox.getCanvasEndX()) > 0) {
+            return Direction.EAST;
+        } else if (CanvasGrid.toUnit(mouseLocationY - textBox.getCanvasStartY()) < 0) {
+            return Direction.NORTH;
+        } else if (CanvasGrid.toUnit(mouseLocationY - textBox.getCanvasEndY()) > 0) {
+            return Direction.SOUTH;
+        } else {
+            // Within the textBox
+            return null;
+        }
     }
 
     private void addBasicTextListener() {

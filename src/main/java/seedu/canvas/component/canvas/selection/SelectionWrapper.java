@@ -160,13 +160,10 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
     }
 
     public void move(double newX, double newY) {
-        // System.out.println(String.format("%s %s %s %s", getMinX(), getMaxX(), getMinY(), getMaxY()));
+        System.out.println(String.format("%s %s %s %s", getMinX(), getMaxX(), getMinY(), getMaxY()));
 
         double newFinalX = CanvasMath.clamp(newX, getMinX(), getMaxX());
         double newFinalY = CanvasMath.clamp(newY, getMinY(), getMaxY());
-
-        setX(newFinalX);
-        setY(newFinalY);
 
         double deltaX = newFinalX - getX();
         double deltaY = newFinalY - getY();
@@ -178,6 +175,9 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
 
         combinedDeltaX += deltaX;
         combinedDeltaY += deltaY;
+
+        setX(newFinalX);
+        setY(newFinalY);
 
         int unitDeltaX = CanvasGrid.toUnit(combinedDeltaX) - CanvasGrid.toUnit(combinedDeltaX - deltaX);
         int unitDeltaY = CanvasGrid.toUnit(combinedDeltaY) - CanvasGrid.toUnit(combinedDeltaY - deltaY);

@@ -221,6 +221,20 @@ public class TheCanvas extends Pane {
         CanvasGrid.hideGridPoints();
     }
 
+    public boolean isWithinCanvas(int unitStartX, int unitStartY, int unitEndX, int unitEndY) {
+        return (unitStartX >= 0) && (unitStartX <= CanvasGrid.MAX_X)
+                && (unitStartY >= 0) && (unitStartY <= CanvasGrid.MAX_Y)
+                && (unitEndX >= 0) && (unitEndX <= CanvasGrid.MAX_X)
+                && (unitEndY >= 0) && (unitEndY <= CanvasGrid.MAX_Y);
+    }
+
+    public boolean isWithinCanvas(double startX, double startY, double endX, double endY) {
+        return (startX >= 0) && (startX <= CanvasGrid.WIDTH)
+                && (startY >= 0) && (startY <= CanvasGrid.HEIGHT)
+                && (endX >= 0) && (endX <= CanvasGrid.WIDTH)
+                && (endY >= 0) && (endY <= CanvasGrid.HEIGHT);
+    }
+
     private void initialiseStyle() {
         ComponentUtil.setStyleClass(this, FilePath.CANVAS_STYLE_PATH, "canvas");
 
