@@ -1,55 +1,33 @@
-package seedu.canvas.component.canvas.unit;
+package seedu.canvas.component.canvas.draw;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
-import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.CanvasMode;
 import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.Gesture;
 import seedu.canvas.component.canvas.TheCanvas;
 
-public class ModelUnitEventManager {
+public class DrawingStrokeEventManager {
 
     private TheCanvas canvas = TheCanvas.getInstance();
-    private DragData unitDragData = new DragData();
-    private ModelUnit modelUnit = null;
+    private Drawing drawing = null;
+    private DragData drawingDragData = new DragData();
     private Point2D mouseAnchorLocation = null;
     private Point2D previousPivotLocation = null;
     private Gesture gesture = Gesture.MOVE;
 
-    /**
-     * Constructor for the event manager of the units in the canvas.
-     */
-    public ModelUnitEventManager() {
+    public DrawingStrokeEventManager() {
     }
 
-    /**
-     * Gets the mouse pressed event handler.
-     *
-     * @return
-     *  The mouse pressed event handler
-     */
     public EventHandler<MouseEvent> getOnMousePressed() {
         return onMousePressed;
     }
 
-    /**
-     * Gets the mouse dragged event handler.
-     *
-     * @return
-     *  The mouse dragged event handler
-     */
     public EventHandler<MouseEvent> getOnMouseDragged() {
         return onMouseDragged;
     }
 
-    /**
-     * Gets the mouse released event handler.
-     *
-     * @return
-     *  The mouse released event handler
-     */
     public EventHandler<MouseEvent> getOnMouseReleased() {
         return onMouseReleased;
     }
@@ -58,28 +36,21 @@ public class ModelUnitEventManager {
 
         if (mouseEvent.isPrimaryButtonDown()) {
 
-            if (canvas.getCanvasMode() == CanvasMode.SHAPE) {
-                modelUnit = (ModelUnit) mouseEvent.getSource();
-                canvas.changeMode(CanvasMode.POINT);
-            }
-
             if (canvas.getCanvasMode() != CanvasMode.POINT) {
                 return;
             }
 
-            modelUnit = (ModelUnit) mouseEvent.getSource();
-            modelUnit.interactSingle();
+            drawing = ((DrawingStroke) mouseEvent.getSource()).getDrawing();
+            drawing.interactSingle();
 
             mouseAnchorLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-
-            previousPivotLocation = new Point2D(modelUnit.getX(), modelUnit.getY());
+            previousPivotLocation = new Point2D(drawing.getStartX(), drawing.getStartY());
 
             if (mouseEvent.isControlDown()) {
-                unitDragData.getCopiedCanvasNodes().add(modelUnit);
+                drawingDragData.getCopiedCanvasNodes().add(drawing);
                 gesture = Gesture.COPY;
             }
 
-            modelUnit.requestFocus();
             mouseEvent.consume();
         }
     };
@@ -93,37 +64,33 @@ public class ModelUnitEventManager {
             return;
         }
 
-        CanvasGrid.showGridPoints();
-
-        modelUnit = (ModelUnit) mouseEvent.getSource();
+        drawing = ((DrawingStroke) mouseEvent.getSource()).getDrawing();
 
         if (gesture == Gesture.MOVE) {
             double deltaX = canvas.toScale(mouseEvent.getSceneX() - mouseAnchorLocation.getX());
             double deltaY = canvas.toScale(mouseEvent.getSceneY() - mouseAnchorLocation.getY());
 
-            double newX = previousPivotLocation.getX() + deltaX;
-            double newY = previousPivotLocation.getY() + deltaY;
+            double newUnitX = previousPivotLocation.getX() + deltaX;
+            double newUnitY = previousPivotLocation.getY() + deltaY;
 
-            modelUnit.move(newX, newY);
+            drawing.move(newUnitX, newUnitY);
         }
 
         if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
-            modelUnit.dragCopy(mouseEvent.getX(), mouseEvent.getY(), unitDragData);
+            drawing.dragCopy(mouseEvent.getX(), mouseEvent.getY(), drawingDragData);
         }
 
         mouseEvent.consume();
     };
 
     private EventHandler<MouseEvent> onMouseReleased = mouseEvent -> {
-        unitDragData.reset();
+        drawingDragData.reset();
         gesture = Gesture.MOVE;
 
-        if (modelUnit != null) {
-            modelUnit.focusSingle();
+        if (drawing != null) {
+            drawing.focusSingle();
         }
 
-        modelUnit = null;
-
-        CanvasGrid.hideGridPoints();
+        drawing = null;
     };
 }

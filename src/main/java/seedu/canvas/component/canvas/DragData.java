@@ -1,8 +1,5 @@
 package seedu.canvas.component.canvas;
 
-import javafx.scene.Node;
-import seedu.canvas.component.canvas.unit.ModelUnit;
-
 import java.util.ArrayList;
 
 public class DragData {
@@ -13,7 +10,7 @@ public class DragData {
     private double translateAnchorX = 0;
     private double translateAnchorY = 0;
 
-    private ArrayList<Node> copiedUnits = new ArrayList<>();
+    private ArrayList<CanvasNode> copiedCanvasNodes = new ArrayList<>();
     private Direction copyDirection = null;
 
     public DragData() {
@@ -51,8 +48,8 @@ public class DragData {
         this.translateAnchorY = translateAnchorY;
     }
 
-    public ArrayList<Node> getCopiedUnits() {
-        return copiedUnits;
+    public ArrayList<CanvasNode> getCopiedCanvasNodes() {
+        return copiedCanvasNodes;
     }
 
     public Direction getCopyDirection() {
@@ -72,7 +69,7 @@ public class DragData {
         translateAnchorX = 0;
         translateAnchorY = 0;
 
-        copiedUnits = new ArrayList<>();
+        copiedCanvasNodes = new ArrayList<>();
         copyDirection = null;
     }
 }

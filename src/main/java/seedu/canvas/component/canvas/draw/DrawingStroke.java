@@ -21,6 +21,10 @@ public class DrawingStroke extends Line {
         initialiseEvents();
     }
 
+    public Drawing getDrawing() {
+        return drawing;
+    }
+
     public void colour(Color colour) {
         setStroke(colour);
     }
@@ -32,11 +36,10 @@ public class DrawingStroke extends Line {
     }
 
     private void initialiseEvents() {
-        addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
-            if (mouseEvent.isPrimaryButtonDown()) {
-                drawing.focusSingle();
-                mouseEvent.consume();
-            }
-        });
+        DrawingStrokeEventManager drawingStrokeEventManager = new DrawingStrokeEventManager();
+
+        addEventFilter(MouseEvent.MOUSE_PRESSED, drawingStrokeEventManager.getOnMousePressed());
+        addEventFilter(MouseEvent.MOUSE_DRAGGED, drawingStrokeEventManager.getOnMouseDragged());
+        addEventFilter(MouseEvent.MOUSE_RELEASED, drawingStrokeEventManager.getOnMouseReleased());
     }
 }

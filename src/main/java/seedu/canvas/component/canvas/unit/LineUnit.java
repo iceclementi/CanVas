@@ -160,37 +160,34 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
         setUnitEndY(getUnitEndY() + unitDeltaY);
     }
 
-    public void dragCopy(int mouseUnitX, int mouseUnitY, DragData dragData) {
-        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
-        Direction copyDirection = dragData.getCopyDirection();
+    public void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
         if (copiedUnits.isEmpty()) {
             return;
         }
 
-        if (copyDirection == null) {
-            copyDirection = computeDirection(this, mouseUnitX, mouseUnitY);
+        if (dragData.getCopyDirection() == null) {
+            dragData.setCopyDirection(computeDirection(this, mouseLocationX, mouseLocationY));
 
             // Mouse is still within unit
-            if (copyDirection == null) {
+            if (dragData.getCopyDirection() == null) {
                 return;
             }
-
-            dragData.setCopyDirection(copyDirection);
         }
 
-        switch (copyDirection) {
+        switch (dragData.getCopyDirection()) {
         case WEST:
-            dragCopyWest(mouseUnitX, mouseUnitY, dragData);
+            dragCopyWest(mouseLocationX, mouseLocationY, dragData);
             break;
         case EAST:
-            dragCopyEast(mouseUnitX, mouseUnitY, dragData);
+            dragCopyEast(mouseLocationX, mouseLocationY, dragData);
             break;
         case NORTH:
-            dragCopyNorth(mouseUnitX, mouseUnitY, dragData);
+            dragCopyNorth(mouseLocationX, mouseLocationY, dragData);
             break;
         case SOUTH:
-            dragCopySouth(mouseUnitX, mouseUnitY, dragData);
+            dragCopySouth(mouseLocationX, mouseLocationY, dragData);
             break;
         default:
             break;
@@ -238,13 +235,13 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
         addEventFilter(MouseEvent.MOUSE_RELEASED, lineUnitEventManager.getOnMouseReleased());
     }
 
-    private void dragCopyWest(int mouseUnitX, int mouseUnitY, DragData dragData) {
-        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
+    private void dragCopyWest(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
         LineUnit targetUnit = (LineUnit) copiedUnits.get(copiedUnits.size() - 1);
-        Direction currentCopyDirection = computeDirection(targetUnit, mouseUnitX, mouseUnitY);
+        Direction currentCopyDirection = computeDirection(targetUnit, mouseLocationX, mouseLocationY);
 
-        int unitWidth = Math.max(Math.abs(targetUnit.getUnitEndX() - targetUnit.getUnitStartX()), 1);
+        int unitWidth = Math.max(targetUnit.getUnitWidth(), 1);
 
         if (currentCopyDirection == Direction.WEST) {
             addUnit(copiedUnits, targetUnit,
@@ -257,13 +254,13 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
         }
     }
 
-    private void dragCopyEast(int mouseUnitX, int mouseUnitY, DragData dragData) {
-        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
+    private void dragCopyEast(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
         LineUnit targetUnit = (LineUnit) copiedUnits.get(copiedUnits.size() - 1);
-        Direction currentCopyDirection = computeDirection(targetUnit, mouseUnitX, mouseUnitY);
+        Direction currentCopyDirection = computeDirection(targetUnit, mouseLocationX, mouseLocationY);
 
-        int unitWidth = Math.max(Math.abs(targetUnit.getUnitEndX() - targetUnit.getUnitStartX()), 1);
+        int unitWidth = Math.max(targetUnit.getUnitWidth(), 1);
 
         if (currentCopyDirection == Direction.EAST) {
             addUnit(copiedUnits, targetUnit,
@@ -276,13 +273,13 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
         }
     }
 
-    private void dragCopyNorth(int mouseUnitX, int mouseUnitY, DragData dragData) {
-        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
+    private void dragCopyNorth(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
         LineUnit targetUnit = (LineUnit) copiedUnits.get(copiedUnits.size() - 1);
-        Direction currentCopyDirection = computeDirection(targetUnit, mouseUnitX, mouseUnitY);
+        Direction currentCopyDirection = computeDirection(targetUnit, mouseLocationX, mouseLocationY);
 
-        int unitHeight = Math.max(Math.abs(targetUnit.getUnitEndY() - targetUnit.getUnitStartY()), 1);
+        int unitHeight = Math.max(targetUnit.getUnitHeight(), 1);
 
         if (currentCopyDirection == Direction.NORTH) {
             addUnit(copiedUnits, targetUnit,
@@ -295,13 +292,13 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
         }
     }
 
-    private void dragCopySouth(int mouseUnitX, int mouseUnitY, DragData dragData) {
-        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
+    private void dragCopySouth(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
         LineUnit targetUnit = (LineUnit) copiedUnits.get(copiedUnits.size() - 1);
-        Direction currentCopyDirection = computeDirection(targetUnit, mouseUnitX, mouseUnitY);
+        Direction currentCopyDirection = computeDirection(targetUnit, mouseLocationX, mouseLocationY);
 
-        int unitHeight = Math.max(Math.abs(targetUnit.getUnitEndY() - targetUnit.getUnitStartY()), 1);
+        int unitHeight = Math.max(targetUnit.getUnitHeight(), 1);
 
         if (currentCopyDirection == Direction.SOUTH) {
             addUnit(copiedUnits, targetUnit,
@@ -314,7 +311,7 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
         }
     }
 
-    private void addUnit(ArrayList<Node> copiedUnits, LineUnit targetUnit,
+    private void addUnit(ArrayList<CanvasNode> copiedUnits, LineUnit targetUnit,
              int newUnitStartX, int newUnitStartY, int newUnitEndX, int newUnitEndY) {
         if (isUnitWithinCanvas(newUnitStartX, newUnitStartY, newUnitEndX, newUnitEndY)) {
             LineUnit newUnit;
@@ -334,7 +331,7 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
     }
 
     private void removeUnit(LineUnit unit, DragData dragData) {
-        ArrayList<Node> copiedUnits = dragData.getCopiedUnits();
+        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
         if (copiedUnits.size() > 1) {
             copiedUnits.remove(unit);
@@ -346,19 +343,14 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
         }
     }
 
-    private static Direction computeDirection(LineUnit unit, int mouseUnitX, int mouseUnitY) {
-        int unitMinX = Math.min(unit.unitStartX.get(), unit.unitEndX.get());
-        int unitMinY = Math.min(unit.unitStartY.get(), unit.unitEndY.get());
-        int unitMaxX = Math.max(unit.unitStartX.get(), unit.unitEndX.get());
-        int unitMaxY = Math.max(unit.unitStartY.get(), unit.unitEndY.get());
-
-        if (mouseUnitX < unitMinX) {
+    private static Direction computeDirection(LineUnit unit, double mouseLocationX, double mouseLocationY) {
+        if (CanvasGrid.toUnit(mouseLocationX - unit.getCanvasStartX()) < 0) {
             return Direction.WEST;
-        } else if (mouseUnitX > unitMaxX) {
+        } else if (CanvasGrid.toUnit(mouseLocationX - unit.getCanvasEndX()) > 0) {
             return Direction.EAST;
-        } else if (mouseUnitY < unitMinY) {
+        } else if (CanvasGrid.toUnit(mouseLocationY - unit.getCanvasStartY()) < 0) {
             return Direction.NORTH;
-        } else if (mouseUnitY > unitMaxY) {
+        } else if (CanvasGrid.toUnit(mouseLocationY - unit.getCanvasEndY()) > 0) {
             return Direction.SOUTH;
         } else {
             // Within the unit

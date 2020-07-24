@@ -2,6 +2,7 @@ package seedu.canvas.component.canvas;
 
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
+import seedu.canvas.component.canvas.unit.LineUnit;
 
 import java.util.ArrayList;
 

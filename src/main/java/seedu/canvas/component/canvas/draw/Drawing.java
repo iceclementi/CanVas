@@ -4,9 +4,8 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import seedu.canvas.component.canvas.CanvasNode;
-import seedu.canvas.component.canvas.CanvasGrid;
-import seedu.canvas.component.canvas.TheCanvas;
+import seedu.canvas.component.canvas.*;
+import seedu.canvas.component.canvas.unit.ModelUnit;
 import seedu.canvas.util.CanvasMath;
 
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ public class Drawing implements CanvasNode {
     private DrawingCanvas drawingCanvas = DrawingCanvas.getInstance();
 
     private ArrayList<DrawingStroke> drawing = new ArrayList<>();
+    private Color lineColour = canvas.getLineColour();
 
     private DrawingWrapper selectionBox = null;
 
@@ -154,24 +154,45 @@ public class Drawing implements CanvasNode {
         endY.set(endY.get() + deltaY);
     }
 
-
-    // public void move(double deltaX, double deltaY, int x) {
-    //
-    //     for (DrawingStroke stroke : drawing) {
-    //         shift(stroke, deltaX, deltaY);
-    //     }
-    //
-    //     startX.set(startX.get() + deltaX);
-    //     startY.set(startY.get() + deltaY);
-    //     endX.set(endX.get() + deltaX);
-    //     endY.set(endY.get() + deltaY);
-    // }
-
     public void colourLine(Color colour) {
         drawing.forEach(stroke -> stroke.colour(colour));
+        lineColour = colour;
     }
 
     public void colourFill(Color colour) {
+    }
+
+    public void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
+
+        if (copiedUnits.isEmpty()) {
+            return;
+        }
+
+        if (dragData.getCopyDirection() == null) {
+            dragData.setCopyDirection(computeDirection(this, mouseLocationX, mouseLocationY));
+
+            if (dragData.getCopyDirection() == null) {
+                return;
+            }
+        }
+
+        switch (dragData.getCopyDirection()) {
+        case WEST:
+            dragCopyWest(mouseLocationX, mouseLocationY, dragData);
+            break;
+        case EAST:
+            dragCopyEast(mouseLocationX, mouseLocationY, dragData);
+            break;
+        case NORTH:
+            dragCopyNorth(mouseLocationX, mouseLocationY, dragData);
+            break;
+        case SOUTH:
+            dragCopySouth(mouseLocationX, mouseLocationY, dragData);
+            break;
+        default:
+            break;
+        }
     }
 
     private void updateBounds(double strokeStartX, double strokeStartY, double strokeEndX, double strokeEndY) {
@@ -201,10 +222,122 @@ public class Drawing implements CanvasNode {
         stroke.setEndY(stroke.getEndY() + deltaY);
     }
 
+    private void dragCopyWest(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
 
-    private boolean isWithinCanvas(double strokeStartX, double strokeStartY, double strokeEndX, double strokeEndY) {
-        return (strokeStartX >= 0 && strokeEndX <= CanvasGrid.WIDTH)
-                && (strokeStartY >= 0 && strokeEndY <= CanvasGrid.HEIGHT);
+        Drawing targetDrawing = (Drawing) copiedUnits.get(copiedUnits.size() - 1);
+        Direction currentCopyDirection = computeDirection(targetDrawing, mouseLocationX, mouseLocationY);
+
+        double widthOffset = Math.max(targetDrawing.getWidth(), CanvasGrid.OFFSET);
+
+        if (currentCopyDirection == Direction.WEST) {
+            addDrawing(copiedUnits, targetDrawing, -widthOffset, 0);
+        } else if (currentCopyDirection == Direction.EAST) {
+            removeDrawing(targetDrawing, dragData);
+        }
+    }
+
+    private void dragCopyEast(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
+
+        Drawing targetDrawing = (Drawing) copiedUnits.get(copiedUnits.size() - 1);
+        Direction currentCopyDirection = computeDirection(targetDrawing, mouseLocationX, mouseLocationY);
+
+        double widthOffset = Math.max(targetDrawing.getWidth(), CanvasGrid.OFFSET);
+
+        if (currentCopyDirection == Direction.EAST) {
+            addDrawing(copiedUnits, targetDrawing, widthOffset, 0);
+        } else if (currentCopyDirection == Direction.WEST) {
+            removeDrawing(targetDrawing, dragData);
+        }
+    }
+
+    private void dragCopyNorth(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
+
+        Drawing targetDrawing = (Drawing) copiedUnits.get(copiedUnits.size() - 1);
+        Direction currentCopyDirection = computeDirection(targetDrawing, mouseLocationX, mouseLocationY);
+
+        double heightOffset = Math.max(targetDrawing.getHeight(), CanvasGrid.OFFSET);
+
+        if (currentCopyDirection == Direction.NORTH) {
+            addDrawing(copiedUnits, targetDrawing, 0, -heightOffset);
+        } else if (currentCopyDirection == Direction.SOUTH) {
+            removeDrawing(targetDrawing, dragData);
+        }
+    }
+
+    private void dragCopySouth(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
+
+        Drawing targetDrawing = (Drawing) copiedUnits.get(copiedUnits.size() - 1);
+        Direction currentCopyDirection = computeDirection(targetDrawing, mouseLocationX, mouseLocationY);
+
+        double heightOffset = Math.max(targetDrawing.getHeight(), CanvasGrid.OFFSET);
+
+        if (currentCopyDirection == Direction.SOUTH) {
+            addDrawing(copiedUnits, targetDrawing, 0, heightOffset);
+        } else if (currentCopyDirection == Direction.NORTH) {
+            removeDrawing(targetDrawing, dragData);
+        }
+    }
+
+    private Direction computeDirection(Drawing drawing, double mouseLocationX, double mouseLocationY) {
+        if (CanvasGrid.toUnit(mouseLocationX - drawing.getCanvasStartX()) < 0) {
+            return Direction.WEST;
+        } else if (CanvasGrid.toUnit(mouseLocationX - drawing.getCanvasEndX()) > 0) {
+            return Direction.EAST;
+        } else if (CanvasGrid.toUnit(mouseLocationY - drawing.getCanvasStartY()) < 0) {
+            return Direction.NORTH;
+        } else if (CanvasGrid.toUnit(mouseLocationY - drawing.getCanvasEndY()) > 0) {
+            return Direction.SOUTH;
+        } else {
+            // Within the drawing
+            return null;
+        }
+    }
+
+    private void addDrawing(ArrayList<CanvasNode> copiedDrawings, Drawing targetDrawing, double deltaX, double deltaY) {
+        if (isWithinCanvas(targetDrawing.getStartX() + deltaX, targetDrawing.getStartY() + deltaY,
+                targetDrawing.getEndX() + deltaX, targetDrawing.getEndY() + deltaY)) {
+
+            Drawing newDrawing = new Drawing();
+
+            for (DrawingStroke stroke : targetDrawing.drawing) {
+                DrawingStroke newStroke = new DrawingStroke(
+                        newDrawing,
+                        stroke.getStartX() + deltaX,
+                        stroke.getStartY() + deltaY,
+                        stroke.getEndX() + deltaX,
+                        stroke.getEndY() + deltaY
+                );
+
+                newDrawing.addStroke(newStroke);
+            }
+
+            newDrawing.finishDrawing();
+            newDrawing.colourLine(targetDrawing.lineColour);
+
+            copiedDrawings.add(newDrawing);
+        }
+    }
+
+    private void removeDrawing(Drawing targetDrawing, DragData dragData) {
+        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
+
+        if (copiedUnits.size() > 1) {
+            copiedUnits.remove(targetDrawing);
+            canvas.removeNode(targetDrawing);
+        }
+
+        if (copiedUnits.size() == 1) {
+            dragData.setCopyDirection(null);
+        }
+    }
+
+    private boolean isWithinCanvas(double startX, double startY, double endX, double endY) {
+        return (startX >= 0 && endX <= CanvasGrid.WIDTH)
+                && (startY >= 0 && endY <= CanvasGrid.HEIGHT);
     }
 
     private void toFront() {

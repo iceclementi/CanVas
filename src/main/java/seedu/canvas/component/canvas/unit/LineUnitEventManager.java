@@ -74,7 +74,7 @@ public class LineUnitEventManager {
             previousPivotLocation = new Point2D(lineUnit.getCanvasStartX(), lineUnit.getCanvasStartY());
 
             if (mouseEvent.isControlDown()) {
-                unitDragData.getCopiedUnits().add(lineUnit);
+                unitDragData.getCopiedCanvasNodes().add(lineUnit);
                 gesture = Gesture.COPY;
             }
 
@@ -107,10 +107,7 @@ public class LineUnitEventManager {
         }
 
         if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
-            int mouseUnitX = CanvasGrid.toUnit(mouseEvent.getX());
-            int mouseUnitY = CanvasGrid.toUnit(mouseEvent.getY());
-
-            lineUnit.dragCopy(mouseUnitX, mouseUnitY, unitDragData);
+            lineUnit.dragCopy(mouseEvent.getX(), mouseEvent.getY(), unitDragData);
         }
 
         mouseEvent.consume();

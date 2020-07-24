@@ -8,11 +8,11 @@ import seedu.canvas.component.canvas.*;
 public class LineMoveHandle extends CanvasHandle {
 
     private TheCanvas canvas = TheCanvas.getInstance();
-
-    private LineUnit unit;
-    private Gesture gesture = Gesture.MOVE;
     private DragData unitDragData = new DragData();
     private Point2D pivotLocation = null;
+    private Gesture gesture = Gesture.MOVE;
+
+    private LineUnit unit;
 
     public LineMoveHandle(LineUnit unit) {
         super(null);
@@ -43,7 +43,7 @@ public class LineMoveHandle extends CanvasHandle {
                 pivotLocation = new Point2D(unit.getCanvasStartX(), unit.getCanvasStartY());
 
                 if (mouseEvent.isControlDown()) {
-                    unitDragData.getCopiedUnits().add(unit);
+                    unitDragData.getCopiedCanvasNodes().add(unit);
                     gesture = Gesture.COPY;
                 }
 
@@ -77,11 +77,10 @@ public class LineMoveHandle extends CanvasHandle {
             }
 
             if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
-                int mouseUnitX = CanvasGrid.toUnit(mouseEvent.getX());
-                int mouseUnitY = CanvasGrid.toUnit(mouseEvent.getY());
-
-                unit.dragCopy(mouseUnitX, mouseUnitY, unitDragData);
+                unit.dragCopy(mouseEvent.getX(), mouseEvent.getY(), unitDragData);
             }
+
+            mouseEvent.consume();
         });
     }
 }
