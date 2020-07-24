@@ -41,5 +41,20 @@ public class DrawingStroke extends Line {
         addEventFilter(MouseEvent.MOUSE_PRESSED, drawingStrokeEventManager.getOnMousePressed());
         addEventFilter(MouseEvent.MOUSE_DRAGGED, drawingStrokeEventManager.getOnMouseDragged());
         addEventFilter(MouseEvent.MOUSE_RELEASED, drawingStrokeEventManager.getOnMouseReleased());
+
+        canvas.getCanvasModeProperty().addListener(observable -> {
+            switch (canvas.getCanvasMode()) {
+            case POINT:
+                setCursor(Cursor.HAND);
+                break;
+            case SHAPE:
+            case TEXT:
+                setCursor(Cursor.CROSSHAIR);
+                break;
+            default:
+                setCursor(Cursor.DEFAULT);
+                break;
+            }
+        });
     }
 }

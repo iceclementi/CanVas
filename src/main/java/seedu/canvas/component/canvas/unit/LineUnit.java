@@ -8,28 +8,24 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
-import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
+import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.TheCanvas;
 import seedu.canvas.util.CanvasMath;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class LineUnit extends Line implements CanvasNode, CanvasUnit {
 
     protected TheCanvas canvas = TheCanvas.getInstance();
+    private LineUnitWrapper wrapper = new LineUnitWrapper(this);
 
     protected IntegerProperty unitStartX = new SimpleIntegerProperty();
     protected IntegerProperty unitStartY = new SimpleIntegerProperty();
     protected IntegerProperty unitEndX = new SimpleIntegerProperty();
     protected IntegerProperty unitEndY = new SimpleIntegerProperty();
-
-    private LineResizeHandle resizeHandleWest = new LineResizeHandle(this, Direction.WEST);
-    private LineResizeHandle resizeHandleEast = new LineResizeHandle(this, Direction.EAST);
-    private LineMoveHandle moveHandle = new LineMoveHandle(this);
 
     public LineUnit(int unitStartX, int unitStartY, int unitEndX, int unitEndY) {
         super();
@@ -113,33 +109,33 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
     }
 
     public ArrayList<Node> getGroup() {
-        return new ArrayList<>(Arrays.asList(this, resizeHandleWest, resizeHandleEast, moveHandle));
+        ArrayList<Node> group = new ArrayList<>();
+        group.add(this);
+        group.addAll(wrapper.getGroup());
+
+        return group;
     }
 
     public void interactSingle() {
         canvas.interactSingle(this);
-        toFront();
-        getHandles().forEach(CanvasHandle::interact);
+        wrapper.interactSingle();
     }
 
     public void focusSingle() {
         canvas.interactSingle(this);
-        toFront();
-        getHandles().forEach(CanvasHandle::focus);
+        wrapper.focusSingle();
     }
 
     public void interactMultiple() {
-        toFront();
-        // getHandles().forEach(CanvasHandle::interact);
+        wrapper.interactMultiple();
     }
 
     public void focusMultiple() {
-        toFront();
-        // getHandles().forEach(CanvasHandle::focus);
+        wrapper.focusMultiple();
     }
 
     public void unfocus() {
-        getHandles().forEach(CanvasHandle::unfocus);
+        wrapper.unfocus();
     }
 
     public void scale(int endUnitX, int endUnitY) {
@@ -208,10 +204,6 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
     protected void initialiseOther() {
     }
 
-    private ArrayList<CanvasHandle> getHandles() {
-        return new ArrayList<>(Arrays.asList(moveHandle, resizeHandleWest, resizeHandleEast));
-    }
-
     private void initialiseStyle() {
         colour();
         setStrokeWidth(3);
@@ -233,6 +225,21 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
         addEventFilter(MouseEvent.MOUSE_PRESSED, lineUnitEventManager.getOnMousePressed());
         addEventFilter(MouseEvent.MOUSE_DRAGGED, lineUnitEventManager.getOnMouseDragged());
         addEventFilter(MouseEvent.MOUSE_RELEASED, lineUnitEventManager.getOnMouseReleased());
+
+        canvas.getCanvasModeProperty().addListener(observable -> {
+            switch (canvas.getCanvasMode()) {
+            case POINT:
+            case SHAPE:
+                setCursor(Cursor.HAND);
+                break;
+            case TEXT:
+                setCursor(Cursor.CROSSHAIR);
+                break;
+            default:
+                setCursor(Cursor.DEFAULT);
+                break;
+            }
+        });
     }
 
     private void dragCopyWest(double mouseLocationX, double mouseLocationY, DragData dragData) {
@@ -325,6 +332,7 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
             }
 
             newUnit.colourLine((Color) targetUnit.getStroke());
+            newUnit.interactSingle();
 
             copiedUnits.add(newUnit);
         }
@@ -341,6 +349,8 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
         if (copiedUnits.size() == 1) {
             dragData.setCopyDirection(null);
         }
+
+        copiedUnits.get(copiedUnits.size() - 1).interactSingle();
     }
 
     private static Direction computeDirection(LineUnit unit, double mouseLocationX, double mouseLocationY) {

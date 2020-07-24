@@ -4,8 +4,11 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import seedu.canvas.component.canvas.*;
-import seedu.canvas.component.canvas.unit.ModelUnit;
+import seedu.canvas.component.canvas.CanvasGrid;
+import seedu.canvas.component.canvas.CanvasNode;
+import seedu.canvas.component.canvas.Direction;
+import seedu.canvas.component.canvas.DragData;
+import seedu.canvas.component.canvas.TheCanvas;
 import seedu.canvas.util.CanvasMath;
 
 import java.util.ArrayList;
@@ -15,10 +18,10 @@ public class Drawing implements CanvasNode {
     private TheCanvas canvas = TheCanvas.getInstance();
     private DrawingCanvas drawingCanvas = DrawingCanvas.getInstance();
 
-    private ArrayList<DrawingStroke> drawing = new ArrayList<>();
+    private ArrayList<DrawingStroke> drawingStrokes = new ArrayList<>();
     private Color lineColour = canvas.getLineColour();
 
-    private DrawingWrapper selectionBox = null;
+    private DrawingWrapper wrapper = null;
 
     private DoubleProperty startX = new SimpleDoubleProperty(Double.MAX_VALUE);
     private DoubleProperty startY = new SimpleDoubleProperty(Double.MAX_VALUE);
@@ -85,8 +88,8 @@ public class Drawing implements CanvasNode {
     }
 
     public ArrayList<Node> getGroup() {
-        ArrayList<Node> drawingUnit = new ArrayList<>(drawing);
-        drawingUnit.addAll(selectionBox.getGroup());
+        ArrayList<Node> drawingUnit = new ArrayList<>(drawingStrokes);
+        drawingUnit.addAll(wrapper.getGroup());
 
         return drawingUnit;
     }
@@ -96,45 +99,45 @@ public class Drawing implements CanvasNode {
             return;
         }
 
-        drawing.add(stroke);
+        drawingStrokes.add(stroke);
         drawingCanvas.addStroke(stroke);
 
         updateBounds(stroke.getStartX(), stroke.getStartY(), stroke.getEndX(), stroke.getEndY());
     }
 
     public void finishDrawing() {
-        selectionBox = new DrawingWrapper(this);
+        wrapper = new DrawingWrapper(this);
         drawingCanvas.reset();
         canvas.addNode(this);
 
-        selectionBox.unfocus();
+        wrapper.unfocus();
         unfocus();
+    }
+
+    public ArrayList<DrawingStroke> getDrawingStrokes() {
+        return drawingStrokes;
     }
 
     public void interactSingle() {
         canvas.interactSingle(this);
-        toFront();
-        selectionBox.interact();
+        wrapper.interactSingle();
     }
 
     public void focusSingle() {
         canvas.interactSingle(this);
-        toFront();
-        selectionBox.focus();
+        wrapper.focusSingle();
     }
 
     public void interactMultiple() {
-        toFront();
-        // selectionBox.interact();
+        wrapper.interactMultiple();
     }
 
     public void focusMultiple() {
-        toFront();
-        // selectionBox.focus();
+        wrapper.focusMultiple();
     }
 
     public void unfocus() {
-        selectionBox.unfocus();
+        wrapper.unfocus();
     }
 
     public void move(double newX, double newY) {
@@ -144,7 +147,7 @@ public class Drawing implements CanvasNode {
         double deltaX = finalNewX - getStartX();
         double deltaY = finalNewY - getStartY();
 
-        for (DrawingStroke stroke : drawing) {
+        for (DrawingStroke stroke : drawingStrokes) {
             shift(stroke, deltaX, deltaY);
         }
 
@@ -155,7 +158,7 @@ public class Drawing implements CanvasNode {
     }
 
     public void colourLine(Color colour) {
-        drawing.forEach(stroke -> stroke.colour(colour));
+        drawingStrokes.forEach(stroke -> stroke.colour(colour));
         lineColour = colour;
     }
 
@@ -193,6 +196,10 @@ public class Drawing implements CanvasNode {
         default:
             break;
         }
+    }
+
+    public void toFront() {
+        drawingStrokes.forEach(DrawingStroke::toFront);
     }
 
     private void updateBounds(double strokeStartX, double strokeStartY, double strokeEndX, double strokeEndY) {
@@ -303,7 +310,7 @@ public class Drawing implements CanvasNode {
 
             Drawing newDrawing = new Drawing();
 
-            for (DrawingStroke stroke : targetDrawing.drawing) {
+            for (DrawingStroke stroke : targetDrawing.drawingStrokes) {
                 DrawingStroke newStroke = new DrawingStroke(
                         newDrawing,
                         stroke.getStartX() + deltaX,
@@ -317,30 +324,29 @@ public class Drawing implements CanvasNode {
 
             newDrawing.finishDrawing();
             newDrawing.colourLine(targetDrawing.lineColour);
+            newDrawing.interactSingle();
 
             copiedDrawings.add(newDrawing);
         }
     }
 
     private void removeDrawing(Drawing targetDrawing, DragData dragData) {
-        ArrayList<CanvasNode> copiedUnits = dragData.getCopiedCanvasNodes();
+        ArrayList<CanvasNode> copiedDrawings = dragData.getCopiedCanvasNodes();
 
-        if (copiedUnits.size() > 1) {
-            copiedUnits.remove(targetDrawing);
+        if (copiedDrawings.size() > 1) {
+            copiedDrawings.remove(targetDrawing);
             canvas.removeNode(targetDrawing);
         }
 
-        if (copiedUnits.size() == 1) {
+        if (copiedDrawings.size() == 1) {
             dragData.setCopyDirection(null);
         }
+
+        copiedDrawings.get(copiedDrawings.size() - 1).interactSingle();
     }
 
     private boolean isWithinCanvas(double startX, double startY, double endX, double endY) {
         return (startX >= 0 && endX <= CanvasGrid.WIDTH)
                 && (startY >= 0 && endY <= CanvasGrid.HEIGHT);
-    }
-
-    private void toFront() {
-        drawing.forEach(DrawingStroke::toFront);
     }
 }

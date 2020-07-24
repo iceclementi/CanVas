@@ -1,9 +1,10 @@
-package seedu.canvas.component.canvas.unit;
+package seedu.canvas.component.canvas;
 
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import seedu.canvas.component.canvas.Direction;
+import seedu.canvas.component.canvas.unit.UnitPoint;
 
 public abstract class CanvasHandle extends Circle {
 
@@ -14,7 +15,7 @@ public abstract class CanvasHandle extends Circle {
     protected Direction location;
 
     public CanvasHandle(Direction location) {
-        super(4);
+        super(5);
 
         this.location = location;
     }

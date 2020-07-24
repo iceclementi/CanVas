@@ -77,26 +77,22 @@ public class TextBox extends InlineCssTextArea implements CanvasNode {
 
     public void interactSingle() {
         canvas.interactSingle(this);
-        toFront();
-        wrapper.interact();
+        wrapper.interactSingle();
 
         TextFormatBox.link(this);
     }
 
     public void focusSingle() {
         canvas.interactSingle(this);
-        toFront();
-        wrapper.focus();
+        wrapper.focusSingle();
     }
 
     public void interactMultiple() {
-        toFront();
-        // wrapper.interact();
+        wrapper.interactMultiple();
     }
 
     public void focusMultiple() {
-        toFront();
-        // wrapper.focus();
+        wrapper.focusMultiple();
     }
 
     public void unfocus() {

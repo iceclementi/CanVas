@@ -6,7 +6,7 @@ import javafx.scene.input.MouseEvent;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.TheCanvas;
-import seedu.canvas.component.canvas.unit.CanvasHandle;
+import seedu.canvas.component.canvas.CanvasHandle;
 import seedu.canvas.util.CanvasMath;
 
 public class TextBoxResizeHandle extends CanvasHandle {

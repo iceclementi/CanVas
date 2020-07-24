@@ -1,6 +1,8 @@
 package seedu.canvas.component.canvas.unit;
 
 import javafx.scene.Node;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
@@ -34,16 +36,42 @@ public class AnchorLineUnit extends LineUnit {
 
     @Override
     public void interactSingle() {
-        startAnchorLine.toFront();
-        endAnchorLine.toFront();
+        bringForward();
+        highlight(Color.CORNFLOWERBLUE);
+
         super.interactSingle();
     }
 
     @Override
     public void focusSingle() {
-        startAnchorLine.toFront();
-        endAnchorLine.toFront();
+        bringForward();
+        highlight(Color.LIGHTGREEN);
+
         super.focusSingle();
+    }
+
+    @Override
+    public void interactMultiple() {
+        bringForward();
+        highlight(Color.CADETBLUE);
+
+        super.interactMultiple();
+    }
+
+    @Override
+    public void focusMultiple() {
+        bringForward();
+        highlight(Color.GREEN);
+
+        super.focusMultiple();
+    }
+
+    @Override
+    public void unfocus() {
+        super.unfocus();
+
+        startAnchorLine.setEffect(null);
+        endAnchorLine.setEffect(null);
     }
 
     @Override
@@ -80,6 +108,11 @@ public class AnchorLineUnit extends LineUnit {
         startYProperty().addListener(observable -> adjustAnchorLines());
         endXProperty().addListener(observable -> adjustAnchorLines());
         endYProperty().addListener(observable -> adjustAnchorLines());
+    }
+
+    private void highlight(Color colour) {
+        startAnchorLine.setEffect(new DropShadow(BlurType.GAUSSIAN, colour, 7, 0.5, 0, 0));
+        endAnchorLine.setEffect(new DropShadow(BlurType.GAUSSIAN, colour, 7, 0.5, 0, 0));
     }
 
     private void adjustAnchorLines() {
@@ -144,5 +177,10 @@ public class AnchorLineUnit extends LineUnit {
         } else {
             return false;
         }
+    }
+
+    private void bringForward() {
+        startAnchorLine.toFront();
+        endAnchorLine.toFront();
     }
 }

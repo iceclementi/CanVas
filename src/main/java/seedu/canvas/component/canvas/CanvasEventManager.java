@@ -13,7 +13,6 @@ import seedu.canvas.component.canvas.unit.ModelUnit;
 public class CanvasEventManager {
 
     private TheCanvas canvas = TheCanvas.getInstance();
-    private DragData unitDragData = new DragData();
     private DragData canvasDragData = new DragData();
 
     private ModelUnit modelUnit;
@@ -55,6 +54,7 @@ public class CanvasEventManager {
                 double y = mouseEvent.getY();
 
                 textBox = new TextBox(x, y);
+                textBox.interactSingle();
 
                 return;
             }
@@ -128,8 +128,8 @@ public class CanvasEventManager {
 
             switch (canvas.getUnitShape()) {
             case MODEL:
-                int unitEndX = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getX()));
-                int unitEndY = CanvasGrid.toUnit(canvas.toScale(mouseEvent.getY()));
+                int unitEndX = CanvasGrid.toUnit(mouseEvent.getX());
+                int unitEndY = CanvasGrid.toUnit(mouseEvent.getY());
 
                 modelUnit.scale(unitEndX, unitEndY);
                 break;

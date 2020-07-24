@@ -84,10 +84,12 @@ public class DrawingStrokeEventManager {
     };
 
     private EventHandler<MouseEvent> onMouseReleased = mouseEvent -> {
-        drawingDragData.reset();
         gesture = Gesture.MOVE;
 
-        if (drawing != null) {
+        if (drawingDragData.getRecentCanvasNode() != null) {
+            drawingDragData.getRecentCanvasNode().focusSingle();
+            drawingDragData.reset();
+        } else if (drawing != null) {
             drawing.focusSingle();
         }
 

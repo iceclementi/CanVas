@@ -10,16 +10,17 @@ import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.Gesture;
 import seedu.canvas.component.canvas.TheCanvas;
 
-public class LineMoveHandle extends CanvasHandle {
+public class ModelMoveHandle extends CanvasHandle {
+
 
     private TheCanvas canvas = TheCanvas.getInstance();
     private DragData unitDragData = new DragData();
     private Point2D pivotLocation = null;
     private Gesture gesture = Gesture.MOVE;
 
-    private LineUnit unit;
+    private ModelUnit unit;
 
-    public LineMoveHandle(LineUnit unit) {
+    public ModelMoveHandle(ModelUnit unit) {
         super(null);
         this.unit = unit;
 
@@ -30,8 +31,8 @@ public class LineMoveHandle extends CanvasHandle {
     private void initialiseStyle() {
         focus();
 
-        centerXProperty().bind(unit.startXProperty().add(unit.endXProperty()).divide(2));
-        centerYProperty().bind(unit.startYProperty().add(unit.endYProperty()).divide(2));
+        centerXProperty().bind(unit.xProperty().add(unit.widthProperty().divide(2)));
+        centerYProperty().bind(unit.yProperty().add(unit.heightProperty().divide(2)));
 
         setCursor(Cursor.MOVE);
     }

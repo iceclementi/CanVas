@@ -52,6 +52,14 @@ public class DragData {
         return copiedCanvasNodes;
     }
 
+    public CanvasNode getRecentCanvasNode() {
+        if (copiedCanvasNodes.isEmpty()) {
+            return null;
+        } else {
+            return copiedCanvasNodes.get(copiedCanvasNodes.size() - 1);
+        }
+    }
+
     public Direction getCopyDirection() {
         return copyDirection;
     }

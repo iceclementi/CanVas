@@ -1,39 +1,39 @@
-package seedu.canvas.component.canvas.text;
+package seedu.canvas.component.canvas.unit;
 
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.CanvasHandle;
+import seedu.canvas.component.canvas.Direction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TextBoxWrapper extends Rectangle {
+public class ModelUnitWrapper extends Rectangle {
 
-    private TextBoxMoveHandle moveHandle;
-    private TextBoxResizeHandle resizeHandleNW;
-    private TextBoxResizeHandle resizeHandleNE;
-    private TextBoxResizeHandle resizeHandleSW;
-    private TextBoxResizeHandle resizeHandleSE;
+    private ModelMoveHandle moveHandle;
+    private ModelResizeHandle resizeHandleNW;
+    private ModelResizeHandle resizeHandleNE;
+    private ModelResizeHandle resizeHandleSW;
+    private ModelResizeHandle resizeHandleSE;
 
-    private TextBox textBox;
+    private ModelUnit modelUnit;
 
-    public TextBoxWrapper(TextBox textBox) {
+    public ModelUnitWrapper(ModelUnit modelUnit) {
         super();
-        this.textBox = textBox;
+        this.modelUnit = modelUnit;
 
-        moveHandle = new TextBoxMoveHandle(this);
-        resizeHandleNW = new TextBoxResizeHandle(this, Direction.NORTHWEST);
-        resizeHandleNE = new TextBoxResizeHandle(this, Direction.NORTHEAST);
-        resizeHandleSW = new TextBoxResizeHandle(this, Direction.SOUTHWEST);
-        resizeHandleSE = new TextBoxResizeHandle(this, Direction.SOUTHEAST);
+        moveHandle = new ModelMoveHandle(modelUnit);
+        resizeHandleNW = new ModelResizeHandle(modelUnit, Direction.NORTHWEST);
+        resizeHandleNE = new ModelResizeHandle(modelUnit, Direction.NORTHEAST);
+        resizeHandleSW = new ModelResizeHandle(modelUnit, Direction.SOUTHWEST);
+        resizeHandleSE = new ModelResizeHandle(modelUnit, Direction.SOUTHEAST);
 
         initialiseStyle();
     }
 
-    public TextBox getTextBox() {
-        return textBox;
+    public ModelUnit getModelUnit() {
+        return modelUnit;
     }
 
     public ArrayList<Node> getGroup() {
@@ -72,14 +72,14 @@ public class TextBoxWrapper extends Rectangle {
     }
 
     private void initialiseStyle() {
-        setStrokeWidth(3);
+        setStrokeWidth(7);
         setOpacity(0.4);
         setFill(null);
 
-        xProperty().bind(textBox.layoutXProperty());
-        yProperty().bind(textBox.layoutYProperty());
-        widthProperty().bind(textBox.widthProperty());
-        heightProperty().bind(textBox.heightProperty());
+        xProperty().bind(modelUnit.xProperty());
+        yProperty().bind(modelUnit.yProperty());
+        widthProperty().bind(modelUnit.widthProperty());
+        heightProperty().bind(modelUnit.heightProperty());
     }
 
     private ArrayList<CanvasHandle> getHandles() {
@@ -90,6 +90,6 @@ public class TextBoxWrapper extends Rectangle {
     private void bringForward() {
         toFront();
         setVisible(true);
-        textBox.toFront();
+        modelUnit.toFront();
     }
 }

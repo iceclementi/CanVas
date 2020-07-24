@@ -8,19 +8,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
-import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.CanvasGrid;
+import seedu.canvas.component.canvas.CanvasNode;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.TheCanvas;
 import seedu.canvas.util.CanvasMath;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
 
     private TheCanvas canvas = TheCanvas.getInstance();
+    private ModelUnitWrapper wrapper = new ModelUnitWrapper(this);
 
     private UnitPoint pivotPoint;
 
@@ -28,11 +28,6 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
     private IntegerProperty unitY = new SimpleIntegerProperty();
     private IntegerProperty unitWidth = new SimpleIntegerProperty();
     private IntegerProperty unitHeight = new SimpleIntegerProperty();
-
-    private ModelResizeHandle resizeHandleNW = new ModelResizeHandle(this, Direction.NORTHWEST);
-    private ModelResizeHandle resizeHandleNE = new ModelResizeHandle(this, Direction.NORTHEAST);
-    private ModelResizeHandle resizeHandleSW = new ModelResizeHandle(this, Direction.SOUTHWEST);
-    private ModelResizeHandle resizeHandleSE = new ModelResizeHandle(this, Direction.SOUTHEAST);
 
     public ModelUnit(int unitX, int unitY, int unitWidth, int unitHeight) {
         super();
@@ -100,33 +95,33 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
     }
 
     public ArrayList<Node> getGroup() {
-        return new ArrayList<>(Arrays.asList(this, resizeHandleNW, resizeHandleNE, resizeHandleSW, resizeHandleSE));
+        ArrayList<Node> group = new ArrayList<>();
+        group.add(this);
+        group.addAll(wrapper.getGroup());
+
+        return group;
     }
 
     public void interactSingle() {
         canvas.interactSingle(this);
-        toFront();
-        getHandles().forEach(CanvasHandle::interact);
+        wrapper.interactSingle();
     }
 
     public void focusSingle() {
         canvas.interactSingle(this);
-        toFront();
-        getHandles().forEach(CanvasHandle::focus);
+        wrapper.focusSingle();
     }
 
     public void interactMultiple() {
-        toFront();
-        // getHandles().forEach(CanvasHandle::interact);
+        wrapper.interactMultiple();
     }
 
     public void focusMultiple() {
-        toFront();
-        // getHandles().forEach(CanvasHandle::focus);
+        wrapper.focusMultiple();
     }
 
     public void unfocus() {
-        getHandles().forEach(CanvasHandle::unfocus);
+        wrapper.unfocus();
     }
 
     public void scale(int unitEndX, int unitEndY) {
@@ -222,7 +217,8 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
     }
 
     private void scaleEast(int endUnitX) {
-        int newUnitWidth = CanvasMath.clamp(endUnitX - pivotPoint.getUnitX(), 0, CanvasGrid.MAX_X - pivotPoint.getUnitX());
+        int newUnitWidth =
+                CanvasMath.clamp(endUnitX - pivotPoint.getUnitX(), 0, CanvasGrid.MAX_X - pivotPoint.getUnitX());
 
         if (newUnitWidth == 0) {
             unitX.set(pivotPoint.getUnitX());
@@ -232,7 +228,8 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
     }
 
     private void scaleSouth(int endUnitY) {
-        int newUnitHeight = CanvasMath.clamp(endUnitY - pivotPoint.getUnitY(), 0, CanvasGrid.MAX_Y - pivotPoint.getUnitY());
+        int newUnitHeight =
+                CanvasMath.clamp(endUnitY - pivotPoint.getUnitY(), 0, CanvasGrid.MAX_Y - pivotPoint.getUnitY());
 
         if (newUnitHeight == 0) {
             unitY.set(pivotPoint.getUnitY());
@@ -267,16 +264,27 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
         setFill(fillColor);
     }
 
-    private ArrayList<CanvasHandle> getHandles() {
-        return new ArrayList<>(Arrays.asList(resizeHandleNW, resizeHandleNE, resizeHandleSW, resizeHandleSE));
-    }
-
     private void initialiseEvents() {
         ModelUnitEventManager modelUnitEventManager = new ModelUnitEventManager();
 
         addEventFilter(MouseEvent.MOUSE_PRESSED, modelUnitEventManager.getOnMousePressed());
         addEventFilter(MouseEvent.MOUSE_DRAGGED, modelUnitEventManager.getOnMouseDragged());
         addEventFilter(MouseEvent.MOUSE_RELEASED, modelUnitEventManager.getOnMouseReleased());
+
+        canvas.getCanvasModeProperty().addListener(observable -> {
+            switch (canvas.getCanvasMode()) {
+            case POINT:
+            case SHAPE:
+                setCursor(Cursor.HAND);
+                break;
+            case TEXT:
+                setCursor(Cursor.CROSSHAIR);
+                break;
+            default:
+                setCursor(Cursor.DEFAULT);
+                break;
+            }
+        });
     }
 
     private void dragCopyWest(double mouseLocationX, double mouseLocationY, DragData dragData) {
@@ -357,6 +365,7 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
                     newUnitHeight);
 
             newUnit.colour(targetUnit.getStroke(), targetUnit.getFill());
+            newUnit.interactSingle();
 
             copiedUnits.add(newUnit);
         }
@@ -373,6 +382,8 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
         if (copiedUnits.size() == 1) {
             dragData.setCopyDirection(null);
         }
+
+        copiedUnits.get(copiedUnits.size() - 1).interactSingle();
     }
 
     private static Direction computeDirection(ModelUnit unit, double mouseLocationX, double mouseLocationY) {

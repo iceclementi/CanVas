@@ -1,6 +1,8 @@
 package seedu.canvas.component.canvas.unit;
 
 import javafx.scene.Node;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
@@ -36,18 +38,43 @@ public class GroupLineUnit extends LineUnit {
 
     @Override
     public void interactSingle() {
-        startGroupLine.toFront();
-        endGroupLine.toFront();
-        middleGroupLine.toFront();
+        bringForward();
+        highlight(Color.CORNFLOWERBLUE);
+
         super.interactSingle();
     }
 
     @Override
     public void focusSingle() {
-        startGroupLine.toFront();
-        endGroupLine.toFront();
-        middleGroupLine.toFront();
+        bringForward();
+        highlight(Color.LIGHTGREEN);
+
         super.focusSingle();
+    }
+
+    @Override
+    public void interactMultiple() {
+        bringForward();
+        highlight(Color.CADETBLUE);
+
+        super.interactMultiple();
+    }
+
+    @Override
+    public void focusMultiple() {
+        bringForward();
+        highlight(Color.GREEN);
+
+        super.focusMultiple();
+    }
+
+    @Override
+    public void unfocus() {
+        super.unfocus();
+
+        startGroupLine.setEffect(null);
+        endGroupLine.setEffect(null);
+        middleGroupLine.setEffect(null);
     }
 
     @Override
@@ -99,6 +126,12 @@ public class GroupLineUnit extends LineUnit {
         startYProperty().addListener(observable -> faceGroupLines());
         endXProperty().addListener(observable -> faceGroupLines());
         endYProperty().addListener(observable -> faceGroupLines());
+    }
+
+    private void highlight(Color colour) {
+        startGroupLine.setEffect(new DropShadow(BlurType.GAUSSIAN, colour, 7, 0.5, 0, 0));
+        endGroupLine.setEffect(new DropShadow(BlurType.GAUSSIAN, colour, 7, 0.5, 0, 0));
+        middleGroupLine.setEffect(new DropShadow(BlurType.GAUSSIAN, colour, 7, 0.5, 0, 0));
     }
 
     private void faceGroupLines() {
@@ -210,5 +243,11 @@ public class GroupLineUnit extends LineUnit {
     private boolean isWithinBounds(int value, int lowerBound, int upperBound, boolean isExcludeLower) {
         return isExcludeLower ? (value > lowerBound && value <= upperBound)
                 : (value >= lowerBound && value < upperBound);
+    }
+
+    private void bringForward() {
+        startGroupLine.toFront();
+        endGroupLine.toFront();
+        middleGroupLine.toFront();
     }
 }

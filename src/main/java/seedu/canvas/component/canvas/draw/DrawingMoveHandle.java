@@ -6,7 +6,7 @@ import javafx.scene.input.MouseEvent;
 import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.Gesture;
 import seedu.canvas.component.canvas.TheCanvas;
-import seedu.canvas.component.canvas.unit.CanvasHandle;
+import seedu.canvas.component.canvas.CanvasHandle;
 
 public class DrawingMoveHandle extends CanvasHandle {
 
@@ -50,11 +50,16 @@ public class DrawingMoveHandle extends CanvasHandle {
 
         setOnMouseReleased(mouseEvent -> {
             mouseLocation = null;
-
-            drawingDragData.reset();
             gesture = Gesture.MOVE;
 
-            wrapper.getDrawing().focusSingle();
+            if (drawingDragData.getRecentCanvasNode() != null) {
+                drawingDragData.getRecentCanvasNode().focusSingle();
+                drawingDragData.reset();
+            } else {
+                wrapper.getDrawing().focusSingle();
+            }
+
+            mouseEvent.consume();
         });
 
         setOnMouseDragged(mouseEvent -> {

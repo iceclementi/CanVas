@@ -115,15 +115,18 @@ public class ModelUnitEventManager {
     };
 
     private EventHandler<MouseEvent> onMouseReleased = mouseEvent -> {
-        unitDragData.reset();
         gesture = Gesture.MOVE;
 
-        if (modelUnit != null) {
+        if (unitDragData.getRecentCanvasNode() != null) {
+            unitDragData.getRecentCanvasNode().focusSingle();
+            unitDragData.reset();
+        } else if (modelUnit != null) {
             modelUnit.focusSingle();
         }
 
         modelUnit = null;
 
         CanvasGrid.hideGridPoints();
+        mouseEvent.consume();
     };
 }

@@ -114,15 +114,18 @@ public class LineUnitEventManager {
     };
 
     private EventHandler<MouseEvent> onMouseReleased = mouseEvent -> {
-        unitDragData.reset();
         gesture = Gesture.MOVE;
 
-        if (lineUnit != null) {
+        if (unitDragData.getRecentCanvasNode() != null) {
+            unitDragData.getRecentCanvasNode().focusSingle();
+            unitDragData.reset();
+        } else if (lineUnit != null) {
             lineUnit.focusSingle();
         }
 
         lineUnit = null;
 
         CanvasGrid.hideGridPoints();
+        mouseEvent.consume();
     };
 }

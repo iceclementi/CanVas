@@ -3,6 +3,7 @@ package seedu.canvas.component.canvas.utility.tool;
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.input.MouseEvent;
+import seedu.canvas.component.canvas.TheCanvas;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
@@ -52,6 +53,7 @@ public abstract class ToolButton extends Button {
 
     private void onPress(MouseEvent mouseEvent) {
         setEffect(new ColorAdjust(0, 0, -0.2, 0));
+        TheCanvas.getInstance().focusNone();
     }
 
     protected void reset() {

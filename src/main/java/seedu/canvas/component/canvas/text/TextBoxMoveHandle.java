@@ -4,7 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import seedu.canvas.component.canvas.TheCanvas;
-import seedu.canvas.component.canvas.unit.CanvasHandle;
+import seedu.canvas.component.canvas.CanvasHandle;
 
 public class TextBoxMoveHandle extends CanvasHandle {
 

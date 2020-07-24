@@ -6,14 +6,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.CanvasNode;
-import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.TheCanvas;
-import seedu.canvas.component.canvas.unit.CanvasHandle;
+import seedu.canvas.component.canvas.CanvasHandle;
 import seedu.canvas.component.canvas.unit.CanvasUnit;
 import seedu.canvas.util.CanvasMath;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class SelectionWrapper extends Rectangle implements CanvasNode {
@@ -167,11 +165,11 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
         double newFinalX = CanvasMath.clamp(newX, getMinX(), getMaxX());
         double newFinalY = CanvasMath.clamp(newY, getMinY(), getMaxY());
 
-        double deltaX = newFinalX - getX();
-        double deltaY = newFinalY - getY();
-
         setX(newFinalX);
         setY(newFinalY);
+
+        double deltaX = newFinalX - getX();
+        double deltaY = newFinalY - getY();
 
         contentStartX += deltaX;
         contentEndX += deltaX;
@@ -211,7 +209,7 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
         setStrokeWidth(1);
         setFill(Color.LIGHTGREY);
 
-        setOpacity(0.5);
+        setOpacity(0.4);
 
         getHandles().forEach(CanvasHandle::unfocus);
     }

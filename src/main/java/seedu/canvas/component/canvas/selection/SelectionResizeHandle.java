@@ -1,7 +1,7 @@
 package seedu.canvas.component.canvas.selection;
 
 import seedu.canvas.component.canvas.Direction;
-import seedu.canvas.component.canvas.unit.CanvasHandle;
+import seedu.canvas.component.canvas.CanvasHandle;
 
 public class SelectionResizeHandle extends CanvasHandle {
 
