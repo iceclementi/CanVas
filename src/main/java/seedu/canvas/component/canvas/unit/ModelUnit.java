@@ -224,11 +224,6 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
         setCursor(Cursor.HAND);
     }
 
-    // public void scale(int newUnitWidth, int newUnitHeight) {
-    //     unitWidth.set(clamp(newUnitWidth, 0, CanvasGrid.MAX_X - unitX.get()));
-    //     unitHeight.set(clamp(newUnitHeight, 0, CanvasGrid.MAX_Y - unitY.get()));
-    // }
-
     private void scaleEast(int endUnitX) {
         int newUnitWidth = CanvasMath.clamp(endUnitX - pivotPoint.getUnitX(), 0, CanvasGrid.MAX_X - pivotPoint.getUnitX());
 

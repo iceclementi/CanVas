@@ -71,7 +71,7 @@ public class LineUnitEventManager {
 
             mouseAnchorLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
 
-            previousPivotLocation = new Point2D(lineUnit.getStartX(), lineUnit.getStartY());
+            previousPivotLocation = new Point2D(lineUnit.getCanvasStartX(), lineUnit.getCanvasStartY());
 
             if (mouseEvent.isControlDown()) {
                 unitDragData.getCopiedUnits().add(lineUnit);

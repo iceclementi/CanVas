@@ -14,6 +14,7 @@ import seedu.canvas.util.CanvasMath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class SelectionWrapper extends Rectangle implements CanvasNode {
 
@@ -30,10 +31,6 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
     private double combinedDeltaY = 0;
 
     private SelectionMoveHandle moveHandle;
-    private SelectionResizeHandle resizeHandleNW;
-    private SelectionResizeHandle resizeHandleNE;
-    private SelectionResizeHandle resizeHandleSW;
-    private SelectionResizeHandle resizeHandleSE;
 
     private ArrayList<CanvasNode> selectedCanvasNodes = new ArrayList<>();
 
@@ -44,10 +41,6 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
         pivotPoint = new Point2D(x, y);
 
         moveHandle = new SelectionMoveHandle(this);
-        resizeHandleNW = new SelectionResizeHandle(this, Direction.NORTHWEST);
-        resizeHandleNE = new SelectionResizeHandle(this, Direction.NORTHEAST);
-        resizeHandleSW = new SelectionResizeHandle(this, Direction.SOUTHWEST);
-        resizeHandleSE = new SelectionResizeHandle(this, Direction.SOUTHEAST);
 
         canvas.addNode(this);
 
@@ -257,6 +250,6 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
 
     private ArrayList<CanvasHandle> getHandles() {
         return new ArrayList<>(
-                Arrays.asList(moveHandle, resizeHandleNW, resizeHandleNE, resizeHandleSW, resizeHandleSE));
+                Collections.singletonList(moveHandle));
     }
 }

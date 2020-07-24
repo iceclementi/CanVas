@@ -13,6 +13,7 @@ import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.TheCanvas;
+import seedu.canvas.util.CanvasMath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,20 +80,36 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
         this.unitEndY.set(unitEndY);
     }
 
+    public int getUnitWidth() {
+        return CanvasGrid.toUnit(getWidth());
+    }
+
+    public int getUnitHeight() {
+        return CanvasGrid.toUnit(getHeight());
+    }
+
     public double getCanvasStartX() {
-        return CanvasGrid.toActual(Math.min(getUnitStartX(), getUnitEndX()));
+        return Math.min(getStartX(), getEndX());
     }
 
     public double getCanvasStartY() {
-        return CanvasGrid.toActual(Math.min(getUnitStartY(), getUnitEndY()));
+        return Math.min(getStartY(), getEndY());
     }
 
     public double getCanvasEndX() {
-        return CanvasGrid.toActual(Math.max(getUnitStartX(), getUnitEndX()));
+        return Math.max(getStartX(), getEndX());
     }
 
     public double getCanvasEndY() {
-        return CanvasGrid.toActual(Math.max(getUnitStartY(), getUnitEndY()));
+        return Math.max(getStartY(), getEndY());
+    }
+
+    public double getWidth() {
+        return getCanvasEndX() - getCanvasStartX();
+    }
+
+    public double getHeight() {
+        return getCanvasEndY() - getCanvasStartY();
     }
 
     public ArrayList<Node> getGroup() {
@@ -125,34 +142,22 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
         getHandles().forEach(CanvasHandle::unfocus);
     }
 
-    public void scale(int newUnitEndX, int newUnitEndY) {
-        unitEndX.set(clamp(newUnitEndX, CanvasGrid.MIN_X, CanvasGrid.MAX_X));
-        unitEndY.set(clamp(newUnitEndY, CanvasGrid.MIN_Y, CanvasGrid.MAX_Y));
+    public void scale(int endUnitX, int endUnitY) {
+        unitEndX.set(CanvasMath.clamp(endUnitX, CanvasGrid.MIN_X, CanvasGrid.MAX_X));
+        unitEndY.set(CanvasMath.clamp(endUnitY, CanvasGrid.MIN_Y, CanvasGrid.MAX_Y));
     }
 
     public void move(double newStartX, double newStartY) {
-        int newUnitStartX = CanvasGrid.toUnit(newStartX);
-        int newUnitStartY = CanvasGrid.toUnit(newStartY);
+        int newUnitStartX = CanvasMath.clamp(CanvasGrid.toUnit(newStartX), 0, CanvasGrid.MAX_X - getUnitWidth());
+        int newUnitStartY = CanvasGrid.clamp(CanvasGrid.toUnit(newStartY), 0, CanvasGrid.MAX_Y - getUnitHeight());
 
-        int width = unitEndX.get() - unitStartX.get();
+        int unitDeltaX = newUnitStartX - CanvasGrid.toUnit(getCanvasStartX());
+        int unitDeltaY = newUnitStartY - CanvasGrid.toUnit(getCanvasStartY());
 
-        if (width >= 0) {
-            unitStartX.set(clamp(newUnitStartX, 0, CanvasGrid.MAX_X - width));
-        } else {
-            unitStartX.set(clamp(newUnitStartX, -width, CanvasGrid.MAX_X));
-        }
-
-        unitEndX.set(unitStartX.get() + width);
-
-        int height = unitEndY.get() - unitStartY.get();
-
-        if (height >= 0) {
-            unitStartY.set(clamp(newUnitStartY, 0, CanvasGrid.MAX_Y - height));
-        } else {
-            unitStartY.set(clamp(newUnitStartY, -height, CanvasGrid.MAX_Y));
-        }
-
-        unitEndY.set(unitStartY.get() + height);
+        setUnitStartX(getUnitStartX() + unitDeltaX);
+        setUnitStartY(getUnitStartY() + unitDeltaY);
+        setUnitEndX(getUnitEndX() + unitDeltaX);
+        setUnitEndY(getUnitEndY() + unitDeltaY);
     }
 
     public void dragCopy(int mouseUnitX, int mouseUnitY, DragData dragData) {
@@ -366,9 +371,5 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
                 && (unitStartY >= 0) && (unitStartY <= CanvasGrid.MAX_Y)
                 && (unitEndX >= 0) && (unitEndX <= CanvasGrid.MAX_X)
                 && (unitEndY >= 0) && (unitEndY <= CanvasGrid.MAX_Y);
-    }
-
-    private static int clamp(int value, int minValue, int maxValue) {
-        return Math.min(Math.max(value, minValue), maxValue);
     }
 }

@@ -12,7 +12,7 @@ public class LineMoveHandle extends CanvasHandle {
     private LineUnit unit;
     private Gesture gesture = Gesture.MOVE;
     private DragData unitDragData = new DragData();
-    private Point2D moveHandleLocation = null;
+    private Point2D pivotLocation = null;
 
     public LineMoveHandle(LineUnit unit) {
         super(null);
@@ -40,7 +40,7 @@ public class LineMoveHandle extends CanvasHandle {
                 }
 
                 mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-                moveHandleLocation = new Point2D(unit.getStartX(), unit.getStartY());
+                pivotLocation = new Point2D(unit.getCanvasStartX(), unit.getCanvasStartY());
 
                 if (mouseEvent.isControlDown()) {
                     unitDragData.getCopiedUnits().add(unit);
@@ -70,8 +70,8 @@ public class LineMoveHandle extends CanvasHandle {
                 double deltaX = canvas.toScale(mouseEvent.getSceneX() - mouseLocation.getX());
                 double deltaY = canvas.toScale(mouseEvent.getSceneY() - mouseLocation.getY());
 
-                double newStartX = moveHandleLocation.getX() + deltaX;
-                double newStartY = moveHandleLocation.getY() + deltaY;
+                double newStartX = pivotLocation.getX() + deltaX;
+                double newStartY = pivotLocation.getY() + deltaY;
 
                 unit.move(newStartX, newStartY);
             }
