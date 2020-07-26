@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.CanvasNode;
+import seedu.canvas.component.canvas.Direction;
 import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.TheCanvas;
 import seedu.canvas.component.canvas.unit.CanvasUnit;
@@ -26,9 +27,8 @@ public class CanvasSelection extends Rectangle implements CanvasNode {
 
     private ArrayList<CanvasNode> selectedCanvasNodes = new ArrayList<>();
 
-    public CanvasSelection(double x, double y) {
-        setX(x);
-        setY(y);
+    public CanvasSelection(double x, double y, double width, double height) {
+        super(x, y, width, height);
 
         pivotPoint = new Point2D(x, y);
 
@@ -66,13 +66,11 @@ public class CanvasSelection extends Rectangle implements CanvasNode {
     }
 
     public void interactSingle() {
-        toFront();
         canvas.interactSingle(this);
         interactMultiple();
     }
 
     public void focusSingle() {
-        toFront();
         canvas.interactSingle(this);
         focusMultiple();
     }
@@ -84,12 +82,10 @@ public class CanvasSelection extends Rectangle implements CanvasNode {
 
     public void interactMultiple() {
         selectedCanvasNodes.forEach(CanvasNode::interactMultiple);
-        toFront();
     }
 
     public void focusMultiple() {
         selectedCanvasNodes.forEach(CanvasNode::focusMultiple);
-        toFront();
     }
 
     public void unfocusMultiple() {
@@ -180,8 +176,50 @@ public class CanvasSelection extends Rectangle implements CanvasNode {
         }
     }
 
-    public void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData) {
+    public CanvasSelection copy() {
+        CanvasSelection copiedSelection = new CanvasSelection(getX(), getY(), getWidth(), getHeight());
 
+        for (CanvasNode selectedCanvasNode : selectedCanvasNodes) {
+            CanvasNode copiedCanvasNode = selectedCanvasNode.copy();
+            copiedSelection.selectedCanvasNodes.add(copiedCanvasNode);
+        }
+
+        copiedSelection.setVisible(false);
+        copiedSelection.isCompacted = true;
+
+        return copiedSelection;
+    }
+
+    public void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        if (dragData.getCopiedCanvasNodes().isEmpty()) {
+            return;
+        }
+
+        if (dragData.getCopyDirection() == null) {
+            dragData.setCopyDirection(computeDirection(this, mouseLocationX, mouseLocationY));
+
+            // Mouse is still within unit
+            if (dragData.getCopyDirection() == null) {
+                return;
+            }
+        }
+
+        switch (dragData.getCopyDirection()) {
+        case WEST:
+            dragCopyWest(mouseLocationX, mouseLocationY, dragData);
+            break;
+        case EAST:
+            dragCopyEast(mouseLocationX, mouseLocationY, dragData);
+            break;
+        case NORTH:
+            dragCopyNorth(mouseLocationX, mouseLocationY, dragData);
+            break;
+        case SOUTH:
+            dragCopySouth(mouseLocationX, mouseLocationY, dragData);
+            break;
+        default:
+            break;
+        }
     }
 
     public void reset() {
@@ -231,5 +269,113 @@ public class CanvasSelection extends Rectangle implements CanvasNode {
 
         setY(newY);
         setHeight(newHeight);
+    }
+
+    private void dragCopyWest(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedSelections = dragData.getCopiedCanvasNodes();
+
+        CanvasSelection targetSelection = (CanvasSelection) dragData.getRecentCanvasNode();
+        Direction currentCopyDirection = computeDirection(targetSelection, mouseLocationX, mouseLocationY);
+
+        if (currentCopyDirection == Direction.WEST) {
+            addSelection(copiedSelections, targetSelection,
+                    targetSelection.getCanvasStartX() - targetSelection.getWidth(),
+                    targetSelection.getCanvasStartY(),
+                    targetSelection.getWidth(), targetSelection.getHeight());
+        } else if (currentCopyDirection == Direction.EAST) {
+            removeSelection(targetSelection, dragData);
+        }
+    }
+
+    private void dragCopyEast(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedSelections = dragData.getCopiedCanvasNodes();
+
+        CanvasSelection targetSelection = (CanvasSelection) dragData.getRecentCanvasNode();
+        Direction currentCopyDirection = computeDirection(targetSelection, mouseLocationX, mouseLocationY);
+
+        if (currentCopyDirection == Direction.EAST) {
+            addSelection(copiedSelections, targetSelection,
+                    targetSelection.getCanvasEndX(),
+                    targetSelection.getCanvasStartY(),
+                    targetSelection.getWidth(), targetSelection.getHeight());
+        } else if (currentCopyDirection == Direction.WEST) {
+            removeSelection(targetSelection, dragData);
+        }
+    }
+
+    private void dragCopyNorth(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedSelections = dragData.getCopiedCanvasNodes();
+
+        CanvasSelection targetSelection = (CanvasSelection) dragData.getRecentCanvasNode();
+        Direction currentCopyDirection = computeDirection(targetSelection, mouseLocationX, mouseLocationY);
+
+        if (currentCopyDirection == Direction.NORTH) {
+            addSelection(copiedSelections, targetSelection,
+                    targetSelection.getCanvasStartX(),
+                    targetSelection.getCanvasStartY() - targetSelection.getHeight(),
+                    targetSelection.getWidth(), targetSelection.getHeight());
+        } else if (currentCopyDirection == Direction.SOUTH) {
+            removeSelection(targetSelection, dragData);
+        }
+    }
+
+    private void dragCopySouth(double mouseLocationX, double mouseLocationY, DragData dragData) {
+        ArrayList<CanvasNode> copiedSelections = dragData.getCopiedCanvasNodes();
+
+        CanvasSelection targetSelection = (CanvasSelection) dragData.getRecentCanvasNode();
+        Direction currentCopyDirection = computeDirection(targetSelection, mouseLocationX, mouseLocationY);
+
+        if (currentCopyDirection == Direction.SOUTH) {
+            addSelection(copiedSelections, targetSelection,
+                    targetSelection.getCanvasStartX(),
+                    targetSelection.getCanvasStartY() + targetSelection.getHeight(),
+                    targetSelection.getWidth(), targetSelection.getHeight());
+        } else if (currentCopyDirection == Direction.NORTH) {
+            removeSelection(targetSelection, dragData);
+        }
+    }
+
+    private void addSelection(ArrayList<CanvasNode> copiedSelections, CanvasSelection targetSelection,
+            double newX, double newY, double newWidth, double newHeight) {
+
+        if (canvas.isWithinCanvas(newX, newY, newX + newWidth, newY + newHeight)) {
+
+            CanvasSelection newSelection = targetSelection.copy();
+            newSelection.move(newX, newY);
+            newSelection.interactSingle();
+
+            copiedSelections.add(newSelection);
+        }
+    }
+
+    private void removeSelection(CanvasSelection selection, DragData dragData) {
+        ArrayList<CanvasNode> copiedSelections = dragData.getCopiedCanvasNodes();
+
+        if (copiedSelections.size() > 1) {
+            copiedSelections.remove(selection);
+            selection.deleteSelection();
+            canvas.removeNode(selection);
+        }
+
+        if (copiedSelections.size() == 1) {
+            dragData.setCopyDirection(null);
+        }
+
+        dragData.getRecentCanvasNode().interactSingle();
+    }
+
+    private static Direction computeDirection(CanvasSelection selection, double mouseLocationX, double mouseLocationY) {
+        if (CanvasGrid.toUnit(mouseLocationX - selection.getCanvasStartX()) < 0) {
+            return Direction.WEST;
+        } else if (CanvasGrid.toUnit(mouseLocationX - selection.getCanvasEndX()) > 0) {
+            return Direction.EAST;
+        } else if (CanvasGrid.toUnit(mouseLocationY - selection.getCanvasStartY()) < 0) {
+            return Direction.NORTH;
+        } else if (CanvasGrid.toUnit(mouseLocationY - selection.getCanvasEndY()) > 0) {
+            return Direction.SOUTH;
+        } else {
+            // Within the selection
+            return null;
+        }
     }
 }

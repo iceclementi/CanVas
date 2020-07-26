@@ -145,17 +145,11 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
         unitY.set(CanvasMath.clamp(newUnitY, 0, CanvasGrid.MAX_Y - unitHeight.get()));
     }
 
-    public void colourLine(Color lineColour) {
-        setStroke(lineColour);
-    }
+    public ModelUnit copy() {
+        ModelUnit copiedUnit = new ModelUnit(getUnitX(), getUnitY(), getUnitWidth(), getUnitHeight());
+        copiedUnit.colour(getStroke(), getFill());
 
-    public void colourFill(Color fillColour) {
-        setFill(fillColour);
-    }
-
-    public boolean isIntersect(int pointX, int pointY) {
-        return (pointX >= unitX.get() && pointX <= unitX.get() + unitWidth.get())
-                && (pointY >= unitY.get() && pointY <= unitY.get() + unitHeight.get());
+        return copiedUnit;
     }
 
     /**
@@ -198,6 +192,19 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
         default:
             break;
         }
+    }
+
+    public void colourLine(Color lineColour) {
+        setStroke(lineColour);
+    }
+
+    public void colourFill(Color fillColour) {
+        setFill(fillColour);
+    }
+
+    public boolean isIntersect(int pointX, int pointY) {
+        return (pointX >= unitX.get() && pointX <= unitX.get() + unitWidth.get())
+                && (pointY >= unitY.get() && pointY <= unitY.get() + unitHeight.get());
     }
 
     private void initialiseStyle() {
@@ -356,13 +363,8 @@ public class ModelUnit extends Rectangle implements CanvasNode, CanvasUnit {
     private void addUnit(ArrayList<CanvasNode> copiedUnits, ModelUnit targetUnit,
             int newUnitX, int newUnitY, int newUnitWidth, int newUnitHeight) {
         if (canvas.isWithinCanvas(newUnitX, newUnitY, newUnitX + newUnitWidth, newUnitY + newUnitHeight)) {
-            ModelUnit newUnit = new ModelUnit(
-                    newUnitX,
-                    newUnitY,
-                    newUnitWidth,
-                    newUnitHeight);
-
-            newUnit.colour(targetUnit.getStroke(), targetUnit.getFill());
+            ModelUnit newUnit = targetUnit.copy();
+            newUnit.move(CanvasGrid.toActual(newUnitX), CanvasGrid.toActual(newUnitY));
             newUnit.interactSingle();
 
             copiedUnits.add(newUnit);

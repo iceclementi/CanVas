@@ -33,6 +33,8 @@ public class DrawingStroke extends Line {
         setStroke(canvas.getLineColour());
         setStrokeWidth(1.5);
         setStrokeLineCap(StrokeLineCap.ROUND);
+
+        updateCursor();
     }
 
     private void initialiseEvents() {
@@ -42,19 +44,21 @@ public class DrawingStroke extends Line {
         addEventFilter(MouseEvent.MOUSE_DRAGGED, drawingStrokeEventManager.getOnMouseDragged());
         addEventFilter(MouseEvent.MOUSE_RELEASED, drawingStrokeEventManager.getOnMouseReleased());
 
-        canvas.getCanvasModeProperty().addListener(observable -> {
-            switch (canvas.getCanvasMode()) {
-            case POINT:
-                setCursor(Cursor.HAND);
-                break;
-            case SHAPE:
-            case TEXT:
-                setCursor(Cursor.CROSSHAIR);
-                break;
-            default:
-                setCursor(Cursor.DEFAULT);
-                break;
-            }
-        });
+        canvas.getCanvasModeProperty().addListener(observable -> updateCursor());
+    }
+
+    private void updateCursor() {
+        switch (canvas.getCanvasMode()) {
+        case POINT:
+            setCursor(Cursor.HAND);
+            break;
+        case SHAPE:
+        case TEXT:
+            setCursor(Cursor.CROSSHAIR);
+            break;
+        default:
+            setCursor(Cursor.DEFAULT);
+            break;
+        }
     }
 }

@@ -34,5 +34,7 @@ public interface CanvasNode {
 
     void move(double newX, double newY);
 
+    CanvasNode copy();
+
     void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData);
 }

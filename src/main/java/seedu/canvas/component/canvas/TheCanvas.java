@@ -269,7 +269,7 @@ public class TheCanvas extends Pane {
                 System.out.println("canvas hit!");
                 canvas.focusNone();
 
-                selection = new CanvasSelection(mouseEvent.getX(), mouseEvent.getY());
+                selection = new CanvasSelection(mouseEvent.getX(), mouseEvent.getY(), 0, 0);
 
                 mouseEvent.consume();
             }

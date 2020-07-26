@@ -165,6 +165,22 @@ public class Drawing implements CanvasNode {
     public void colourFill(Color colour) {
     }
 
+    public Drawing copy() {
+        Drawing copiedDrawing = new Drawing();
+
+        for (DrawingStroke stroke : drawingStrokes) {
+            DrawingStroke newStroke = new DrawingStroke(copiedDrawing, stroke.getStartX(), stroke.getStartY(),
+                    stroke.getEndX(), stroke.getEndY());
+
+            copiedDrawing.addStroke(newStroke);
+        }
+
+        copiedDrawing.finishDrawing();
+        copiedDrawing.colourLine(lineColour);
+
+        return copiedDrawing;
+    }
+
     public void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData) {
         if (dragData.getCopiedCanvasNodes().isEmpty()) {
             return;
@@ -306,22 +322,8 @@ public class Drawing implements CanvasNode {
         if (canvas.isWithinCanvas(targetDrawing.getStartX() + deltaX, targetDrawing.getStartY() + deltaY,
                 targetDrawing.getEndX() + deltaX, targetDrawing.getEndY() + deltaY)) {
 
-            Drawing newDrawing = new Drawing();
-
-            for (DrawingStroke stroke : targetDrawing.drawingStrokes) {
-                DrawingStroke newStroke = new DrawingStroke(
-                        newDrawing,
-                        stroke.getStartX() + deltaX,
-                        stroke.getStartY() + deltaY,
-                        stroke.getEndX() + deltaX,
-                        stroke.getEndY() + deltaY
-                );
-
-                newDrawing.addStroke(newStroke);
-            }
-
-            newDrawing.finishDrawing();
-            newDrawing.colourLine(targetDrawing.lineColour);
+            Drawing newDrawing = targetDrawing.copy();
+            newDrawing.move(targetDrawing.getStartX() + deltaX, targetDrawing.getStartY() + deltaY);
             newDrawing.interactSingle();
 
             copiedDrawings.add(newDrawing);

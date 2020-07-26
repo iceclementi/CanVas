@@ -156,6 +156,13 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
         setUnitEndY(getUnitEndY() + unitDeltaY);
     }
 
+    public LineUnit copy() {
+        LineUnit copiedUnit = new LineUnit(getUnitStartX(), getUnitStartY(), getUnitEndX(), getUnitEndY());
+        copiedUnit.colourLine((Color) getStroke());
+
+        return copiedUnit;
+    }
+
     public void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData) {
         if (dragData.getCopiedCanvasNodes().isEmpty()) {
             return;
@@ -319,17 +326,8 @@ public class LineUnit extends Line implements CanvasNode, CanvasUnit {
     private void addUnit(ArrayList<CanvasNode> copiedUnits, LineUnit targetUnit,
              int newUnitStartX, int newUnitStartY, int newUnitEndX, int newUnitEndY) {
         if (canvas.isWithinCanvas(newUnitStartX, newUnitStartY, newUnitEndX, newUnitEndY)) {
-            LineUnit newUnit;
-
-            if (targetUnit instanceof AnchorLineUnit) {
-                newUnit = new AnchorLineUnit(newUnitStartX, newUnitStartY, newUnitEndX, newUnitEndY);
-            } else if (targetUnit instanceof GroupLineUnit) {
-                newUnit = new GroupLineUnit(newUnitStartX, newUnitStartY, newUnitEndX, newUnitEndY);
-            } else {
-                newUnit = new LineUnit(newUnitStartX, newUnitStartY, newUnitEndX, newUnitEndY);
-            }
-
-            newUnit.colourLine((Color) targetUnit.getStroke());
+            LineUnit newUnit = targetUnit.copy();
+            newUnit.move(CanvasGrid.toActual(newUnitStartX), CanvasGrid.toActual(newUnitStartY));
             newUnit.interactSingle();
 
             copiedUnits.add(newUnit);

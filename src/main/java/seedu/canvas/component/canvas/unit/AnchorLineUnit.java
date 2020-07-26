@@ -75,6 +75,14 @@ public class AnchorLineUnit extends LineUnit {
     }
 
     @Override
+    public AnchorLineUnit copy() {
+        AnchorLineUnit copiedUnit = new AnchorLineUnit(getUnitStartX(), getUnitStartY(), getUnitEndX(), getUnitEndY());
+        copiedUnit.colourLine((Color) getStroke());
+
+        return copiedUnit;
+    }
+
+    @Override
     public void colourLine(Color lineColour) {
         super.colourLine(lineColour);
         startAnchorLine.setStroke(lineColour);

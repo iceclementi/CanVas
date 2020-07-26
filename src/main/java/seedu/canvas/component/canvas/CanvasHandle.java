@@ -62,11 +62,13 @@ public abstract class CanvasHandle extends Circle {
 
             canvasNode.interactSingle();
         } else {
-            pivotLocation =
-                    new Point2D(selection.getCanvasStartX(), selection.getCanvasStartY());
+            pivotLocation = new Point2D(selection.getCanvasStartX(), selection.getCanvasStartY());
             selection.interactMultiple();
 
-            // Multiple drag copy
+            if (mouseEvent.isControlDown()) {
+                dragData.getCopiedCanvasNodes().add(selection);
+                gesture = Gesture.COPY;
+            }
         }
     }
 
@@ -86,21 +88,25 @@ public abstract class CanvasHandle extends Circle {
         }
 
         if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
-            canvasNode.dragCopy(mouseEvent.getX(), mouseEvent.getY(), dragData);
+            if (selection == null) {
+                canvasNode.dragCopy(mouseEvent.getX(), mouseEvent.getY(), dragData);
+            } else {
+                selection.dragCopy(mouseEvent.getX(), mouseEvent.getY(), dragData);
+            }
         }
     }
 
     protected void addMouseReleaseEvent(CanvasNode canvasNode) {
-        if (selection == null) {
-            if (dragData.getRecentCanvasNode() != null) {
-                dragData.getRecentCanvasNode().focusSingle();
-                dragData.reset();
-            } else {
-                canvasNode.focusSingle();
-            }
+        if (dragData.getRecentCanvasNode() != null) {
+            dragData.getRecentCanvasNode().focusSingle();
+            dragData.reset();
         } else {
-            selection.focusMultiple();
-            selection.reset();
+            if (selection == null) {
+                canvasNode.focusSingle();
+            } else {
+                selection.focusMultiple();
+                selection.reset();
+            }
         }
 
         mouseLocation = null;

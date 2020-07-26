@@ -113,6 +113,22 @@ public class TextBox extends Rectangle implements CanvasNode {
         setY(finalNewY);
     }
 
+    public TextBox copy() {
+        TextBox copiedTextBox = new TextBox(getX(), getY(), getWidth(), getHeight());
+
+        TextBoxContent newContent = copiedTextBox.content;
+        newContent.appendText(content.getText());
+
+        for (int i = 0; i < content.getText().length(); ++i) {
+            String style = content.getStyleAtPosition(i + 1);
+            newContent.setStyle(i, i + 1, style);
+        }
+
+        copiedTextBox.colour((Color) getStroke(), (Color) getFill());
+
+        return copiedTextBox;
+    }
+
     public void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData) {
         if (dragData.getCopiedCanvasNodes().isEmpty()) {
             return;
@@ -264,19 +280,8 @@ public class TextBox extends Rectangle implements CanvasNode {
 
         if (canvas.isWithinCanvas(newX, newY, newX + newWidth, newY + newHeight)) {
 
-            TextBox newTextBox = new TextBox(newX, newY, newWidth, newHeight);
-
-            TextBoxContent targetContent = targetTextBox.content;
-            TextBoxContent newContent = newTextBox.content;
-
-            newContent.appendText(targetContent.getText());
-
-            for (int i = 0; i < targetContent.getText().length(); ++i) {
-                String style = targetContent.getStyleAtPosition(i + 1);
-                newContent.setStyle(i, i + 1, style);
-            }
-
-            newTextBox.colour((Color) targetTextBox.getStroke(), (Color) targetTextBox.getFill());
+            TextBox newTextBox = targetTextBox.copy();
+            newTextBox.move(newX, newY);
             newTextBox.interactSingle();
             canvas.requestFocus();
 

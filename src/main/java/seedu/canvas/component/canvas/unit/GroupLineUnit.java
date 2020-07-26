@@ -78,6 +78,14 @@ public class GroupLineUnit extends LineUnit {
     }
 
     @Override
+    public GroupLineUnit copy() {
+        GroupLineUnit copiedUnit = new GroupLineUnit(getUnitStartX(), getUnitStartY(), getUnitEndX(), getUnitEndY());
+        copiedUnit.colourLine((Color) getStroke());
+
+        return copiedUnit;
+    }
+
+    @Override
     public void colourLine(Color lineColour) {
         super.colourLine(lineColour);
         startGroupLine.setStroke(lineColour);
