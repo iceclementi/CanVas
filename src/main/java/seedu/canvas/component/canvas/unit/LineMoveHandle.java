@@ -1,21 +1,15 @@
 package seedu.canvas.component.canvas.unit;
 
-import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.CanvasHandle;
 import seedu.canvas.component.canvas.CanvasMode;
-import seedu.canvas.component.canvas.DragData;
-import seedu.canvas.component.canvas.Gesture;
 import seedu.canvas.component.canvas.TheCanvas;
 
 public class LineMoveHandle extends CanvasHandle {
 
     private TheCanvas canvas = TheCanvas.getInstance();
-    private DragData unitDragData = new DragData();
-    private Point2D pivotLocation = null;
-    private Gesture gesture = Gesture.MOVE;
 
     private LineUnit unit;
 
@@ -28,8 +22,6 @@ public class LineMoveHandle extends CanvasHandle {
     }
 
     private void initialiseStyle() {
-        focus();
-
         centerXProperty().bind(unit.startXProperty().add(unit.endXProperty()).divide(2));
         centerYProperty().bind(unit.startYProperty().add(unit.endYProperty()).divide(2));
 
@@ -44,52 +36,26 @@ public class LineMoveHandle extends CanvasHandle {
                     canvas.changeMode(CanvasMode.POINT);
                 }
 
-                mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-                pivotLocation = new Point2D(unit.getCanvasStartX(), unit.getCanvasStartY());
-
-                if (mouseEvent.isControlDown()) {
-                    unitDragData.getCopiedCanvasNodes().add(unit);
-                    gesture = Gesture.COPY;
+                if (canvas.getCanvasMode() != CanvasMode.POINT) {
+                    return;
                 }
 
-                unit.interactSingle();
-                CanvasGrid.showGridPoints();
+                addMousePressEvent(unit, mouseEvent);
 
-                unit.requestFocus();
+                CanvasGrid.showGridPoints();
                 mouseEvent.consume();
             }
         });
 
         setOnMouseReleased(mouseEvent -> {
-            mouseLocation = null;
-            gesture = Gesture.MOVE;
-
-            if (unitDragData.getRecentCanvasNode() != null) {
-                unitDragData.getRecentCanvasNode().focusSingle();
-                unitDragData.reset();
-            } else {
-                unit.focusSingle();
-            }
+            addMouseReleaseEvent(unit);
 
             CanvasGrid.hideGridPoints();
-
             mouseEvent.consume();
         });
 
         setOnMouseDragged(mouseEvent -> {
-            if (gesture == Gesture.MOVE) {
-                double deltaX = canvas.toScale(mouseEvent.getSceneX() - mouseLocation.getX());
-                double deltaY = canvas.toScale(mouseEvent.getSceneY() - mouseLocation.getY());
-
-                double newStartX = pivotLocation.getX() + deltaX;
-                double newStartY = pivotLocation.getY() + deltaY;
-
-                unit.move(newStartX, newStartY);
-            }
-
-            if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
-                unit.dragCopy(mouseEvent.getX(), mouseEvent.getY(), unitDragData);
-            }
+            addMouseDragEvent(unit, mouseEvent);
 
             mouseEvent.consume();
         });

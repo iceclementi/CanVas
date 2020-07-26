@@ -23,7 +23,7 @@ public class TextBoxWrapper extends Rectangle {
         super();
         this.textBox = textBox;
 
-        moveHandle = new TextBoxMoveHandle(this);
+        moveHandle = new TextBoxMoveHandle(textBox);
         resizeHandleNW = new TextBoxResizeHandle(this, Direction.NORTHWEST);
         resizeHandleNE = new TextBoxResizeHandle(this, Direction.NORTHEAST);
         resizeHandleSW = new TextBoxResizeHandle(this, Direction.SOUTHWEST);
@@ -47,23 +47,25 @@ public class TextBoxWrapper extends Rectangle {
     public void interactSingle() {
         bringForward();
         setStroke(Color.CORNFLOWERBLUE);
-        getHandles().forEach(CanvasHandle::interact);
+        getHandles().forEach(CanvasHandle::interactSingle);
     }
 
     public void focusSingle() {
         bringForward();
         setStroke(Color.LIGHTGREEN);
-        getHandles().forEach(CanvasHandle::focus);
+        getHandles().forEach(CanvasHandle::focusSingle);
     }
 
     public void interactMultiple() {
         bringForward();
         setStroke(Color.CADETBLUE);
+        moveHandle.interactMultiple();
     }
 
     public void focusMultiple() {
         bringForward();
         setStroke(Color.GREEN);
+        moveHandle.focusMultiple();
     }
 
     public void unfocus() {

@@ -6,39 +6,31 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import seedu.canvas.component.canvas.CanvasGrid;
 import seedu.canvas.component.canvas.CanvasNode;
+import seedu.canvas.component.canvas.DragData;
 import seedu.canvas.component.canvas.TheCanvas;
-import seedu.canvas.component.canvas.CanvasHandle;
 import seedu.canvas.component.canvas.unit.CanvasUnit;
 import seedu.canvas.util.CanvasMath;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
-public class SelectionWrapper extends Rectangle implements CanvasNode {
+public class CanvasSelection extends Rectangle implements CanvasNode {
 
     private TheCanvas canvas = TheCanvas.getInstance();
 
     private Point2D pivotPoint;
 
-    private double contentStartX = CanvasGrid.WIDTH;
-    private double contentStartY = CanvasGrid.HEIGHT;
-    private double contentEndX = 0;
-    private double contentEndY = 0;
-
     private double combinedDeltaX = 0;
     private double combinedDeltaY = 0;
 
-    private SelectionMoveHandle moveHandle;
+    private boolean isCompacted = false;
 
     private ArrayList<CanvasNode> selectedCanvasNodes = new ArrayList<>();
 
-    public SelectionWrapper(double x, double y) {
+    public CanvasSelection(double x, double y) {
         setX(x);
         setY(y);
 
         pivotPoint = new Point2D(x, y);
-
-        moveHandle = new SelectionMoveHandle(this);
 
         canvas.addNode(this);
 
@@ -46,10 +38,13 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
         initialiseEvents();
     }
 
+    public boolean isCompacted() {
+        return isCompacted;
+    }
+
     public ArrayList<Node> getGroup() {
         ArrayList<Node> group = new ArrayList<>();
         group.add(this);
-        group.addAll(getHandles());
 
         return group;
     }
@@ -70,51 +65,21 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
         return getY() + getHeight();
     }
 
-    public double getMinX() {
-        return getCanvasStartX() - contentStartX;
-    }
-
-    public double getMinY() {
-        return getCanvasStartY() - contentStartY;
-    }
-
-    public double getMaxX() {
-        return CanvasGrid.WIDTH - getWidth() + getCanvasEndX() - contentEndX;
-    }
-
-    public double getMaxY() {
-        return CanvasGrid.HEIGHT - getHeight() + getCanvasEndY() - contentEndY;
-    }
-
     public void interactSingle() {
         toFront();
         canvas.interactSingle(this);
         interactMultiple();
-        getHandles().forEach(CanvasHandle::interact);
     }
 
     public void focusSingle() {
         toFront();
         canvas.interactSingle(this);
         focusMultiple();
-        getHandles().forEach(CanvasHandle::focus);
     }
 
     public void unfocus() {
         unfocusMultiple();
         canvas.removeNode(this);
-    }
-
-    public void colourLine(Color lineColour) {
-        selectedCanvasNodes.forEach(selectedCanvasNode -> selectedCanvasNode.colourLine(lineColour));
-    }
-
-    public void colourFill(Color fillColour) {
-        selectedCanvasNodes.forEach(selectedCanvasNode -> selectedCanvasNode.colourFill(fillColour));
-    }
-
-    public void unfocusMultiple() {
-        selectedCanvasNodes.forEach(CanvasNode::unfocus);
     }
 
     public void interactMultiple() {
@@ -125,6 +90,18 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
     public void focusMultiple() {
         selectedCanvasNodes.forEach(CanvasNode::focusMultiple);
         toFront();
+    }
+
+    public void unfocusMultiple() {
+        selectedCanvasNodes.forEach(CanvasNode::unfocus);
+    }
+
+    public void colourLine(Color lineColour) {
+        selectedCanvasNodes.forEach(selectedCanvasNode -> selectedCanvasNode.colourLine(lineColour));
+    }
+
+    public void colourFill(Color fillColour) {
+        selectedCanvasNodes.forEach(selectedCanvasNode -> selectedCanvasNode.colourFill(fillColour));
     }
 
     public void scale(double endX, double endY) {
@@ -151,27 +128,35 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
             focusSingle();
         }
 
+        double newStartX = getCanvasEndX();
+        double newStartY = getCanvasEndY();
+        double newEndX = getCanvasStartX();
+        double newEndY = getCanvasStartY();
+
         for (CanvasNode selectedCanvasNode : selectedCanvasNodes) {
-            contentStartX = Math.min(contentStartX, selectedCanvasNode.getCanvasStartX());
-            contentStartY = Math.min(contentStartY, selectedCanvasNode.getCanvasStartY());
-            contentEndX = Math.max(contentEndX, selectedCanvasNode.getCanvasEndX());
-            contentEndY = Math.max(contentEndY, selectedCanvasNode.getCanvasEndY());
+            newStartX = Math.min(newStartX, selectedCanvasNode.getCanvasStartX());
+            newStartY = Math.min(newStartY, selectedCanvasNode.getCanvasStartY());
+            newEndX = Math.max(newEndX, selectedCanvasNode.getCanvasEndX());
+            newEndY = Math.max(newEndY, selectedCanvasNode.getCanvasEndY());
         }
+
+        setX(newStartX);
+        setY(newStartY);
+        setWidth(newEndX - newStartX);
+        setHeight(newEndY - newStartY);
+
+        setVisible(false);
+        isCompacted = true;
     }
 
     public void move(double newX, double newY) {
         // System.out.println(String.format("%s %s %s %s", getMinX(), getMaxX(), getMinY(), getMaxY()));
 
-        double newFinalX = CanvasMath.clamp(newX, getMinX(), getMaxX());
-        double newFinalY = CanvasMath.clamp(newY, getMinY(), getMaxY());
+        double newFinalX = CanvasMath.clamp(newX, 0, CanvasGrid.WIDTH - getWidth());
+        double newFinalY = CanvasMath.clamp(newY, 0, CanvasGrid.HEIGHT - getHeight());
 
         double deltaX = newFinalX - getX();
         double deltaY = newFinalY - getY();
-
-        contentStartX += deltaX;
-        contentEndX += deltaX;
-        contentStartY += deltaY;
-        contentEndY += deltaY;
 
         combinedDeltaX += deltaX;
         combinedDeltaY += deltaY;
@@ -195,6 +180,10 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
         }
     }
 
+    public void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData) {
+
+    }
+
     public void reset() {
         combinedDeltaX = 0;
         combinedDeltaY = 0;
@@ -210,8 +199,6 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
         setFill(Color.LIGHTGREY);
 
         setOpacity(0.4);
-
-        getHandles().forEach(CanvasHandle::unfocus);
     }
 
     private void initialiseEvents() {
@@ -244,10 +231,5 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
 
         setY(newY);
         setHeight(newHeight);
-    }
-
-    private ArrayList<CanvasHandle> getHandles() {
-        return new ArrayList<>(
-                Collections.singletonList(moveHandle));
     }
 }

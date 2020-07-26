@@ -33,4 +33,6 @@ public interface CanvasNode {
     void colourFill(Color fillColour);
 
     void move(double newX, double newY);
+
+    void dragCopy(double mouseLocationX, double mouseLocationY, DragData dragData);
 }

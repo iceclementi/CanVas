@@ -5,9 +5,9 @@ import seedu.canvas.component.canvas.CanvasHandle;
 
 public class SelectionResizeHandle extends CanvasHandle {
 
-    private SelectionWrapper wrapper;
+    private CanvasSelection wrapper;
 
-    public SelectionResizeHandle(SelectionWrapper wrapper, Direction location) {
+    public SelectionResizeHandle(CanvasSelection wrapper, Direction location) {
         super(location);
         this.wrapper = wrapper;
     }

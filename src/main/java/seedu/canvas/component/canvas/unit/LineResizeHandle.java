@@ -24,7 +24,7 @@ public class LineResizeHandle extends CanvasHandle {
     }
 
     private void initialiseStyle() {
-        focus();
+        focusSingle();
 
         switch (location) {
         case WEST:

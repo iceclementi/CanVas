@@ -10,7 +10,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import seedu.canvas.component.canvas.draw.DrawingCanvas;
-import seedu.canvas.component.canvas.selection.SelectionWrapper;
+import seedu.canvas.component.canvas.selection.CanvasSelection;
 import seedu.canvas.component.canvas.text.TextBox;
 import seedu.canvas.component.canvas.unit.UnitShape;
 import seedu.canvas.component.canvas.utility.format.text.TextFormatBox;
@@ -36,7 +36,7 @@ public class TheCanvas extends Pane {
     private Color lineColour = null;
     private Color fillColour = null;
 
-    private SelectionWrapper selectionBox = null;
+    private CanvasSelection selection = null;
 
     private static TheCanvas canvas = null;
 
@@ -157,6 +157,10 @@ public class TheCanvas extends Pane {
         this.shape = shape;
     }
 
+    public CanvasSelection getSelection() {
+        return selection;
+    }
+
     public void interactSingle(CanvasNode canvasNode) {
         if (focussedNode != canvasNode) {
             focusNone();
@@ -187,7 +191,7 @@ public class TheCanvas extends Pane {
     public void addNode(CanvasNode canvasNode) {
         getChildren().addAll(canvasNode.getGroup());
 
-        if (canvasNode instanceof SelectionWrapper) {
+        if (canvasNode instanceof CanvasSelection) {
             return;
         }
 
@@ -199,8 +203,8 @@ public class TheCanvas extends Pane {
         getChildren().removeAll(canvasNode.getGroup());
         canvasNodes.remove(canvasNode);
 
-        if (canvasNode instanceof SelectionWrapper) {
-            selectionBox = null;
+        if (canvasNode instanceof CanvasSelection) {
+            selection = null;
         }
     }
 
@@ -254,7 +258,7 @@ public class TheCanvas extends Pane {
         setOnMouseDragged(this::scaleSelectionBox);
         setOnMouseReleased(this::completeSelectionBox);
 
-        addDeleteUnitEvent();
+        addDeleteNodeEvent();
     }
 
     private void createSelectionBox(MouseEvent mouseEvent) {
@@ -265,7 +269,7 @@ public class TheCanvas extends Pane {
                 System.out.println("canvas hit!");
                 canvas.focusNone();
 
-                selectionBox = new SelectionWrapper(mouseEvent.getX(), mouseEvent.getY());
+                selection = new CanvasSelection(mouseEvent.getX(), mouseEvent.getY());
 
                 mouseEvent.consume();
             }
@@ -275,8 +279,8 @@ public class TheCanvas extends Pane {
     private void scaleSelectionBox(MouseEvent mouseEvent) {
         if (mouseEvent.isPrimaryButtonDown()) {
             if (canvas.getCanvasMode() == CanvasMode.POINT) {
-                if (selectionBox != null) {
-                    selectionBox.scale(mouseEvent.getX(), mouseEvent.getY());
+                if (selection != null) {
+                    selection.scale(mouseEvent.getX(), mouseEvent.getY());
                 }
                 mouseEvent.consume();
             }
@@ -285,14 +289,14 @@ public class TheCanvas extends Pane {
 
     private void completeSelectionBox(MouseEvent mouseEvent) {
         if (canvas.getCanvasMode() == CanvasMode.POINT) {
-            if (selectionBox != null) {
-                selectionBox.compact();
+            if (selection != null && !selection.isCompacted()) {
+                selection.compact();
                 mouseEvent.consume();
             }
         }
     }
 
-    private void addDeleteUnitEvent() {
+    private void addDeleteNodeEvent() {
         sceneProperty().addListener(observable -> {
             if (getScene() == null) {
                 return;
@@ -306,9 +310,9 @@ public class TheCanvas extends Pane {
                             TextFormatBox.unlink();
                         }
 
-                        if (focussedNode instanceof SelectionWrapper) {
-                            ((SelectionWrapper) focussedNode).deleteSelection();
-                            selectionBox = null;
+                        if (focussedNode instanceof CanvasSelection) {
+                            ((CanvasSelection) focussedNode).deleteSelection();
+                            selection = null;
                         }
 
                         removeNode(focussedNode);

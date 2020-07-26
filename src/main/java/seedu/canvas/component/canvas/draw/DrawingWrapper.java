@@ -5,7 +5,6 @@ import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import seedu.canvas.component.canvas.CanvasGrid;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,25 +36,25 @@ public class DrawingWrapper extends Rectangle {
     public void interactSingle() {
         bringForward();
         highlight(Color.CORNFLOWERBLUE);
-        moveHandle.interact();
+        moveHandle.interactSingle();
     }
 
     public void focusSingle() {
         bringForward();
         highlight(Color.LIGHTGREEN);
-        moveHandle.focus();
+        moveHandle.focusSingle();
     }
 
     public void interactMultiple() {
-        drawing.toFront();
-        setVisible(false);
+        bringForward();
         highlight(Color.CADETBLUE);
+        moveHandle.interactMultiple();
     }
 
     public void focusMultiple() {
-        drawing.toFront();
-        setVisible(false);
+        bringForward();
         highlight(Color.GREEN);
+        moveHandle.focusMultiple();
     }
 
     public void unfocus() {

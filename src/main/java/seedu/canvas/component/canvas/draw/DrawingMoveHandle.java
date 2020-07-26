@@ -35,47 +35,20 @@ public class DrawingMoveHandle extends CanvasHandle {
     private void initialiseEvents() {
         addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> {
             if (mouseEvent.isPrimaryButtonDown()) {
-                mouseLocation = new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-                previousAnchorPoint = new Point2D(wrapper.getX(), wrapper.getY());
-                wrapper.getDrawing().interactSingle();
-
-                if (mouseEvent.isControlDown()) {
-                    drawingDragData.getCopiedCanvasNodes().add(wrapper.getDrawing());
-                    gesture = Gesture.COPY;
-                }
+                addMousePressEvent(wrapper.getDrawing(), mouseEvent);
 
                 mouseEvent.consume();
             }
         });
 
         setOnMouseReleased(mouseEvent -> {
-            mouseLocation = null;
-            gesture = Gesture.MOVE;
-
-            if (drawingDragData.getRecentCanvasNode() != null) {
-                drawingDragData.getRecentCanvasNode().focusSingle();
-                drawingDragData.reset();
-            } else {
-                wrapper.getDrawing().focusSingle();
-            }
+            addMouseReleaseEvent(wrapper.getDrawing());
 
             mouseEvent.consume();
         });
 
         setOnMouseDragged(mouseEvent -> {
-            if (gesture == Gesture.MOVE) {
-                double deltaX = canvas.toScale(mouseEvent.getSceneX() - mouseLocation.getX());
-                double deltaY = canvas.toScale(mouseEvent.getSceneY() - mouseLocation.getY());
-
-                double newX = previousAnchorPoint.getX() + deltaX;
-                double newY = previousAnchorPoint.getY() + deltaY;
-
-                wrapper.getDrawing().move(newX, newY);
-            }
-
-            if (mouseEvent.isControlDown() && gesture == Gesture.COPY) {
-                wrapper.getDrawing().dragCopy(mouseEvent.getX(), mouseEvent.getY(), drawingDragData);
-            }
+            addMouseDragEvent(wrapper.getDrawing(), mouseEvent);
 
             mouseEvent.consume();
         });

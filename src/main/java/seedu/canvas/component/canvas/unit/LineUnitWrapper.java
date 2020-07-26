@@ -36,24 +36,26 @@ public class LineUnitWrapper {
 
     public void interactSingle() {
         lineUnit.toFront();
-        lineUnit.setEffect(new DropShadow(BlurType.GAUSSIAN, Color.CORNFLOWERBLUE, 7, 0.5, 0, 0));
-        getHandles().forEach(CanvasHandle::interact);
+        highlight(Color.CORNFLOWERBLUE);
+        getHandles().forEach(CanvasHandle::interactSingle);
     }
 
     public void focusSingle() {
         lineUnit.toFront();
-        lineUnit.setEffect(new DropShadow(BlurType.GAUSSIAN, Color.LIGHTGREEN, 7, 0.5, 0, 0));
-        getHandles().forEach(CanvasHandle::focus);
+        highlight(Color.LIGHTGREEN);
+        getHandles().forEach(CanvasHandle::focusSingle);
     }
 
     public void interactMultiple() {
         lineUnit.toFront();
-        lineUnit.setEffect(new DropShadow(BlurType.GAUSSIAN, Color.CADETBLUE, 7, 0.5, 0, 0));
+        highlight(Color.CADETBLUE);
+        moveHandle.interactMultiple();
     }
 
     public void focusMultiple() {
         lineUnit.toFront();
-        lineUnit.setEffect(new DropShadow(BlurType.GAUSSIAN, Color.GREEN, 7, 0.5, 0, 0));
+        highlight(Color.GREEN);
+        moveHandle.focusMultiple();
     }
 
     public void unfocus() {
@@ -63,5 +65,9 @@ public class LineUnitWrapper {
 
     private ArrayList<CanvasHandle> getHandles() {
         return new ArrayList<>(Arrays.asList(moveHandle, resizeHandleEast, resizeHandleWest));
+    }
+
+    private void highlight(Color colour) {
+        lineUnit.setEffect(new DropShadow(BlurType.GAUSSIAN, colour, 7, 0.5, 0, 0));
     }
 }
