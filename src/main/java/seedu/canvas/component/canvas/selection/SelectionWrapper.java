@@ -160,7 +160,7 @@ public class SelectionWrapper extends Rectangle implements CanvasNode {
     }
 
     public void move(double newX, double newY) {
-        System.out.println(String.format("%s %s %s %s", getMinX(), getMaxX(), getMinY(), getMaxY()));
+        // System.out.println(String.format("%s %s %s %s", getMinX(), getMaxX(), getMinY(), getMaxY()));
 
         double newFinalX = CanvasMath.clamp(newX, getMinX(), getMaxX());
         double newFinalY = CanvasMath.clamp(newY, getMinY(), getMaxY());

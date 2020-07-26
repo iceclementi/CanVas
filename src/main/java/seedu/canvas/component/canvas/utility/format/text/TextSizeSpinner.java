@@ -7,8 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Polygon;
-import seedu.canvas.component.canvas.text.TextBox;
-import seedu.canvas.component.canvas.text.TextStyle;
+import seedu.canvas.component.canvas.text.TextBoxContent;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.CanvasMath;
 import seedu.canvas.util.ComponentUtil;
@@ -167,10 +166,10 @@ public class TextSizeSpinner extends VBox {
     }
 
     private static void updateTextSize() {
-        TextBox textBox = TextFormatBox.getTextBox();
-        if (textBox != null) {
-            textBox.applyTextSize(currentSize);
-            textBox.requestFocus();
+        TextBoxContent content = TextFormatBox.getTextBox().getContent();
+        if (content != null) {
+            content.applyTextSize(currentSize);
+            content.requestFocus();
         }
     }
 }

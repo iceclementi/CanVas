@@ -1,7 +1,6 @@
 package seedu.canvas.component.canvas;
 
 import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import seedu.canvas.component.canvas.text.TextBox;

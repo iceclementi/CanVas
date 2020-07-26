@@ -38,7 +38,7 @@ public class TextFormatBox {
         TextSizeSpinner.enable();
         TextPaletteColour.enable();
 
-        if (textBox.getText().isEmpty()) {
+        if (textBox.getContent().getText().isEmpty()) {
             TextStyleButton.resetToDefault();
             TextSizeSpinner.resetToDefault();
             TextPaletteColour.resetToDefault();

@@ -5,7 +5,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import seedu.canvas.component.canvas.text.TextBox;
+import seedu.canvas.component.canvas.text.TextBoxContent;
 
 import java.util.ArrayList;
 
@@ -131,10 +131,10 @@ public class TextPaletteColour extends Circle {
     private void onRelease(MouseEvent mouseEvent) {
         pick();
 
-        TextBox textBox = TextFormatBox.getTextBox();
+        TextBoxContent content = TextFormatBox.getTextBox().getContent();
 
-        if (textBox != null) {
-            textBox.applyTextFill(getColourCode());
+        if (content != null) {
+            content.applyTextFill(getColourCode());
         }
     }
 

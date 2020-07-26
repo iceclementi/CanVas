@@ -3,7 +3,7 @@ package seedu.canvas.component.canvas.utility.format.text;
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.input.MouseEvent;
-import seedu.canvas.component.canvas.text.TextBox;
+import seedu.canvas.component.canvas.text.TextBoxContent;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
 
@@ -107,11 +107,11 @@ public class TextAlignmentButton extends Button {
     private void onRelease(MouseEvent mouseEvent) {
         apply();
 
-        TextBox textBox = TextFormatBox.getTextBox();
+        TextBoxContent content = TextFormatBox.getTextBox().getContent();
 
-        if (textBox != null) {
-            textBox.applyTextAlignment(style);
-            textBox.requestFocus();
+        if (content != null) {
+            content.applyTextAlignment(style);
+            content.requestFocus();
         }
     }
 

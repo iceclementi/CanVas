@@ -72,12 +72,12 @@ public class TextBoxWrapper extends Rectangle {
     }
 
     private void initialiseStyle() {
-        setStrokeWidth(3);
+        setStrokeWidth(6);
         setOpacity(0.4);
         setFill(null);
 
-        xProperty().bind(textBox.layoutXProperty());
-        yProperty().bind(textBox.layoutYProperty());
+        xProperty().bind(textBox.xProperty());
+        yProperty().bind(textBox.yProperty());
         widthProperty().bind(textBox.widthProperty());
         heightProperty().bind(textBox.heightProperty());
     }
@@ -91,5 +91,6 @@ public class TextBoxWrapper extends Rectangle {
         toFront();
         setVisible(true);
         textBox.toFront();
+        textBox.getContent().toFront();
     }
 }

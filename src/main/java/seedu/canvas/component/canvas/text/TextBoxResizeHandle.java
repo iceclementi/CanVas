@@ -148,51 +148,51 @@ public class TextBoxResizeHandle extends CanvasHandle {
     private void updateWestX(double deltaX) {
         double newX = CanvasMath.clamp(
                 previousAnchorPoint.getX() + deltaX,
-                0, textBox.getLayoutX() + textBox.getWidth() - TextBox.MIN_WIDTH);
+                0, textBox.getCanvasEndX() - TextBox.MIN_WIDTH);
 
         double newWidth = oppositeAnchorPoint.getX() - newX;
 
-        textBox.setLayoutX(newX);
-        textBox.setPrefWidth(newWidth);
+        textBox.setX(newX);
+        textBox.setWidth(newWidth);
     }
 
     private void updateEastX(double deltaX) {
         double newWidth = CanvasMath.clamp(
-                previousAnchorPoint.getX() - textBox.getLayoutX() + deltaX,
-                TextBox.MIN_WIDTH, CanvasGrid.WIDTH - textBox.getLayoutX());
+                previousAnchorPoint.getX() - textBox.getCanvasStartX() + deltaX,
+                TextBox.MIN_WIDTH, CanvasGrid.WIDTH - textBox.getCanvasStartX());
 
-        textBox.setPrefWidth(newWidth);
+        textBox.setWidth(newWidth);
     }
 
     private void updateNorthY(double deltaY) {
         double newY = CanvasMath.clamp(
                 previousAnchorPoint.getY() + deltaY,
-                0, textBox.getLayoutY() + textBox.getHeight() - TextBox.MIN_HEIGHT);
+                0, textBox.getCanvasEndY() - TextBox.MIN_HEIGHT);
 
         double newHeight = oppositeAnchorPoint.getY() - newY;
 
-        textBox.setLayoutY(newY);
-        textBox.setPrefHeight(newHeight);
+        textBox.setY(newY);
+        textBox.setHeight(newHeight);
     }
 
     private void updateSouthY(double deltaY) {
         double newHeight = CanvasMath.clamp(
-                previousAnchorPoint.getY() - textBox.getLayoutY() + deltaY,
-                TextBox.MIN_HEIGHT, CanvasGrid.HEIGHT - textBox.getLayoutY());
+                previousAnchorPoint.getY() - textBox.getCanvasStartY() + deltaY,
+                TextBox.MIN_HEIGHT, CanvasGrid.HEIGHT - textBox.getCanvasStartY());
 
-        textBox.setPrefHeight(newHeight);
+        textBox.setHeight(newHeight);
     }
 
     private Point2D findOppositeAnchorPoint() {
         switch (location) {
         case NORTHWEST:
-            return new Point2D(textBox.getLayoutX() + textBox.getWidth(), textBox.getLayoutY() + textBox.getHeight());
+            return new Point2D(textBox.getX() + textBox.getWidth(), textBox.getY() + textBox.getHeight());
         case NORTHEAST:
-            return new Point2D(textBox.getLayoutX(), textBox.getLayoutY() + textBox.getHeight());
+            return new Point2D(textBox.getX(), textBox.getY() + textBox.getHeight());
         case SOUTHWEST:
-            return new Point2D(textBox.getLayoutX() + textBox.getWidth(), textBox.getLayoutY());
+            return new Point2D(textBox.getX() + textBox.getWidth(), textBox.getY());
         case SOUTHEAST:
-            return new Point2D(textBox.getLayoutX(), textBox.getLayoutY());
+            return new Point2D(textBox.getX(), textBox.getY());
         default:
             System.out.println("TextBoxResizeHandle: Invalid location!");
             return null;

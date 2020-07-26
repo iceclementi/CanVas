@@ -3,7 +3,7 @@ package seedu.canvas.component.canvas.utility.format.text;
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.input.MouseEvent;
-import seedu.canvas.component.canvas.text.TextBox;
+import seedu.canvas.component.canvas.text.TextBoxContent;
 import seedu.canvas.component.canvas.text.TextStyle;
 import seedu.canvas.storage.FilePath;
 import seedu.canvas.util.ComponentUtil;
@@ -159,11 +159,11 @@ public class TextStyleButton extends Button {
     }
 
     private void updateTextStyle() {
-        TextBox textBox = TextFormatBox.getTextBox();
+        TextBoxContent content = TextFormatBox.getTextBox().getContent();
 
-        if (textBox != null) {
-            textBox.applyTextStyle(style);
-            textBox.requestFocus();
+        if (content != null) {
+            content.applyTextStyle(style);
+            content.requestFocus();
         }
     }
 }
